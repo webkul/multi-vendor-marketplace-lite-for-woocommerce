@@ -8,5 +8,4 @@ composer.json
 package.lock
 package-lock.json
 stylelint.config.js
-*.zip
 phpcs.xml.dist
