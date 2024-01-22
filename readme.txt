@@ -21,18 +21,6 @@ This plugin converts the WooCommerce store into a multi-vendor store like Amazon
 
 Multi-Vendor Marketplace Lite for WooCommerce explicitly developed to switch your WooCommerce website into a multivendor platform that has multiple sellers with separate profiles.
 
-Kindly have a look at the video tutorials below to get an overview of the backend workflow:
-
-[youtube https://www.youtube.com/watch?v=eCeQ1nsDBPU]
-
-For Vendor Workflow
-
-[youtube https://www.youtube.com/watch?v=tKBnTBvkuRc]
-
-For Customer Workflow
-
-[youtube https://www.youtube.com/watch?v=lr7_2FfFg3U]
-
 = Privacy notices =
 
 To show top billing countries and charts on the seller's Dashboard this plugin uses Google Map Services. Thus, confirming the provider's privacy policy is recommended.
@@ -265,7 +253,6 @@ For any Query please generate a ticket at https://webkul.com/ticket/
 Initial public release.
 
 == 0.9.3 - 2024-01-15 ==
-
 Fixed: Nonce verification and security issues across the plugin.
 
 Seller Frontend Dashboard.
