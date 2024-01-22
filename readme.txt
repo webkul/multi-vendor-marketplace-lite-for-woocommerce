@@ -45,7 +45,7 @@ For showing extensions and the support and services menu we are using our Webkul
 
  = Developer Resources =
 
-Multi-Vendor Marketplace Lite for WooCommerce is a open source software and made to be extended. To reduce zip size and optimize the code, we have added minified css and js assets but developers can find non-minified (un-compressed) source at our public ([github repository(https://github.com/wpwebkul/multi-vendor-marketplace-lite-for-woocommerce/)] here.
+Multi-Vendor Marketplace Lite for WooCommerce is a open source software and made to be extended. To reduce zip size and optimize the code, we have added minified css and js assets but developers can find non-minified (un-compressed) source at our public ([github repository(https://github.com/webkul/multi-vendor-marketplace-lite-for-woocommerce/)] here.
 
 For showing Google Maps on Seller Dashboard we have used ([Google Map Loader JS (https://developers.google.com/chart/interactive/docs/basic_load_libs)]
 
@@ -261,7 +261,7 @@ For any Query please generate a ticket at https://webkul.com/ticket/
 
 == Changelog ==
 
-== 1.0.0 - 2024-01-19 ==
+== 1.0.0 - 2024-01-22 ==
 Initial public release.
 
 == 0.9.3 - 2024-01-15 ==
@@ -308,4 +308,4 @@ Customer End:
 Fixed: Pro notice sending in admin emails without checking pro plugin.
 
 = 0.9.0 - 2023-11-15 =
-Initial release on github public repo https://github.com/wpwebkul/mp-lite
+Initial release on github public repo https://github.com/webkul/multi-vendor-marketplace-lite-for-woocommerce
