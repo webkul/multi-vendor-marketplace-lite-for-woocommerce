@@ -1,0 +1,34 @@
+{
+	"name": "multi-vendor-marketplace-lite-for-woocommerce",
+	"version": "1.0.0",
+	"description": "This plugin converts the WooCommerce store into multi-vendor store. Using this plugin, the seller can manage the inventory, shipment, seller profile page, seller collection page and much more.",
+	"main": "assets/front/build/js/front.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"build": "gulp & cross-env nodeEnv=production webpack",
+		"watch": "gulp & cross-env nodeEnv=development webpack --watch"
+	},
+	"keywords": [
+		"woocommerce",
+		"multi",
+		"vendor",
+		"marketplace"
+	],
+	"author": "Webkul",
+	"license": "ISC",
+	"dependencies": {
+		"npm": "^9.7.2"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.22.5",
+		"@babel/preset-env": "^7.22.5",
+		"babel-loader": "^9.1.2",
+		"cross-env": "^7.0.3",
+		"gulp": "^4.0.2",
+		"gulp-clean-css": "^4.3.0",
+		"gulp-rename": "^2.0.0",
+		"gulp-watch": "^5.0.1",
+		"webpack": "^5.88.1",
+		"webpack-cli": "^5.1.4"
+	}
+}

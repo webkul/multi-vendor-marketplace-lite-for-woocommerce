@@ -1,0 +1,62 @@
+/* Invoice styling.*/
+.mp-invoice-wrapper {
+	margin: 80px auto;
+	padding-right: 15px;
+	padding-left: 15px;
+	width: 85%;
+}
+.mp-invoice-wrapper button {
+	float: right;
+	color: #fff;
+	border: none;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+	background-color: #229ac8;
+	background-image: linear-gradient(to bottom, #23a1d1, #1f90bb);
+	background-repeat: repeat-x;
+	border-radius: 3px;
+	outline: none;
+}
+.mp-invoice-wrapper button i {
+	font-size: 16px;
+	padding: 5px;
+}
+.mp-invoice-wrapper h1 {
+	font-weight: normal;
+}
+.mp-invoice-wrapper .table-bordered {
+	border: 1px solid #ddd;
+}
+.mp-invoice-wrapper .table {
+	width: 100%;
+	max-width: 100%;
+	margin-bottom: 20px;
+}
+.mp-invoice-wrapper .table-bordered > tbody > tr > td,
+.mp-invoice-wrapper .table-bordered > tbody > tr > th,
+.mp-invoice-wrapper .table-bordered > tfoot > tr > td,
+.mp-invoice-wrapper .table-bordered > tfoot > tr > th,
+.mp-invoice-wrapper .table-bordered > thead > tr > td,
+.mp-invoice-wrapper .table-bordered > thead > tr > th {
+	border: 1px solid #ddd;
+}
+.mp-invoice-wrapper .table > tbody > tr > td,
+.mp-invoice-wrapper .table > tbody > tr > th,
+.mp-invoice-wrapper .table > tfoot > tr > td,
+.mp-invoice-wrapper .table > tfoot > tr > th,
+.mp-invoice-wrapper .table > thead > tr > td,
+.mp-invoice-wrapper .table > thead > tr > th {
+	padding: 8px;
+	line-height: 1.42857143;
+	vertical-align: top;
+	border-top: 1px solid #ddd;
+}
+
+.mp-invoice-wrapper .text-right {
+	text-align: right;
+}
+.mp-invoice-wrapper .wkmp_print_invoice_btn{
+	cursor: pointer;
+}
+.mp-invoice-wrapper .wkmp-seller-detail-phone{
+	text-decoration: none;
+}

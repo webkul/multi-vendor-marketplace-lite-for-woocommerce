@@ -1,0 +1,61 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2024-01-15T14:11:09+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.6.0\n"
+"X-Domain: wk_caching\n"
+
+#. Translators: %d: product filepath.
+#: inc/class-wk-caching-autoload.php:67
+msgid "The file attempting to be loaded at %s does not exist."
+msgstr ""
+
+#: includes/class-wk-caching.php:69
+msgid "Webkul Core Caching"
+msgstr ""
+
+#: includes/class-wk-caching.php:74
+msgid "Enable Caching"
+msgstr ""
+
+#: includes/class-wk-caching.php:78
+msgid "Redis Server is installed and Running?"
+msgstr ""
+
+#: includes/class-wk-caching.php:83
+msgid "Save"
+msgstr ""
+
+#: includes/class-wk-caching.php:105
+msgid "Clear all"
+msgstr ""
+
+#. Translators: %s: Saved cache keys count.
+#: includes/class-wk-caching.php:108
+msgid " Saved keys count on PHPFastcache: %s"
+msgstr ""
+
+#. Translators: %s: Saved cache keys count.
+#: includes/class-wk-caching.php:109
+msgid "Show Keys on PHPFastcache"
+msgstr ""
+
+#: includes/class-wk-caching.php:110
+msgid "Show Data on PHPFastcache"
+msgstr ""
+
+#: includes/class-wk-caching.php:172
+msgid "WK Caching"
+msgstr ""
+
+#. translators: %s current user id
+#: includes/class-wk-caching.php:214
+msgid "User in action: %s: "
+msgstr ""

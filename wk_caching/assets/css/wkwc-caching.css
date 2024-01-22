@@ -1,0 +1,7 @@
+/**
+ * Caching CSS.
+ */
+#wpbody-content .wkwc_caching_setting_table th {
+    text-align: left;
+    padding: 10px 10px 10px 0;
+}

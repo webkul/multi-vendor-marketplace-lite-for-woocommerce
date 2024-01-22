@@ -1,0 +1,12 @@
+node_modules
+.vscode
+/.vscode
+.vscode/
+settings.json
+.vs/
+composer.json
+package.lock
+package-lock.json
+stylelint.config.js
+*.zip
+phpcs.xml.dist
