@@ -41,6 +41,20 @@ class WKMP_WC_Dependencies {
 	 *
 	 * @return bool
 	 */
+	public static function woocommerce_install_check() {
+		if ( ! function_exists( 'get_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+		$installed_plugins = get_plugins();
+
+		return isset( $installed_plugins['woocommerce/woocommerce.php'] );
+	}
+
+	/**
+	 * Woocommerce active check.
+	 *
+	 * @return bool
+	 */
 	public static function woocommerce_active_check() {
 		if ( ! self::$active_plugins ) {
 			self::init();

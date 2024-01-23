@@ -384,7 +384,7 @@ if ( ! class_exists( 'WKMP_Admin_Functions' ) ) {
 			$wk_page = \WK_Caching::wk_get_request_data( 'page' );
 
 			if ( ! empty( $wk_page ) && 0 === stripos( $wk_page, 'wk-marketplace' ) ) {
-				$text = wp_sprintf( __( 'If you like <strong>Marketplace</strong> please leave us a <a href="https://store.webkul.com/woocommerce-multivendor-marketplace.html" target="_blank" class="wc-rating-link" data-rated="Thanks :)">★★★★★</a> rating. A lot of thanks in advance!', 'wk-marketplace' ) );
+				$text = wp_sprintf( __( 'If you like <strong>Marketplace</strong> please leave us a <a href="https://wordpress.org/support/plugin/multi-vendor-marketplace-lite-for-woocommerce/reviews/?filter=5#new-post" target="_blank" class="wc-rating-link" data-rated="Thanks :)">★★★★★</a> rating. A lot of thanks in advance!', 'wk-marketplace' ) );
 			}
 
 			return $text;

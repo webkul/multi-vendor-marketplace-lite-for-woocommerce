@@ -3,7 +3,7 @@ Contributors: webkul
 Tags: b2c marketplace, marketplace, marketplace for WooCommerce, marketplace plugin, multi-vendor marketplace, seller, sellers, vendor, vendors, WooCommerce marketplace
 Requires at least: 5.0
 Tested up to: 6.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 Requires PHP: 7.4
 Tested up to PHP: 8.3
 WC requires at least: 5.0
@@ -249,10 +249,13 @@ For any Query please generate a ticket at https://webkul.com/ticket/
 
 == Changelog ==
 
-== 1.0.0 - 2024-01-22 ==
+= 1.0.1 - 2024-01-23 =
+Added install and activation woocommerce link in notice if it is not activated.
+
+= 1.0.0 - 2024-01-22 =
 Initial public release.
 
-== 0.9.3 - 2024-01-15 ==
+= 0.9.3 - 2024-01-15 =
 Fixed: Nonce verification and security issues across the plugin.
 
 Seller Frontend Dashboard.

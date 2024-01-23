@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: Multi-Vendor Marketplace Lite for WooCommerce 1.0.0\n"
+"Project-Id-Version: Multi-Vendor Marketplace Lite for WooCommerce 1.0.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wk-marketplace\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-01-22T08:41:35+00:00\n"
+"POT-Creation-Date: 2024-01-23T07:02:45+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.6.0\n"
 "X-Domain: wk-marketplace\n"
@@ -19,7 +19,7 @@ msgid "Multi-Vendor Marketplace Lite for WooCommerce"
 msgstr ""
 
 #. Plugin URI of the plugin
-msgid "https://wordpress.org/plugins/multi-vendor-marketplace-lite-for-woocommerce"
+msgid "https://store.webkul.com/woocommerce-plugins.html"
 msgstr ""
 
 #. Description of the plugin
@@ -260,7 +260,7 @@ msgid "Product Per Page"
 msgstr ""
 
 #: includes/admin/class-wkmp-admin-functions.php:387
-msgid "If you like <strong>Marketplace</strong> please leave us a <a href=\"https://store.webkul.com/woocommerce-multivendor-marketplace.html\" target=\"_blank\" class=\"wc-rating-link\" data-rated=\"Thanks :)\">★★★★★</a> rating. A lot of thanks in advance!"
+msgid "If you like <strong>Marketplace</strong> please leave us a <a href=\"https://wordpress.org/support/plugin/multi-vendor-marketplace-lite-for-woocommerce/reviews/?filter=5#new-post\" target=\"_blank\" class=\"wc-rating-link\" data-rated=\"Thanks :)\">★★★★★</a> rating. A lot of thanks in advance!"
 msgstr ""
 
 #: includes/admin/class-wkmp-admin-functions.php:417
@@ -465,38 +465,37 @@ msgstr ""
 msgid "Upgrade to Pro Now"
 msgstr ""
 
-#. Translators: %s woocommerce links
-#: includes/class-wkmarketplace.php:248
-msgid "Marketplace plugin depends on the last version of %s or later to work!"
+#. Translators: %1$s Marketplace Lite Plugin Name, %2$s: Woocommerce Activation link, %3$s: Closing anchor.
+#: includes/class-wkmarketplace.php:251
+msgid "%1$s plugin depends on the latest version of WooCommerce. %2$s Click Here to Activate it Now %3$s"
 msgstr ""
 
-#. Translators: %s woocommerce links
-#: includes/class-wkmarketplace.php:248
-#: templates/front/seller/orders/wkmp-order-views.php:629
-msgid "WooCommerce"
+#. Translators: %1$s Marketplace Lite Plugin Name, %2$s: Woocommerce Install link, %3$s: Closing anchor.
+#: includes/class-wkmarketplace.php:256
+msgid "%1$s plugin depends on the latest version of WooCommerce. %2$s Click Here to Install it Now %3$s"
 msgstr ""
 
 #. Translators: %s Marketplace Pro module link.
-#: includes/class-wkmarketplace.php:258
+#: includes/class-wkmarketplace.php:268
 msgid "This version of Multi-Vendor Marketplace for WooCommerce Lite plugin requires %1$s or later version of %2$s to work! Please consider upgrading it."
 msgstr ""
 
 #. Translators: %s Marketplace Pro module link.
-#: includes/class-wkmarketplace.php:258
+#: includes/class-wkmarketplace.php:268
 msgid "Multi-Vendor Marketplace for WooCommerce"
 msgstr ""
 
 #. translators: %d: Seller id.
-#: includes/class-wkmarketplace.php:505
+#: includes/class-wkmarketplace.php:515
 msgid "Seller %d"
 msgstr ""
 
 #. translators: %d total, %d limit, %d offset.
-#: includes/class-wkmarketplace.php:541
+#: includes/class-wkmarketplace.php:551
 msgid "Showing %1$d to %2$d of %3$d (%4$d Pages)"
 msgstr ""
 
-#: includes/class-wkmarketplace.php:867
+#: includes/class-wkmarketplace.php:877
 msgid "Anonymous User"
 msgstr ""
 
@@ -3514,6 +3513,10 @@ msgstr ""
 #. translators: %1$s: Date, %2%s: Time.
 #: templates/front/seller/orders/wkmp-order-views.php:627
 msgid "added on %1$s at %2$s"
+msgstr ""
+
+#: templates/front/seller/orders/wkmp-order-views.php:629
+msgid "WooCommerce"
 msgstr ""
 
 #. translators: %s: Author.

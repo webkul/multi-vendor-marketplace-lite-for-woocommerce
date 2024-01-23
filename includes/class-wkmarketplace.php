@@ -245,7 +245,17 @@ if ( ! class_exists( 'WKMarketplace' ) ) {
 		 * @return void
 		 */
 		public function wkmp_show_wc_not_installed_notice() {
-			$message = wp_sprintf( /* Translators: %s woocommerce links */ esc_html__( 'Marketplace plugin depends on the last version of %s or later to work!', 'wk-marketplace' ), '<a href="http://www.woothemes.com/woocommerce/" target="_blank">' . esc_html__( 'WooCommerce', 'wk-marketplace' ) . '</a>' );
+			$plugin = defined( 'WC_PLUGIN_BASENAME' ) ? WC_PLUGIN_BASENAME : 'woocommerce/woocommerce.php';
+
+			$activate_wc_url = wp_nonce_url( 'plugins.php?action=activate&amp;plugin=' . $plugin . '&amp;plugin_status=all&amp;paged=1&amp;s', 'activate-plugin_' . $plugin );
+			$message         = wp_sprintf( /* Translators: %1$s Marketplace Lite Plugin Name, %2$s: Woocommerce Activation link, %3$s: Closing anchor. */ esc_html__( '%1$s plugin depends on the latest version of WooCommerce. %2$s Click Here to Activate it Now %3$s', 'wk-marketplace' ), '<b>Multi-Vendor Marketplace Lite for WooCommerce</b>', '<a href=' . esc_url( $activate_wc_url ) . '>', '<a>' );
+
+			if ( ! wkmp_is_woocommerce_installed() ) {
+				$install_wc_url = wp_nonce_url( self_admin_url( 'update.php?action=install-plugin&plugin=woocommerce' ), 'install-plugin_woocommerce' );
+
+				$message = wp_sprintf( /* Translators: %1$s Marketplace Lite Plugin Name, %2$s: Woocommerce Install link, %3$s: Closing anchor. */ esc_html__( '%1$s plugin depends on the latest version of WooCommerce. %2$s Click Here to Install it Now %3$s', 'wk-marketplace' ), '<b>Multi-Vendor Marketplace Lite for WooCommerce</b>', '<a href=' . esc_url( $install_wc_url ) . '>', '<a>' );
+			}
+
 			self::wkmp_show_notice_on_admin( $message, 'error' );
 		}
 

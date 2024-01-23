@@ -18,6 +18,20 @@ if ( ! class_exists( 'WKMP_WC_Dependencies' ) ) {
 /**
  * WC Detection.
  */
+if ( ! function_exists( 'wkmp_is_woocommerce_installed' ) ) {
+	/**
+	 * Checking if woocommere is active.
+	 *
+	 * @return bool
+	 */
+	function wkmp_is_woocommerce_installed() {
+		return WKMP_WC_Dependencies::woocommerce_install_check();
+	}
+}
+
+/**
+ * WC Detection.
+ */
 if ( ! function_exists( 'wkmp_is_woocommerce_active' ) ) {
 	/**
 	 * Checking if woocommere is active.
