@@ -1,6 +1,6 @@
 === Multi-Vendor Marketplace Lite for WooCommerce - Create Your Amazing B2C Multi-Vendor Marketplace Intuitively ===
 Contributors: webkul
-Tags: marketplace, multi-vendor, vendors, sellers, multivendor, woocommerce marketplace, b2c marketplace, multi-store, commission, woocommerce sellers, admin commission, sales commission
+Tags: marketplace, vendors, sellers, multi stores, b2c marketplace
 Requires at least: 5.0
 Tested up to: 6.5
 Stable tag: 1.1.0
@@ -25,7 +25,7 @@ Marketplace Lite for WooCommerce is explicitly developed to switch your WooComme
 
 Let's check out all features of Marketplace Lite for WooCommerce. [Lite Module blog](https://webkul.com/blog/marketplace-for-woocommerce-lite/)
 
-**WooCommerce HPOS && Blocks**
+- **WooCommerce HPOS & Blocks**
 
 This module is now compatible with WooCommerce’s High-Performance Order Storage (HPOS) and Cart and Checkout Blocks features.
 
