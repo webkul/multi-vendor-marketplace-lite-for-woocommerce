@@ -2,5 +2,5 @@
 /**
  * Silence is golden.
  *
- * @package Multi-Vendor Marketplace for WooCommerce Lite
+ * @package Multi-Vendor Marketplace Lite for WooCommerce Lite
  */

@@ -2,7 +2,7 @@
 /**
  * Class WKMP_Flat_Rate_Shipping_Method file.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  */
 
 defined( 'ABSPATH' ) || exit(); // Exit if access directly.
@@ -291,7 +291,6 @@ if ( ! class_exists( 'WKMP_Flat_Rate_Shipping_Method' ) ) {
 
 					if ( ! empty( $instance_id_arr ) ) {
 						foreach ( $found_shipping_classes as $shipping_class => $products ) {
-
 							foreach ( $instance_id_arr as $ins_seller_id => $instance_id ) {
 								$class_seller_id = 0;
 
@@ -342,10 +341,8 @@ if ( ! class_exists( 'WKMP_Flat_Rate_Shipping_Method' ) ) {
 								} else {
 									$highest_costs[ $class_seller_id ] = empty( $highest_costs[ $class_seller_id ] ) ? $class_cost : $highest_costs[ $class_seller_id ];
 									$highest_costs[ $class_seller_id ] = $highest_costs[ $class_seller_id ] > $class_cost ? $highest_costs[ $class_seller_id ] : $class_cost;
-
 								}
 							} // Instance ids iterations.
-
 						} // Found seller shipping class iteration.
 
 						if ( ! empty( $highest_costs ) ) {
@@ -596,13 +593,11 @@ if ( ! class_exists( 'WKMP_Flat_Rate_Shipping_Method' ) ) {
 				}
 
 				foreach ( $shipping_classes as $shipping_class ) {
-
 					if ( ! isset( $shipping_class->term_id ) ) {
 						continue;
 					}
 
 					if ( user_can( $user_id, 'manage_options' ) || ( ! empty( $u_shipping_classes ) && in_array( $shipping_class->term_id, $u_shipping_classes, true ) ) ) :
-
 						$settings[ 'class_cost_' . $shipping_class->term_id ] = array(
 							/* translators: %s: shipping class name */
 							'title'       => wp_sprintf( __( '"%s" shipping class cost', 'wk-marketplace' ), esc_html( $shipping_class->name ) ),
@@ -612,7 +607,6 @@ if ( ! class_exists( 'WKMP_Flat_Rate_Shipping_Method' ) ) {
 							'default'     => $this->get_option( 'class_cost_' . $shipping_class->slug ),
 							'desc_tip'    => true,
 						);
-
 					endif;
 				}
 

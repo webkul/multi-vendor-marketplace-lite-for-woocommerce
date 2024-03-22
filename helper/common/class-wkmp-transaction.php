@@ -2,7 +2,7 @@
 /**
  * Seller ask queries class
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -16,7 +16,6 @@ if ( ! class_exists( 'WKMP_Transaction' ) ) {
 	 * Seller ask query related queries class
 	 */
 	class WKMP_Transaction {
-
 		/**
 		 * DB Variable
 		 *

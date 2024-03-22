@@ -9,6 +9,8 @@ defined( 'ABSPATH' ) || exit; // Exit if access directly.
 
 echo '<div class="mp-shop-social-links">';
 
+do_action( 'wkmp_before_social_icons', $seller_info );
+
 if ( ! empty( $seller_info->social_facebook ) ) {
 	echo '<a href="' . esc_url( $seller_info->social_facebook ) . '" target="_blank" class="mp-social-icon fb"></a>';
 }

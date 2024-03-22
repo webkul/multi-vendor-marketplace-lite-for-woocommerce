@@ -2,7 +2,7 @@
 /**
  * Local pickup Shipping Handler.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  *
  * @version 5.0.0
  */
@@ -16,6 +16,13 @@ if ( ! class_exists( 'WKMP_Local_Pickup_Shipping_Method' ) ) {
 	 * Marketplace Local pickup shipping class.
 	 */
 	class WKMP_Local_Pickup_Shipping_Method extends WC_Shipping_Method {
+		/**
+		 * Fee Cost
+		 *
+		 * @var float
+		 */
+		public $fee_cost;
+
 		/**
 		 * WKMP_Local_Pickup_Shipping_Method constructor.
 		 *

@@ -2,7 +2,7 @@
 /**
  * Admin End Functions
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -893,17 +893,6 @@ if ( ! class_exists( 'WKMP_Admin_Functions' ) ) {
 				WK_Caching::wk_show_notice_on_admin( $message, 'error' );
 			}
 
-			if ( defined( 'WC_VERSION' ) && version_compare( WC_VERSION, '5.0.0', '>=' ) && class_exists( 'WC_Blocks_Utils' ) ) {
-				$checkout_page_id = get_option( 'woocommerce_checkout_page_id' );
-				$checkout_edit    = get_edit_post_link( $checkout_page_id );
-				$block_present    = \WC_Blocks_Utils::has_block_in_page( $checkout_page_id, 'woocommerce/checkout' );
-
-				if ( $block_present ) {
-					$message = wp_sprintf( /* Translators: %1$s: Checkout edit URL, %2$s: Closing anchor. */ esc_html__( 'WooCommerce blocks are enabled on checkout. Multi-vendor Marketplace plugin will not work! Please %1$s Switch to classic checkout. %2$s', 'wk-marketplace' ), '<a href="' . esc_url( $checkout_edit ) . '">', '</a>' );
-					WK_Caching::wk_show_notice_on_admin( $message, 'error' );
-				}
-			}
-
 			$pro_disabled = $wkmarketplace->wkmp_is_pro_module_disabled();
 
 			if ( $pro_disabled ) {
@@ -913,7 +902,7 @@ if ( ! class_exists( 'WKMP_Admin_Functions' ) ) {
 				$total_count = $seller_db_obj->wkmp_get_total_sellers( array( 'verified' => false ) );
 
 				if ( absint( $total_count ) >= absint( $lite_count ) ) {
-					$message = wp_sprintf( /* translators: %s Pro module link. */ esc_html__( 'Your have reached the limit to register sellers. To allow further registration kindly consider Upgrade to Pro version of %s', 'wk-marketplace' ), '<b><a target="_blank" href="' . esc_url( WKMP_PRO_MODULE_URL ) . '">' . esc_html__( ' Multi-Vendor Marketplace for WooCommerce', 'wk-marketplace' ) . '</a></b>' );
+					$message = wp_sprintf( /* translators: %s Pro module link. */ esc_html__( 'Your have reached the limit to register sellers. To allow further registration kindly consider Upgrade to Pro version of %s', 'wk-marketplace' ), '<b><a target="_blank" href="' . esc_url( WKMP_PRO_MODULE_URL ) . '">' . esc_html__( 'Marketplace for WooCommerce', 'wk-marketplace' ) . '</a></b>' );
 					WK_Caching::wk_show_notice_on_admin( $message, 'error' );
 				}
 				$wk_page = \WK_Caching::wk_get_request_data( 'page' );

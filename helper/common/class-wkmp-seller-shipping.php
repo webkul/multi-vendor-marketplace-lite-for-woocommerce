@@ -2,7 +2,7 @@
 /**
  * Seller Shipping DB actions.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  */
 
 namespace WkMarketplace\Helper\Common;
@@ -15,7 +15,6 @@ if ( ! class_exists( 'WKMP_Seller_Shipping' ) ) {
 	 * Seller Shipping related DB queries class
 	 */
 	class WKMP_Seller_Shipping {
-
 		/**
 		 * DB Variable
 		 *

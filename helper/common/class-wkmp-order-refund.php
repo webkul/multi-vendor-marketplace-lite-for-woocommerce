@@ -2,7 +2,7 @@
 /**
  * WKMP order refund data query
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 

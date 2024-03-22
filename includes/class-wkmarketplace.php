@@ -2,7 +2,7 @@
 /**
  * Main Class.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  *
  * @version 5.0.0
  */
@@ -17,25 +17,25 @@ use WkMarketplace\Helper;
 defined( 'ABSPATH' ) || exit; // Exit if access directly.
 
 if ( ! class_exists( 'WKMarketplace' ) ) {
-
 	if ( ! class_exists( 'WKMarketplace_Pro_Globals' ) && file_exists( dirname( WKMP_LITE_PLUGIN_FILE ) . '/wk-woocommerce-marketplace/includes/class-wkmarketplace-pro-globals.php' ) ) {
 		require_once dirname( WKMP_LITE_PLUGIN_FILE ) . '/wk-woocommerce-marketplace/includes/class-wkmarketplace-pro-globals.php';
 		/**
 		 * WKMP_Pro_Global_Helper class.
 		 */
-		class WKMP_Pro_Global_Helper extends ProIncludes\WKMarketplace_Pro_Globals{}
+		class WKMP_Pro_Global_Helper extends ProIncludes\WKMarketplace_Pro_Globals {
+		}
 	} else {
 		/**
 		 * WKMP_Pro_Global_Helper class.
 		 */
-		class WKMP_Pro_Global_Helper {}
+		class WKMP_Pro_Global_Helper {
+		}
 	}
 
 	/**
 	 * Marketplace Main Class.
 	 */
 	final class WKMarketplace extends WKMP_Pro_Global_Helper {
-
 		/**
 		 * Marketplace version.
 		 *
@@ -197,7 +197,7 @@ if ( ! class_exists( 'WKMarketplace' ) ) {
 			add_action( 'plugins_loaded', array( 'WK_Caching_Core_Loader', 'include_core' ), - 1 );
 
 			self::wkmp_declare_hpos_compatibility_status( WKMP_LITE_FILE, true );
-			self::wkmp_declare_cart_checkout_block_compatibility_status( WKMP_LITE_FILE, false );
+			self::wkmp_declare_cart_checkout_block_compatibility_status( WKMP_LITE_FILE, true );
 		}
 
 		/**
@@ -248,12 +248,12 @@ if ( ! class_exists( 'WKMarketplace' ) ) {
 			$plugin = defined( 'WC_PLUGIN_BASENAME' ) ? WC_PLUGIN_BASENAME : 'woocommerce/woocommerce.php';
 
 			$activate_wc_url = wp_nonce_url( 'plugins.php?action=activate&amp;plugin=' . $plugin . '&amp;plugin_status=all&amp;paged=1&amp;s', 'activate-plugin_' . $plugin );
-			$message         = wp_sprintf( /* Translators: %1$s Marketplace Lite Plugin Name, %2$s: Woocommerce Activation link, %3$s: Closing anchor. */ esc_html__( '%1$s plugin depends on the latest version of WooCommerce. %2$s Click Here to Activate it Now %3$s', 'wk-marketplace' ), '<b>Multi-Vendor Marketplace Lite for WooCommerce</b>', '<a href=' . esc_url( $activate_wc_url ) . '>', '<a>' );
+			$message         = wp_sprintf( /* Translators: %1$s Marketplace Lite Plugin Name, %2$s: Woocommerce Activation link, %3$s: Closing anchor. */ esc_html__( '%1$s plugin depends on the latest version of WooCommerce. %2$s Click Here to Activate it Now %3$s', 'wk-marketplace' ), '<b>Marketplace Lite for WooCommerce</b>', '<a href=' . esc_url( $activate_wc_url ) . '>', '<a>' );
 
 			if ( ! wkmp_is_woocommerce_installed() ) {
 				$install_wc_url = wp_nonce_url( self_admin_url( 'update.php?action=install-plugin&plugin=woocommerce' ), 'install-plugin_woocommerce' );
 
-				$message = wp_sprintf( /* Translators: %1$s Marketplace Lite Plugin Name, %2$s: Woocommerce Install link, %3$s: Closing anchor. */ esc_html__( '%1$s plugin depends on the latest version of WooCommerce. %2$s Click Here to Install it Now %3$s', 'wk-marketplace' ), '<b>Multi-Vendor Marketplace Lite for WooCommerce</b>', '<a href=' . esc_url( $install_wc_url ) . '>', '<a>' );
+				$message = wp_sprintf( /* Translators: %1$s Marketplace Lite Plugin Name, %2$s: Woocommerce Install link, %3$s: Closing anchor. */ esc_html__( '%1$s plugin depends on the latest version of WooCommerce. %2$s Click Here to Install it Now %3$s', 'wk-marketplace' ), '<b>Marketplace Lite for WooCommerce</b>', '<a href=' . esc_url( $install_wc_url ) . '>', '<a>' );
 			}
 
 			self::wkmp_show_notice_on_admin( $message, 'error' );
@@ -265,7 +265,7 @@ if ( ! class_exists( 'WKMarketplace' ) ) {
 		 * @return void
 		 */
 		public function wkmp_show_min_pro_not_installed_notice() {
-			$message = wp_sprintf( /* Translators: %s Marketplace Pro module link. */ esc_html__( 'This version of Multi-Vendor Marketplace for WooCommerce Lite plugin requires %1$s or later version of %2$s to work! Please consider upgrading it.', 'wk-marketplace' ), esc_html( WKMP_PRO_MIN_VERSION ), '<a href="' . esc_url( WKMP_PRO_MODULE_URL ) . '" target="_blank">' . esc_html__( 'Multi-Vendor Marketplace for WooCommerce', 'wk-marketplace' ) . '</a>' );
+			$message = wp_sprintf( /* Translators: %s Marketplace Pro module link. */ esc_html__( 'This version of Marketplace Lite for WooCommerce plugin requires %1$s or later version of %2$s to work! Please consider upgrading it.', 'wk-marketplace' ), esc_html( WKMP_PRO_MIN_VERSION ), '<a href="' . esc_url( WKMP_PRO_MODULE_URL ) . '" target="_blank">' . esc_html__( 'Marketplace for WooCommerce', 'wk-marketplace' ) . '</a>' );
 			self::wkmp_show_notice_on_admin( $message, 'error' );
 		}
 
@@ -280,7 +280,6 @@ if ( ! class_exists( 'WKMarketplace' ) ) {
 		 */
 		public static function wkmp_show_notice_on_admin( $message = '', $type = 'error', $args = array() ) {
 			if ( ! empty( $message ) ) {
-
 				if ( function_exists( 'wp_admin_notice' ) ) {
 					$args         = is_array( $args ) ? $args : array();
 					$args['type'] = empty( $args['type'] ) ? $type : $args['type'];
@@ -706,7 +705,7 @@ if ( ! class_exists( 'WKMarketplace' ) ) {
 		 *
 		 * @return array
 		 */
-		public function wkmp_get_parsed_seller_info( $seller_id, $posted_data ) {
+		public function wkmp_get_parsed_seller_info( $seller_id, $posted_data = array() ) {
 			$seller_info = array();
 
 			$field_keys = array(
@@ -742,7 +741,7 @@ if ( ! class_exists( 'WKMarketplace' ) ) {
 				'wkmp_youtube',
 			);
 
-			foreach ( $field_keys as  $field_key ) {
+			foreach ( $field_keys as $field_key ) {
 				$seller_info[ $field_key ] = '';
 			}
 
@@ -799,7 +798,7 @@ if ( ! class_exists( 'WKMarketplace' ) ) {
 				}
 			}
 
-			return $seller_info;
+			return apply_filters( 'wkmp_return_parsed_seller_info', $seller_info, $seller_id, $posted_data );
 		}
 
 		/**
@@ -1015,6 +1014,8 @@ if ( ! class_exists( 'WKMarketplace' ) ) {
 		 * @param array  $tabs Setting tabs.
 		 * @param string $title Page title.
 		 * @param string $icon Module icon.
+		 *
+		 * @since 5.3.0
 		 */
 		public function create_settings_tabs( $tabs = array(), $title = '', $icon = '' ) {
 			$submenu_name = ( is_array( $tabs ) && count( $tabs ) > 0 ) ? array_keys( $tabs )[0] : '';

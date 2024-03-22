@@ -2,7 +2,7 @@
 /**
  * Seller registration fields template
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  *
  * @version 5.0.0
  */
@@ -50,7 +50,7 @@ if ( ! is_account_page() ) {
 						<span class="wkmp-help-tip-sol"><?php esc_html_e( 'If empty, First and Last name will be the Shop Name.', 'wk-marketplace' ); ?></span>
 						<span class="help-tip"></span>
 					</span>
-					<?php } ?>
+				<?php } ?>
 				</label>
 				<input data-is_optional="<?php echo ( 'required' !== $shopname_visibility ) ? true : false; ?>" type="text" class="input-text form-control" name="wkmp_shopname" value="<?php echo esc_attr( $wkmp_shopname ); ?>" id="wkmp-shopname"/>
 			</p>
@@ -68,7 +68,7 @@ if ( ! is_account_page() ) {
 						<span class="wkmp-help-tip-sol"><?php esc_html_e( 'If empty, your username will be the Shop URL.', 'wk-marketplace' ); ?></span>
 						<span class="help-tip"></span>
 					</span>
-					<?php } ?>
+				<?php } ?>
 				</label>
 				<input data-is_optional="<?php echo ( 'required' !== $shopurl_visibility ) ? true : false; ?>" type="text" class="input-text form-control" name="wkmp_shopurl" value="<?php echo esc_attr( $wkmp_shopurl ); ?>" id="wkmp-shopurl"/>
 				<strong id="wkmp-shop-url-availability"></strong>
@@ -101,6 +101,8 @@ if ( ! is_account_page() ) {
 					<input type="radio" name="role" value="seller"<?php checked( $user_role, 'seller' ); ?> >
 					<label class="radio wkmp-fw-600"><?php esc_html_e( 'I am a Seller', 'wk-marketplace' ); ?></label>
 				</li>
+				<!-- Ambassador Stripe customization compatibility -->
+				<?php do_action( 'wkmp_user_registration_option', $user_role ); ?>
 			</ul>
 		</div>
 	<?php } else { ?>

@@ -2,7 +2,7 @@
 /**
  * Seller product at front.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -307,7 +307,6 @@ if ( ! class_exists( 'WKMP_Product_Form' ) ) {
 
 				if ( ! empty( $att_val ) ) {
 					foreach ( $att_val as $attribute ) {
-
 						if ( empty( $attribute['name'] ) || empty( $attribute['value'] ) ) {
 							continue;
 						}
@@ -392,7 +391,6 @@ if ( ! class_exists( 'WKMP_Product_Form' ) ) {
 					$nonce_update = \WK_Caching::wk_get_request_data( 'wkmp_edit_product_nonce_field', array( 'method' => 'post' ) );
 
 					if ( $sell_pr_id > 0 && intval( $product_auth ) === $this->seller_id && ! empty( $nonce_update ) ) {
-
 						// Add mp shipping per product addon data.
 						$p_shipping_class_slug = '';
 
@@ -424,6 +422,7 @@ if ( ! class_exists( 'WKMP_Product_Form' ) ) {
 
 							if ( is_numeric( $price ) || empty( $price ) ) {
 								update_post_meta( $sell_pr_id, '_regular_price', $price );
+								update_post_meta( $sell_pr_id, '_price', $price );
 							}
 
 							if ( 'variable' !== $product_type ) {
@@ -576,7 +575,6 @@ if ( ! class_exists( 'WKMP_Product_Form' ) ) {
 					$nonce_add = \WK_Caching::wk_get_request_data( 'wkmp_add_product_submit_nonce_name', array( 'method' => 'post' ) );
 
 					if ( $sell_pr_id > 0 && intval( $product_auth ) === intval( $this->seller_id ) && ! empty( $nonce_add ) ) {
-
 						if ( 'simple' === $product_type ) {
 							$obj_product = new \WC_Product_Simple( $sell_pr_id );
 							$obj_product->save();

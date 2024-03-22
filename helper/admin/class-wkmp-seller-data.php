@@ -2,7 +2,7 @@
 /**
  * Seller Data Helper
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -17,7 +17,6 @@ if ( ! class_exists( 'WKMP_Seller_Data' ) ) {
 	 * Seller List Class
 	 */
 	class WKMP_Seller_Data {
-
 		/**
 		 * DB Variable
 		 *
@@ -221,7 +220,6 @@ if ( ! class_exists( 'WKMP_Seller_Data' ) ) {
 			$count = 0;
 
 			if ( $seller_id > 0 ) {
-
 				$product_ids = wc_get_products(
 					array(
 						'limit'  => -1,

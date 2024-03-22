@@ -2,7 +2,7 @@
 /**
  * Seller Order List In Admin Dashboard.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -77,7 +77,7 @@ if ( ! class_exists( 'WKMP_Admin_Queries' ) ) {
 		public function thickbox_content( $query ) {
 			?>
 			<div id="meta-box-<?php echo esc_attr( $query['id'] ); ?>" class="meta-bx" style="display:none">
-				<h2><?php esc_html_e( 'Reply to', 'wk-marketplace' ); ?><?php echo esc_html( $query['seller_name'] ); ?> </h2>
+				<h2><?php esc_html_e( 'Reply to ', 'wk-marketplace' ); ?><?php echo esc_html( $query['seller_name'] ); ?> </h2>
 				<table style="width:100%">
 					<tr>
 						<td><label><h4><b> <?php esc_html_e( 'Subject', 'wk-marketplace' ); ?> </b></h4></label></td>
@@ -258,7 +258,6 @@ if ( ! class_exists( 'WKMP_Admin_Queries' ) ) {
 		 */
 		public function process_bulk_action() {
 			if ( $this->current_action() === esc_attr( 'delete' ) ) {
-
 				check_admin_referer( 'bulk-' . $this->_args['plural'] );
 				$ids     = \WK_Caching::wk_get_request_data( 'ids', array( 'flag' => 'array' ) );
 				$success = 404;

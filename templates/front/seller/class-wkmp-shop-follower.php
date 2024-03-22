@@ -2,7 +2,7 @@
 /**
  * Seller Shop follower class.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -143,7 +143,6 @@ if ( ! class_exists( 'WKMP_Shop_Follower' ) ) {
 					do_action( 'wkmp_seller_to_shop_followers', $to, $subject, $feedback );
 				}
 				wc_print_notice( esc_html__( 'Notification mail has been send successfully', 'wk-marketplace' ), 'success' );
-
 			}
 
 			$customer_id = \WK_Caching::wk_get_request_data( 'customer_id', array( 'filter' => 'int' ) );

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ruleset name="WordPress WooCommerce Coding Standards" lwdt="202401151035">
+<ruleset name="WordPress WooCommerce Coding Standards" lwdt="202402162022">
 	<description>PHP_CodeSniffer version 3.8.0 (stable) by Squiz and PHPCSStandards</description>
 
 	<!-- Exclude paths -->
@@ -10,7 +10,7 @@
 
 	<!-- Configs -->
 	<config name="minimum_wp_version" value="6.0"/>
-	<config name="minimum_supported_wp_version" value="6.4" />
+	<config name="minimum_supported_wp_version" value="6.5" />
 
 	<!-- Check code for cross-version PHP compatibility. -->
 	<config name="testVersion" value="7.4-"/>
@@ -165,6 +165,20 @@
 
 	<!-- Using the POSIX Regex functions ereg_* aren’t allowed. -->
 	<rule ref="WordPress.PHP.POSIXFunctions"/>
+	<rule ref="VariableAnalysis"/>
+
+	<rule ref="PSR12">
+		<exclude name="Generic.WhiteSpace.DisallowTabIndent"/>
+		<exclude name="PSR12.Operators.OperatorSpacing"/>
+		<exclude name="Generic.Files.LineLength.TooLong"/>
+		<exclude name="Squiz.Classes.ValidClassName.NotCamelCaps"/>
+		<exclude name="PSR1.Files.SideEffects.FoundWithSymbols"/>
+		<exclude name="PSR1.Methods.CamelCapsMethodName.NotCamelCaps"/>
+		<exclude name="PSR2.Methods.FunctionCallSignature.SpaceAfterOpenBracket"/>
+		<exclude name="PSR2.Methods.FunctionCallSignature.SpaceBeforeCloseBracket"/>
+		<exclude name="PSR12.ControlStructures.ControlStructureSpacing.SpaceBeforeCloseBrace"/>
+		<exclude name="PSR12.ControlStructures.ControlStructureSpacing.SpacingAfterOpenBrace"/>
+  	</rule>
 
 </ruleset>
 

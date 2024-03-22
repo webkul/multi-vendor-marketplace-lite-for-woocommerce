@@ -2,7 +2,7 @@
 /**
  * Seller ask queries class
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 

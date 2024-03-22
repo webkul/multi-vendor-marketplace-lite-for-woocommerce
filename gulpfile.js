@@ -53,11 +53,20 @@ gulp.task(
 	}
 );
 gulp.task(
+	'MinfyAccountCSS',
+	function () {
+		return gulp.src( './assets/build/front/css/myaccount-style.css' )
+		.pipe( cleanCSS() )
+		.pipe( rename( { suffix: ".min" } ) )
+		.pipe( gulp.dest( './assets/dist/front/css/' ) )
+	}
+);
+gulp.task(
 	'watch',
 	function () {
 		return gulp.watch( ['./assets/build/admin/css/admin.css','./assets/build/front/css/front.css','./assets/build/front/css/style.css'], gulp.series( 'default' ) );
 	}
 );
 
-gulp.task( 'default', gulp.series( ['MinfyAdminCSS', 'MinfyInvoiceCSS', 'MinfyFrontCSS', 'MinfyStyleCSS', 'MinfyThemeCSS'] ) );
+gulp.task( 'default', gulp.series( ['MinfyAdminCSS', 'MinfyInvoiceCSS', 'MinfyFrontCSS', 'MinfyStyleCSS', 'MinfyThemeCSS', 'MinfyAccountCSS'] ) );
 gulp.task( 'watch', gulp.series( ['watch'] ) );

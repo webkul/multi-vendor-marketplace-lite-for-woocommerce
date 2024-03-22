@@ -2,7 +2,7 @@
 /**
  * Front functions template
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -183,6 +183,7 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 					'delete_fav_seller_alert' => esc_html__( 'Are you sure you want to delete favorite seller(s)?', 'wk-marketplace' ),
 					'mkt_tr'                  => $mkt_tr_arr,
 					'wkmp_authorize_error'    => esc_html__( 'You are not authorized to perform this action.', 'wk-marketplace' ),
+					'not_purchasable'         => esc_html__( 'Not Purchasable', 'wk-marketplace' ),
 				)
 			);
 
@@ -205,6 +206,10 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 					wp_enqueue_style( 'wkmp-front-style', WKMP_LITE_PLUGIN_URL . 'assets/' . $asset_path . '/front/css/front' . $suffix . '.css', array(), WKMP_LITE_SCRIPT_VERSION );
 					wp_enqueue_style( 'select2-css', plugins_url() . '/woocommerce/assets/css/select2.css', array(), WKMP_LITE_SCRIPT_VERSION );
 				}
+			}
+
+			if ( is_account_page() ) {
+				wp_enqueue_style( 'wkmp-account-page-stype', WKMP_LITE_PLUGIN_URL . 'assets/' . $asset_path . '/front/css/myaccount-style' . $suffix . '.css', array(), WKMP_LITE_SCRIPT_VERSION, 'all' );
 			}
 
 			$url_data = wp_parse_url( home_url( $wp->request ) );
@@ -389,9 +394,8 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 					$data['phone']     = $shop_phone;
 					$data['register']  = $register;
 				}
-
-				return $data;
 			}
+			return $data;
 		}
 
 		/**
@@ -530,7 +534,9 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 		 */
 		public function wkmp_add_dynamic_wc_endpoints_icons() {
 			global $wkmarketplace;
-			$seller_info = $wkmarketplace->wkmp_get_seller_info( get_current_user_id() );
+
+			$user_id     = get_current_user_id();
+			$seller_info = $wkmarketplace->wkmp_get_seller_info( $user_id );
 
 			if ( $seller_info ) {
 				$obj_notification = Common\WKMP_Seller_Notification::get_instance();
@@ -540,7 +546,7 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 					<?php
 					if ( empty( get_option( '_wkmp_separate_seller_dashboard', false ) ) ) {
 						?>
-					/** Marging after ask admin if Separate admin dashboard disabled. */
+					/** Margin after ask admin if Separate admin dashboard disabled. */
 					.woocommerce-account .woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--<?php echo esc_attr( get_option( '_wkmp_asktoadmin_endpoint', 'seller-ask-admin' ) ); ?> {
 						margin-bottom: 40px;
 						border-bottom: 1px solid #ccc !important;
@@ -548,6 +554,15 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 						<?php
 					}
 					?>
+					/**Ask to admin */
+					.woocommerce-account .woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--<?php echo esc_attr( get_option( '_wkmp_asktoadmin_endpoint', 'seller-asktoadmin' ) ); ?> a:before {
+						content: "\e928";
+						font-family: 'Webkul Rango';
+						font-size: 20px;
+						font-weight: normal;
+						text-align: center;
+					}
+
 					/** Shipping menu */
 					.woocommerce-account .woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--<?php echo esc_attr( get_option( '_wkmp_shipping_endpoint', 'seller-shippings' ) ); ?> a:before {
 						content: "\e95a";
@@ -557,7 +572,7 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 						text-align: center;
 					}
 
-					/** Notification menu */
+					/** Notification menu count */
 					.woocommerce-account .woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--<?php echo esc_attr( get_option( '_wkmp_notification_endpoint', 'seller-notifications' ) ); ?> a:after {
 						content: "<?php echo esc_attr( $total_count ); ?>";
 						display: inline-block;
@@ -568,6 +583,15 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 						border-radius: 3px;
 						line-height: normal;
 						vertical-align: middle;
+					}
+
+					/**Notification */
+					.woocommerce-account .woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--<?php echo esc_attr( get_option( '_wkmp_notification_endpoint', 'seller-notifications' ) ); ?> a:before {
+						content: "\e90c";
+						font-family: 'Webkul Rango';
+						font-size: 20px;
+						font-weight: normal;
+						text-align: center;
 					}
 
 					/**Dashboard */
@@ -582,15 +606,6 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 					/**Product list */
 					.woocommerce-account .woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--<?php echo esc_attr( get_option( '_wkmp_product_list_endpoint', 'seller-products' ) ); ?> a:before {
 						content: "\e947";
-						font-family: 'Webkul Rango';
-						font-size: 20px;
-						font-weight: normal;
-						text-align: center;
-					}
-
-					/**Notification */
-					.woocommerce-account .woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--<?php echo esc_attr( get_option( '_wkmp_notification_endpoint', 'seller-notifications' ) ); ?> a:before {
-						content: "\e90c";
 						font-family: 'Webkul Rango';
 						font-size: 20px;
 						font-weight: normal;
@@ -624,15 +639,6 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 						text-align: center;
 					}
 
-					/**Ask to admin */
-					.woocommerce-account .woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--<?php echo esc_attr( get_option( '_wkmp_asktoadmin_endpoint', 'seller-asktoadmin' ) ); ?> a:before {
-						content: "\e928";
-						font-family: 'Webkul Rango';
-						font-size: 20px;
-						font-weight: normal;
-						text-align: center;
-					}
-
 					/**Profile Edit */
 					.woocommerce-account .woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--<?php echo esc_attr( get_option( '_wkmp_profile_endpoint', 'seller-profile' ) ); ?> a:before {
 						content: "\e960";
@@ -640,6 +646,20 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 						font-size: 20px;
 						font-weight: normal;
 						text-align: center;
+					}
+				</style>
+				<?php
+			}
+
+			if ( $user_id > 0 ) {
+				?>
+				<style>
+					/**Favorite Sellers */
+					.woocommerce-account .woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--<?php echo esc_attr( get_option( '_wkmp_favorite_seller_endpoint', 'favorite-sellers' ) ); ?> a:before {
+						content: "\e932";
+						font-family: 'Webkul Rango';
+						font-size: 20px;
+						font-weight: normal;
 					}
 				</style>
 				<?php
@@ -738,7 +758,13 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 		 *
 		 * @throws \Exception Throwing exception.
 		 */
-		public function wkmp_new_order_map_seller( $order_id, $posted_data, $order ) {
+		public function wkmp_new_order_map_seller( $order_id, $posted_data = array(), $order = '' ) {
+			if ( ! $order instanceof \WC_Order && is_numeric( $order_id ) ) {
+				$order = wc_get_order( $order_id );
+			}
+
+			wkmp_wc_log( "Checkout order processed for order id: $order_id" );
+
 			$items        = $order->get_items();
 			$author_array = array();
 
@@ -752,6 +778,10 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 			}
 
 			$author_array = array_unique( $author_array );
+
+			if ( ! $this->db_obj_order ) {
+				$this->db_obj_order = Front\WKMP_Order_Queries::get_instance();
+			}
 
 			$this->db_obj_order->wkmp_update_seller_orders( $author_array, $order_id );
 
@@ -954,7 +984,6 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 					exit;
 				}
 			} elseif ( empty( get_option( '_wkmp_separate_seller_dashboard', false ) ) || empty( $sep_dash ) && ! in_array( get_query_var( 'main_page' ), $allowed_pages, true ) ) {
-
 				$wkmarketplace->wkmp_remove_role_cap( $current_user->ID );
 
 				$php_self = isset( $_SERVER['PHP_SELF'] ) ? wc_clean( $_SERVER['PHP_SELF'] ) : '';
@@ -1004,7 +1033,7 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 		 *
 		 * @hooked 'woocommerce_checkout_create_order_line_item' Action link.
 		 */
-		public function wkmp_add_order_item_meta( $item, $cart_item_key, $values, $order ) {
+		public function wkmp_add_sold_by_order_item_meta( $item, $cart_item_key, $values, $order ) {
 			$prod_id = isset( $values['product_id'] ) ? $values['product_id'] : 0;
 			if ( $prod_id > 0 ) {
 				$author_id = get_post_field( 'post_author', $prod_id );
@@ -1072,9 +1101,11 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 		/**
 		 * Validate minimum order total for products.
 		 *
+		 * @param object $cart Cart Object.
+		 *
 		 * @return array|false
 		 */
-		public function is_threshold_reached() {
+		public function is_threshold_reached( $cart = '' ) {
 			$minimum_enabled = get_option( '_wkmp_enable_minimum_order_amount', 0 );
 			$threshold_notes = array();
 
@@ -1083,8 +1114,9 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 			}
 
 			$seller_totals = array();
+			$cart          = empty( $cart ) ? WC()->cart->get_cart() : $cart;
 
-			foreach ( WC()->cart->get_cart() as $item ) {
+			foreach ( $cart as $item ) {
 				$sell_product_id = isset( $item['product_id'] ) ? $item['product_id'] : 0;
 				$sell_product_id = ( isset( $item['variation_id'] ) && $item['variation_id'] > 0 ) ? $item['variation_id'] : $sell_product_id;
 
@@ -1134,9 +1166,11 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 		/**
 		 * Check if products quantities are allowed to purchased.
 		 *
+		 * @param object $cart Cart Items object.
+		 *
 		 * @return array
 		 */
-		public function is_qty_allowed() {
+		public function is_qty_allowed( $cart = '' ) {
 			$max_qty_enabled = get_option( '_wkmp_enable_product_qty_limit', 0 );
 			$qty_notes       = array();
 
@@ -1144,7 +1178,9 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 				return $qty_notes;
 			}
 
-			foreach ( WC()->cart->get_cart() as $item ) {
+			$cart = empty( $cart ) ? WC()->cart->get_cart() : $cart;
+
+			foreach ( $cart as $item ) {
 				$sell_product_id = isset( $item['product_id'] ) ? $item['product_id'] : 0;
 
 				if ( $sell_product_id > 0 ) {
@@ -1178,39 +1214,59 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 		/**
 		 * Showing notices when order total is less than threshold value.
 		 *
-		 * @param array $notes Seller notes.
+		 * @param array  $notes Seller notes.
+		 * @param string $type Notice type, show or return.
 		 */
-		public function show_invalid_order_total_notice( $notes ) {
+		public function show_invalid_order_total_notice( $notes, $type = '' ) {
+			$messages = array();
+
 			foreach ( $notes as $seller_id => $min_data ) {
 				$minimum_amount = isset( $min_data['min_amount'] ) ? $min_data['min_amount'] : 0;
 				$current_total  = isset( $min_data['current_total'] ) ? $min_data['current_total'] : 0;
 				$seller_name    = ( 'admin' === $seller_id ) ? 'Admin' : get_user_meta( $seller_id, 'shop_name', true );
 
-				$message = sprintf( /* translators: %1$s: Shop name, %2$s: Minimum amount, %3$s: Current total. */ esc_html__( 'Minimum products total for %1$s Shop product(s) should be %2$s. Current total (inclusive tax) is: %3$s.', 'wk-marketplace' ), '<strong>' . $seller_name . '</strong>', wc_price( $minimum_amount ), wc_price( $current_total ) );
+				$message = wp_sprintf( /* translators: %1$s: Shop name, %2$s: Minimum amount, %3$s: Current total. */ esc_html__( 'Minimum products total for %1$s Shop product(s) should be %2$s. Current total (inclusive tax) is: %3$s.', 'wk-marketplace' ), '<strong>' . $seller_name . '</strong>', wc_price( $minimum_amount ), wc_price( $current_total ) );
 
-				if ( is_cart() ) {
+				if ( 'get' === $type ) {
+					$messages[ $seller_name ] = $message;
+				} elseif ( is_cart() ) {
 					wc_print_notice( $message, 'error' );
 				} else {
 					wc_add_notice( $message, 'error' );
 				}
+			}
+
+			if ( 'get' === $type ) {
+				return $messages;
 			}
 		}
 
 		/**
 		 * Showing notices when product quantity is greater than threshold value.
 		 *
-		 * @param array $notes Qty notes.
+		 * @param array  $notes Qty notes.
+		 * @param string $type Notice type print or return
+		 *
+		 * @return array
 		 */
-		public function show_invalid_qty_notice( $notes ) {
+		public function show_invalid_qty_notice( $notes, $type = '' ) {
+			$messages = array();
+
 			foreach ( $notes as $prod_id => $max_allowed_qty ) {
 				$cart_product = wc_get_product( $prod_id );
-				$message      = sprintf( /* translators: %1$s: Shop name, %2$s: Minimum amount. */ esc_html__( 'Sorry, but you can only add maximum %1$s quantity of %2$s in this cart.', 'wk-marketplace' ), '<strong>' . $max_allowed_qty . '</strong>', '<strong>' . $cart_product->get_title() . '</strong>' );
+				$message      = wp_sprintf( /* translators: %1$s: Shop name, %2$s: Minimum amount. */ esc_html__( 'Sorry, but you can only add maximum %1$s quantity of %2$s in this cart.', 'wk-marketplace' ), '<strong>' . $max_allowed_qty . '</strong>', '<strong>' . $cart_product->get_title() . '</strong>' );
 
-				if ( is_cart() ) {
+				if ( 'get' === $type ) {
+					$messages[ 'product_id_' . $prod_id ] = $message;
+				} elseif ( is_cart() ) {
 					wc_print_notice( $message, 'error' );
 				} else {
 					wc_add_notice( $message, 'error' );
 				}
+			}
+
+			if ( 'get' === $type ) {
+				return $messages;
 			}
 		}
 
@@ -1264,18 +1320,37 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 		}
 
 		/**
-		 * Remove Shortcode.
+		 * Remove Shortcode form All in One SEO Plugin's shortcode list to avoid conflicts.
 		 *
 		 * @param array $shortcodes Shortcode.
 		 *
 		 * @return array
 		 */
-		public function wkmp_remove_marketplace_shortcode( $shortcodes ) {
+		public function wkmp_remove_mp_shortcode_from_aioseo_shortcode_lists( $shortcodes ) {
 			$shortcodes = is_array( $shortcodes ) ? $shortcodes : array();
 
 			$shortcodes['Marketplace'] = 'marketplace';
 
 			return $shortcodes;
+		}
+
+		/**
+		 * Get cart validation error messages.
+		 *
+		 * @param object $cart Cart item.
+		 *
+		 * @return array
+		 */
+		public function wkmp_get_cart_validation_error_messages( $cart ) {
+			$cart_itmes = $cart->get_cart_contents();
+
+			$threshold_notes = $this->is_threshold_reached( $cart_itmes );
+			$messages        = $this->show_invalid_order_total_notice( $threshold_notes, 'get' );
+
+			$qty_notes = $this->is_qty_allowed( $cart_itmes );
+			$qty_msgs  = $this->show_invalid_qty_notice( $qty_notes, 'get' );
+
+			return array_merge( $messages, $qty_msgs );
 		}
 	}
 }

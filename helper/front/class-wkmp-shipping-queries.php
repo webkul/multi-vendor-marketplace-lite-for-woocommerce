@@ -2,7 +2,7 @@
 /**
  * Shipping queries class
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -283,7 +283,6 @@ if ( ! class_exists( 'WKMP_Shipping_Queries' ) ) {
 			$current_seller_id = get_current_user_id();
 
 			if ( ! empty( $data['mp_zone_name'] ) ) {
-
 				$wpdb_obj->insert(
 					$wpdb_obj->prefix . 'woocommerce_shipping_zones',
 					array(

@@ -2,7 +2,7 @@
 /**
  * WKMP seller commission queries
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -19,7 +19,6 @@ if ( ! class_exists( 'WKMP_Commission' ) ) {
 	 * Seller Commission related queries class
 	 */
 	class WKMP_Commission {
-
 		/**
 		 * DB Variable
 		 *
@@ -198,11 +197,9 @@ if ( ! class_exists( 'WKMP_Commission' ) ) {
 			$seller_id = intval( $seller_id );
 
 			if ( ! empty( $seller_id ) && ! empty( $pay_amount ) ) {
-
 				$seller_data = $wpdb_obj->get_results( $wpdb_obj->prepare( "SELECT * FROM {$wpdb_obj->prefix}mpcommision WHERE seller_id = %d", esc_attr( $seller_id ) ) );
 
 				if ( ! empty( $seller_data ) ) {
-
 					$paid_amount      = $seller_data[0]->paid_amount + $pay_amount;
 					$last_paid_amount = $pay_amount;
 
@@ -243,8 +240,14 @@ if ( ! class_exists( 'WKMP_Commission' ) ) {
 			$data = array();
 
 			if ( ! empty( $product_id ) ) {
-				$product              = get_post( $product_id );
-				$seller_id            = empty( $assigned_seller ) ? $product->post_author : $assigned_seller;
+				$seller_id = $assigned_seller;
+
+				if ( empty( $seller_id ) ) {
+					$parent_post_id = wp_get_post_parent_id( $product_id ); // In case variation get variable id to get correct seller id.
+					$parent_post_id = empty( $parent_post_id ) ? $product_id : $parent_post_id;
+					$seller_id      = get_post_field( 'post_author', $parent_post_id );
+				}
+
 				$commission_on_seller = $this->wkmp_get_seller_commission_info( $seller_id, 'commision_on_seller', ARRAY_A, true );
 				$commission_on_seller = apply_filters( 'wkmp_alter_seller_commission', $commission_on_seller, $product_id, $pro_qty, $seller_id );
 				$product_price        = $pro_price + $tax_amount;
@@ -488,7 +491,6 @@ if ( ! class_exists( 'WKMP_Commission' ) ) {
 					}
 
 					if ( ! empty( $ord_info->discount_applied ) ) {
-
 						$discount_data = $wpdb_obj->get_results( $wpdb_obj->prepare( "SELECT * FROM {$wpdb_obj->prefix}mporders_meta WHERE seller_id = %d AND order_id = %d AND meta_key = 'discount_code' ", $seller_id, $ord_info->order_id ) );
 
 						if ( ! empty( $discount_data ) ) {
@@ -561,7 +563,6 @@ if ( ! class_exists( 'WKMP_Commission' ) ) {
 					$product_id   = $value->product_id;
 
 					if ( in_array( $o_id, $order_arr, true ) ) {
-
 						$key                      = array_search( $o_id, $order_arr, true );
 						$product_info             = get_the_title( $product_id ) . '( #' . $product_id . ' )';
 						$quantity_info            = $value->quantity;
@@ -572,7 +573,6 @@ if ( ! class_exists( 'WKMP_Commission' ) ) {
 						$o_discount               = 0;
 
 						if ( 0 !== $value->discount_applied ) {
-
 							$discount_data = $wpdb_obj->get_results( $wpdb_obj->prepare( "SELECT * FROM {$wpdb_obj->prefix}mporders_meta WHERE seller_id = %d AND order_id = %d AND meta_key = 'discount_amt' ", esc_attr( $seller_id ), esc_attr( $o_id ) ) );
 
 							if ( ! empty( $discount_data ) ) {
@@ -773,7 +773,6 @@ if ( ! class_exists( 'WKMP_Commission' ) ) {
 					$format,
 					$where_format
 				);
-
 			}
 
 			return isset( $query ) && $query ? true : false;

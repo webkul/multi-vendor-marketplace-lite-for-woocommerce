@@ -2,7 +2,7 @@
 /**
  * File Handler.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -55,8 +55,8 @@ if ( ! class_exists( 'WKMP_Flat_Rate_Shipping' ) ) {
 			// Disabling default woocommerce shipping methods.
 			if ( isset( $methods['flat_rate'] ) ) {
 				unset( $methods['flat_rate'] );
-
 			}
+
 			if ( isset( $methods['free_shipping'] ) ) {
 				unset( $methods['free_shipping'] );
 			}

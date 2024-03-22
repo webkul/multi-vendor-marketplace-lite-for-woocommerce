@@ -2,7 +2,7 @@
 /**
  * Seller product at front.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  *
  * @version 5.0.0
  */
@@ -105,7 +105,7 @@ defined( 'ABSPATH' ) || exit; // Exit if access directly.
 		$prod_type  = empty( $product_type ) ? 'simple' : $product_type;
 		$show_price = ! in_array( $prod_type, array( 'grouped', 'variable' ), true );
 
-		if ( $show_price ) {
+		if ( apply_filters( 'wkmp_show_seller_price', $show_price, $prod_type ) ) {
 			?>
 			<div class="wkmp_profile_input">
 				<label for="regu_price"><?php esc_html_e( 'Regular Price', 'wk-marketplace' ); ?></label>
@@ -118,7 +118,7 @@ defined( 'ABSPATH' ) || exit; // Exit if access directly.
 				<input class="wkmp_product_input" type="text" name="sale_price" id="sale_price" value=""/>
 				<div id="sale_pr_error" class="wkmp-error-class"></div>
 			</div>
-			<?php } ?>
+		<?php } ?>
 		<div class="wkmp_profile_input">
 			<label for="short_desc"><?php esc_html_e( 'Product Short Description ', 'wk-marketplace' ); ?></label>
 			<?php
@@ -149,6 +149,3 @@ defined( 'ABSPATH' ) || exit; // Exit if access directly.
 			<?php do_action( 'wkmp_after_add_product_form', $this->seller_id ); ?>
 	</fieldset>
 </form>
-
-
-

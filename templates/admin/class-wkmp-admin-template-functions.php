@@ -2,7 +2,7 @@
 /**
  * Admin template Functions.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  *
  * @version 5.0.0
  */
@@ -26,7 +26,6 @@ if ( ! class_exists( 'WKMP_Admin_Template_Functions' ) ) {
 	 * Admin template class
 	 */
 	class WKMP_Admin_Template_Functions {
-
 		/**
 		 * Form field builder
 		 *

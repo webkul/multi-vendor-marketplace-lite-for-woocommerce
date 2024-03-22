@@ -2,7 +2,7 @@
 /**
  * Seller product at front.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -67,7 +67,7 @@ if ( ! empty( $order_data ) ) {
 										<?php if ( ! empty( $seller_order_refund_data['line_items'][ $details['item_key'] ]['qty'] ) ) { ?>
 												<br>
 												<span class="wkmp-refund wkmp-green"><?php echo esc_html( - $seller_order_refund_data['line_items'][ $details['item_key'] ]['qty'] ); ?></span>
-											<?php } ?>
+										<?php } ?>
 										</strong>
 										<dl class="variation">
 										<?php
@@ -123,7 +123,7 @@ if ( ! empty( $order_data ) ) {
 										<?php } ?>
 									</td>
 								</tr>
-								<?php } else { ?>
+							<?php } else { ?>
 									<?php
 									$product        = new \WC_Product( $product_id );
 									$attribute      = $product->get_attributes();
@@ -192,7 +192,7 @@ if ( ! empty( $order_data ) ) {
 										</td>
 									</tr>
 									<?php
-								}
+							}
 						}
 
 						$sel_rwd_note = '';
@@ -562,6 +562,7 @@ if ( ! empty( $order_data ) ) {
 				'cancelled'  => __( 'cancelled', 'wk-marketplace' ),
 				'refunded'   => __( 'refunded', 'wk-marketplace' ),
 				'failed'     => __( 'failed', 'wk-marketplace' ),
+				'trash'      => __( 'Trashed', 'wk-marketplace' ),
 			);
 
 			if ( 'wc-completed' !== $order_status ) {

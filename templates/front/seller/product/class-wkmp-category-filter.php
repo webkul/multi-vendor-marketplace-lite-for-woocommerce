@@ -2,7 +2,7 @@
 /**
  * Seller Category filter class.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -55,7 +55,6 @@ if ( ! class_exists( 'WKMP_Category_Filter' ) ) {
 			$cat_name = apply_filters( 'list_cats', $category->name, $category );
 			if ( $this->allowed_categories ) {
 				if ( in_array( $category->slug, $this->allowed_categories, true ) ) {
-
 					$output .= "\t<option class=\"level-$depth\" value=\"" . $category->slug . '"';
 
 					if ( in_array( $category->slug, $args['selected'], true ) ) {
@@ -105,9 +104,7 @@ if ( ! class_exists( 'WKMP_Category_Filter' ) ) {
 
 			// Descend only when the depth is right and there are children for this element.
 			if ( ( 0 === $max_depth || $max_depth > $depth + 1 ) && isset( $children_elements[ $id ] ) ) {
-
 				foreach ( $children_elements[ $id ] as $child ) {
-
 					if ( ! isset( $newlevel ) ) {
 						$newlevel = true;
 						// Start the child delimiter.

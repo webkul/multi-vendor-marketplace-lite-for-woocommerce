@@ -2,7 +2,7 @@
 /**
  * Admin End Hooks.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -18,7 +18,6 @@ if ( ! class_exists( 'WKMP_Admin_Hooks' ) ) {
 	 * Admin hooks class
 	 */
 	class WKMP_Admin_Hooks {
-
 		/**
 		 * Seller DB variable
 		 *
@@ -65,7 +64,7 @@ if ( ! class_exists( 'WKMP_Admin_Hooks' ) ) {
 			add_action( 'admin_notices', array( $handler, 'wkmp_maybe_show_notices_on_admin' ) );
 
 			add_filter( 'set-screen-option', array( $handler, 'wkmp_set_screen' ), 10, 3 );
-			add_filter( 'woocommerce_screen_ids', array( $handler, 'wkmp_set_wc_screen_ids' ), 10, 1 );
+			add_filter( 'woocommerce_screen_ids', array( $handler, 'wkmp_set_wc_screen_ids' ) );
 			add_filter( 'admin_footer_text', array( $handler, 'wkmp_admin_footer_text' ), 99 );
 			add_filter( 'get_terms_args', array( $handler, 'wkmp_remove_sellers_shipping_classes' ), 10, 2 );
 			add_filter( 'woocommerce_products_admin_list_table_filters', array( $handler, 'wkmp_remove_restricted_cats' ) );

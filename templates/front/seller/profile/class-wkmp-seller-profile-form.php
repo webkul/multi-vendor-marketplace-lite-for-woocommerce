@@ -2,7 +2,7 @@
 /**
  * Seller profile HTML form.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -168,11 +168,13 @@ if ( ! class_exists( 'WKMP_Seller_Profile_Form' ) ) {
 							<div class="wkmp-text-danger"><?php echo isset( $errors['wkmp_shop_phone'] ) ? esc_html( $errors['wkmp_shop_phone'] ) : ''; ?></div>
 						</div>
 
-						<div class="form-group">
-							<label for="mp_seller_payment_details"><?php esc_html_e( 'Payment Information', 'wk-marketplace' ); ?></label>
-							<textarea placeholder="<?php esc_attr_e( 'Enter payment information like bank details or Paypal URL to receive payment from the admin after deducting commission.', 'wk-marketplace' ); ?>" rows="4" id="mp_seller_payment_details" name="wkmp_payment_details"><?php echo esc_html( $seller_info['wkmp_payment_details'] ); ?></textarea>
-							<?php do_action( 'marketplace_payment_gateway' ); ?>
-						</div>
+						<?php if ( apply_filters( 'wkmp_show_add_payment_options', true, $seller_info ) ) { ?>
+							<div class="form-group">
+								<label for="mp_seller_payment_details"><?php esc_html_e( 'Payment Information', 'wk-marketplace' ); ?></label>
+								<textarea placeholder="<?php esc_attr_e( 'Enter payment information like bank details or Paypal URL to receive payment from the admin after deducting commission.', 'wk-marketplace' ); ?>" rows="4" id="mp_seller_payment_details" name="wkmp_payment_details"><?php echo esc_html( $seller_info['wkmp_payment_details'] ); ?></textarea>
+								<?php do_action( 'marketplace_payment_gateway' ); ?>
+							</div>
+						<?php } ?>
 
 						<div class="form-group">
 							<label for="billing-country"><?php esc_html_e( 'Country', 'wk-marketplace' ); ?></label>
@@ -329,6 +331,7 @@ if ( ! class_exists( 'WKMP_Seller_Profile_Form' ) ) {
 					</div>
 
 					<div id="wkmp-social-tab" class="wkmp_tab_pane">
+						<?php do_action( 'wkmp_before_social_tab', $seller_id, $seller_info, $posted_data ); ?>
 						<div class="form-group">
 							<label for="social-facebok"><?php esc_html_e( 'Facebook Profile ID', 'wk-marketplace' ); ?></label><i> <?php esc_html_e( '(optional)', 'wk-marketplace' ); ?></i>
 							<input class="form-control" type="text" name="wkmp_settings[social][fb]" id="social-facebok" value="<?php echo esc_attr( $seller_info['wkmp_facebook'] ); ?>" placeholder="https://">
@@ -340,7 +343,7 @@ if ( ! class_exists( 'WKMP_Seller_Profile_Form' ) ) {
 						</div>
 
 						<div class="form-group">
-							<label for="social-twitter"><?php esc_html_e( 'Twitter Profile ID ', 'wk-marketplace' ); ?></label><i> <?php esc_html_e( '(optional)', 'wk-marketplace' ); ?></i>
+							<label for="social-twitter"><?php esc_html_e( 'X (Formerly Twitter) Profile ID ', 'wk-marketplace' ); ?></label><i> <?php esc_html_e( '(optional)', 'wk-marketplace' ); ?></i>
 							<input class="form-control" type="text" name="wkmp_settings[social][twitter]" id="social-twitter" value="<?php echo esc_attr( $seller_info['wkmp_twitter'] ); ?>" placeholder="https://">
 						</div>
 
@@ -365,4 +368,3 @@ if ( ! class_exists( 'WKMP_Seller_Profile_Form' ) ) {
 		}
 	}
 }
-

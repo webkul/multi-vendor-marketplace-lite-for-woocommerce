@@ -2,7 +2,7 @@
 /**
  * Seller product edit Affiliate Product tab.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  *
  * @version 5.2.0
  */

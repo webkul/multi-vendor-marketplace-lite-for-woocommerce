@@ -2,7 +2,7 @@
 /**
  * Form fields Trait
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  *
  * @since 5.0.0
  */

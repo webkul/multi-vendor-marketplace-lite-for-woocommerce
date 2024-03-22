@@ -2,7 +2,7 @@
 /**
  * Front ajax hooks.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  */
 
 namespace WkMarketplace\Includes\Front;

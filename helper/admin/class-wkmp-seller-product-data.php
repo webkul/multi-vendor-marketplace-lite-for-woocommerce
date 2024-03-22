@@ -2,7 +2,7 @@
 /**
  * Seller Data Helper
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -15,7 +15,6 @@ if ( ! class_exists( 'WKMP_Seller_Product_Data' ) ) {
 	 * Seller List Class
 	 */
 	class WKMP_Seller_Product_Data {
-
 		/**
 		 * DB Variable
 		 *

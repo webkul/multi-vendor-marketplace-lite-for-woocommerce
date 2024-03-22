@@ -2,7 +2,7 @@
 /**
  * Email templates.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  *
  * @version 5.0.0
  */
@@ -55,7 +55,6 @@ foreach ( $order_detail_by_order_id as $product_id => $details ) {
 			$result .= mb_convert_encoding( $details[ $i ]['product_name'], 'UTF-8' );
 			$result .= empty( $common_functions ) ? '' : esc_html__( ' SKU: ', 'wk-marketplace' ) . $common_functions->wkmp_get_sku( $product );
 		} else {
-
 			$result .= mb_convert_encoding( $details[ $i ]['product_name'], 'UTF-8' );
 
 			$result .= empty( $common_functions ) ? '' : esc_html__( ' SKU: ', 'wk-marketplace' ) . $common_functions->wkmp_get_sku( $product );

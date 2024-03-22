@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<ruleset name="MyCustomRuleset">
+  <description>A custom ruleset for my project.</description>
+  <rule ref="rulesets/cleancode.xml"></rule>
+  <rule ref="rulesets/codesize.xml"></rule>
+  <rule ref="rulesets/controversial.xml">
+    <exclude name="CamelCaseMethodName"/>
+  </rule>
+  <rule ref="rulesets/design.xml"></rule>
+  <rule ref="rulesets/naming.xml"></rule>
+  <rule ref="rulesets/unusedcode.xml"></rule>
+  <!-- Add your custom rules here -->
+
+   <rule ref="rulesets/naming.xml/ShortVariable">
+    <properties>
+      <!-- common in WP -->
+      <property name="exceptions" value="id,wp" />
+    </properties>
+  </rule>
+
+</ruleset>

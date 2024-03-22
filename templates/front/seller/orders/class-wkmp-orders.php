@@ -2,7 +2,7 @@
 /**
  * Seller order at front.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -361,7 +361,7 @@ if ( ! class_exists( 'WKMP_Orders' ) ) {
 				}
 
 				if ( ! empty( $meta_data ) ) {
-					foreach ( $meta_data  as $meta ) {
+					foreach ( $meta_data as $meta ) {
 						$item_data[] = array(
 							'key'   => $meta->display_key,
 							'value' => $meta->display_value,
@@ -419,7 +419,6 @@ if ( ! class_exists( 'WKMP_Orders' ) ) {
 			$order_author_count = count( $author_array );
 
 			if ( $wpdb_obj->get_var( $wpdb_obj->prepare( 'SHOW TABLES LIKE %s;', $wpdb_obj->prefix . 'mpseller_orders' ) ) === $wpdb_obj->prefix . 'mpseller_orders' ) {
-
 				if ( empty( $order_status ) ) {
 					$error->add( 'status-error', esc_html__( 'Select status for order.', 'wk-marketplace' ) );
 				} elseif ( $order_status === $old_status ) {

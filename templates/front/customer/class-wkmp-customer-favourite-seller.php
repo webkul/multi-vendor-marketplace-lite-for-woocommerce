@@ -2,7 +2,7 @@
 /**
  * Customer Favourite Seller Class.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 

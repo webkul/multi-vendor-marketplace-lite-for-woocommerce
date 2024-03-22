@@ -4,7 +4,7 @@
  *
  * In other words to experience multiple inheritance.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -313,7 +313,6 @@ if ( ! trait_exists( 'WC_Email_WKMP_Settings' ) ) {
 			if ( ! empty( $seller_email ) ) {
 				$seller_user = get_user_by( 'email', $seller_email );
 				$seller_id   = ( is_a( $seller_user, 'WP_User' ) ) ? $seller_user->ID : $seller_id;
-
 			}
 
 			return $commission->wkmp_get_seller_final_order_info( $order_id, $seller_id );

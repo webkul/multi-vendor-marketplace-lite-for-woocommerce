@@ -2,7 +2,7 @@
 /**
  * General queries class
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -19,7 +19,6 @@ if ( ! class_exists( 'WKMP_General_Queries' ) ) {
 	 * General queries class
 	 */
 	class WKMP_General_Queries {
-
 		/**
 		 * DB Variable
 		 *

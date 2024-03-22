@@ -2,7 +2,7 @@
 /**
  * Schema template.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -16,7 +16,6 @@ if ( ! class_exists( 'WKMP_Install' ) ) {
 	 * Class to create schema on plugin activation
 	 */
 	class WKMP_Install {
-
 		/**
 		 * Instance variable
 		 *
@@ -216,7 +215,7 @@ if ( ! class_exists( 'WKMP_Install' ) ) {
 				review_summary text,
 				review_desc text,
 				review_time datetime,
-				status int(1) COMMENT '0 - Pending | 1 - Approve | 2 - Disapprove',
+				status int(1) COMMENT '0 - Pending | 1 - Approved | 2 - Disapproved',
 				PRIMARY KEY  (ID)
 			) $charset_collate;";
 

@@ -5,9 +5,30 @@
 	"main": "assets/front/build/js/front.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
+		"install": "npm i",
 		"build": "gulp & cross-env nodeEnv=production webpack",
-		"watch": "gulp & cross-env nodeEnv=development webpack --watch"
+		"watch": "gulp & cross-env nodeEnv=development webpack --watch",
+		"check-engines": "wp-scripts check-engines",
+		"submodules": "git submodule update --init --recursive",
+		"phpcbf": "cd $VAR && $PWD/.config/composer/vendor/squizlabs/php_codesniffer/bin/phpcbf --standard=$INIT_CWD/phpcs.xml --severity=1 --ignore-annotations --extensions=php,html $INIT_CWD/",
+		"phpcs": "cd $VAR && $PWD/.config/composer/vendor/squizlabs/php_codesniffer/bin/phpcs --standard=$INIT_CWD/phpcs.xml --severity=1 --ignore=*/wk_caching/* --report-source --report-xml=$INIT_CWD/phpcs-reports/phpcs-report-mp-lite-$(date \"+%Y-%m-%dT%H:%M:%S\").xml --ignore-annotations --extensions=php,html $INIT_CWD/",
+		"pot": "php -d xdebug.max_nesting_level=512 $(which wp) i18n make-pot --exclude=\"node_modules/,languages/,wk_caching/,.gitignore,.gitmodules,.gulpfile.js,.git,.webpack.config.js,package,json,package-lock.json,phpcs.xml,phpmd.xml,license.txt,readme.txt,assets/\" --headers='{\"Report-Msgid-Bugs-To\":\"https://wordpress.org/support/plugin/multi-vendor-marketplace-lite-for-woocommerce/\", \"language-team\":\"LANGUAGE <EMAIL@ADDRESS>\"}' . languages/wk-marketplace.pot",
+		"zip": "git submodule update --init --recursive && wp-scripts plugin-zip"
 	},
+	"files": [
+		"/assets",
+		"/helper",
+		"/inc",
+		"/includes",
+		"/languages",
+		"/templates",
+		"/wk_caching",
+		"/woocommerce",
+		"class-wk-caching-core-loader.php",
+		"multi-vendor-marketplace-lite-for-woocommerce.php",
+		"index.php",
+		"readme.txt"
+	],
 	"keywords": [
 		"woocommerce",
 		"multi",
@@ -20,6 +41,7 @@
 		"npm": "^9.7.2"
 	},
 	"devDependencies": {
+		"@wordpress/scripts": "^27.4.0",
 		"@babel/core": "^7.22.5",
 		"@babel/preset-env": "^7.22.5",
 		"babel-loader": "^9.1.2",

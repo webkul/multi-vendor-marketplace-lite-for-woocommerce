@@ -2,7 +2,7 @@
 /**
  * Front ajax functions.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -170,7 +170,6 @@ if ( ! class_exists( 'WKMP_Front_Ajax_Functions' ) ) {
 		 */
 		public function wkmp_marketplace_add_variation_attribute( $variation_id = 0 ) {
 			if ( check_ajax_referer( 'wkmp-front-nonce', 'wkmp_nonce', false ) && current_user_can( 'wk_marketplace_seller' ) ) {
-
 				$wk_pro_id = empty( $_POST['product'] ) ? 0 : intval( wp_unslash( $_POST['product'] ) );
 
 				if ( ! empty( $wk_pro_id ) ) {
@@ -178,7 +177,7 @@ if ( ! class_exists( 'WKMP_Front_Ajax_Functions' ) ) {
 					$post_name  = 'product-' . $wk_pro_id . '-variation';
 
 					$product_data = array(
-						'post_author'           => get_current_user_id(),
+						'post_author'           => get_post_field( 'post_author', $wk_pro_id ),
 						'post_date'             => '',
 						'post_date_gmt'         => '',
 						'post_content'          => '',

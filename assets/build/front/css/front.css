@@ -417,9 +417,6 @@
 	width: 32px;
 }
 .mp-profile-wrapper
-	.mp-shop-actions-info
-	.mp-shop-action-wrapper
-	.mp-shop-info
 	.mp-shop-social-links
 	.mp-social-icon:before {
 	color: #fff;
@@ -428,97 +425,51 @@
 	font-size: 20px;
 }
 .mp-profile-wrapper
-	.mp-shop-actions-info
-	.mp-shop-action-wrapper
-	.mp-shop-info
 	.mp-shop-social-links
 	.mp-social-icon.fb {
 	background: #3b5999;
 }
 .mp-profile-wrapper
-	.mp-shop-actions-info
-	.mp-shop-action-wrapper
-	.mp-shop-info
 	.mp-shop-social-links
 	.mp-social-icon.fb:before {
 	content: "\e970";
 }
 .mp-profile-wrapper
-	.mp-shop-actions-info
-	.mp-shop-action-wrapper
-	.mp-shop-info
 	.mp-shop-social-links
 	.mp-social-icon.instagram {
 	background: #dd4b39;
 }
 .mp-profile-wrapper
-	.mp-shop-actions-info
-	.mp-shop-action-wrapper
-	.mp-shop-info
 	.mp-shop-social-links
 	.mp-social-icon.instagram:before {
 	content: "\e974";
 }
 .mp-profile-wrapper
-	.mp-shop-actions-info
-	.mp-shop-action-wrapper
-	.mp-shop-info
 	.mp-shop-social-links
 	.mp-social-icon.twitter {
 	background: #55acee;
 }
 .mp-profile-wrapper
-	.mp-shop-actions-info
-	.mp-shop-action-wrapper
-	.mp-shop-info
 	.mp-shop-social-links
 	.mp-social-icon.twitter:before {
 	content: "\e97b";
 }
 .mp-profile-wrapper
-	.mp-shop-actions-info
-	.mp-shop-action-wrapper
-	.mp-shop-info
-	.mp-shop-social-links
-	.mp-social-icon.gplus {
-	background: #dd4b39;
-}
-.mp-profile-wrapper
-	.mp-shop-actions-info
-	.mp-shop-action-wrapper
-	.mp-shop-info
-	.mp-shop-social-links
-	.mp-social-icon.gplus:before {
-	content: "\e971";
-}
-.mp-profile-wrapper
-	.mp-shop-actions-info
-	.mp-shop-action-wrapper
-	.mp-shop-info
 	.mp-shop-social-links
 	.mp-social-icon.in {
 	background: #0077b5;
 }
 .mp-profile-wrapper
-	.mp-shop-actions-info
-	.mp-shop-action-wrapper
-	.mp-shop-info
 	.mp-shop-social-links
 	.mp-social-icon.in:before {
 	content: "\e975";
 }
 .mp-profile-wrapper
-	.mp-shop-actions-info
-	.mp-shop-action-wrapper
-	.mp-shop-info
 	.mp-shop-social-links
 	.mp-social-icon.yt {
 	background: #cd201f;
 }
 .mp-profile-wrapper
-	.mp-shop-actions-info
-	.mp-shop-action-wrapper
-	.mp-shop-info
 	.mp-shop-social-links
 	.mp-social-icon.yt:before {
 	content: "\e97c";
@@ -1585,34 +1536,6 @@ form#wkmp-product-list-form .wkmp-minimum-order.settings {
 	overflow: auto;
 	padding-left: 0.875em;
 	vertical-align: top;
-}
-/*Admin Dashboard. */
-.woocommerce-account .woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--separate-dashboard a:before {
-	content: "\f120";
-	font-family: 'dashicons';
-	font-size: 20px;
-	font-weight: normal;
-	text-align: center;
-}
-.woocommerce-account .woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--separate-dashboard.loading a:before {
-	content: "\f463";
-	animation: rotateImg 2s linear infinite;
-}
-@keyframes rotateImg{
-	from {
-	transform: rotate(0deg);
-	}
-	to {
-	transform: rotate(359deg);
-	}
-	}
-
-/*Favourite seller. */
-.woocommerce-account .woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--favourite-seller a:before {
-	content: "\e953";
-	font-family: 'Webkul Rango';
-	font-size: 20px;
-	font-weight: normal;
 }
 /* Theme Compatibility CSS */
 /*1. Martfury Starts */

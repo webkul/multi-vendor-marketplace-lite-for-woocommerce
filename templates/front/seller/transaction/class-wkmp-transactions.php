@@ -2,7 +2,7 @@
 /**
  * Seller product at front.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -128,7 +128,6 @@ if ( ! class_exists( 'WKMP_Transaction' ) ) {
 			$this->seller_id = empty( $seller_id ) ? ( empty( $this->seller_id ) ? get_current_user_id() : $this->seller_id ) : $seller_id;
 
 			if ( empty( $transact_id ) ) {
-
 				$filter_name = '';
 				$nonce       = \WK_Caching::wk_get_request_data( 'wkmp_transaction_search_nonce' );
 

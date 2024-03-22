@@ -2,7 +2,7 @@
 /**
  * Marketplace free shipping handler.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  *
  * @since 5.0.0
  */
@@ -175,7 +175,6 @@ if ( ! class_exists( 'WKMP_Free_Shipping_Method' ) ) {
 			$shipping_methods = $zone->get_shipping_methods( true );
 
 			foreach ( $shipping_methods as $shipping_method ) {
-
 				if ( ! empty( $allowed_shipping_methods ) && ! in_array( $shipping_method->id, $allowed_shipping_methods, true ) ) {
 					continue;
 				} elseif ( ( ! $shipping_method->supports( 'shipping-zones' ) || $shipping_method->get_instance_id() ) ) {
@@ -255,9 +254,7 @@ if ( ! class_exists( 'WKMP_Free_Shipping_Method' ) ) {
 						if ( ! empty( $shipping_methods ) ) {
 							foreach ( $shipping_methods as $shipping_method ) {
 								if ( 'mp_free_shipping' === $shipping_method->id ) {
-
 									if ( ! in_array( $seller_details, $ids, true ) ) {
-
 										if ( empty( $seller_zones ) && 'marketplace' !== $check ) {
 											$this->title = $shipping_method->title;
 										}

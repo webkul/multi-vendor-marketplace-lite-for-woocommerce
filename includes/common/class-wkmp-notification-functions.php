@@ -2,7 +2,7 @@
 /**
  * Front hooks template.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  *
  * @version 5.0.0
  */
@@ -64,13 +64,29 @@ if ( ! class_exists( 'WKMP_Notification_Functions' ) ) {
 		}
 
 		/**
-		 * Custom order processing.
+		 * Send mail notifications to seller on Block based (Store API) checkout order processed.
+		 *
+		 * @param object $order WC_Order Object.
+		 *
+		 * @hooked 'woocommerce_store_api_checkout_order_processed' action hook.
+		 *
+		 * @return void
+		 */
+		public function wkmp_send_email_on_block_based_order_processed( $order ) {
+			if ( $order instanceof \WC_Order ) {
+				$order_id = $order->get_id();
+				$this->wkmp_send_email_on_order_processed( $order_id );
+			}
+		}
+
+		/**
+		 * Send mail notifications to seller on checkout order processed.
 		 *
 		 * @param int $order_id Order id.
 		 *
 		 * @hooked woocommerce_checkout_order_processed
 		 */
-		public function wkmp_custom_process_order( $order_id ) {
+		public function wkmp_send_email_on_order_processed( $order_id ) {
 			$seller_ids           = array();
 			$order                = wc_get_order( $order_id );
 			$send_mail_to_seller  = apply_filters( 'wkmp_send_notification_mail_to_seller_for_new_order', true, $order );
@@ -107,6 +123,7 @@ if ( ! class_exists( 'WKMP_Notification_Functions' ) ) {
 					'read_flag' => 0,
 					'timestamp' => $now->format( 'Y-m-d H:i:s' ),
 				);
+
 				$this->db_obj->wkmp_add_new_notification( $data );
 			}
 		}
@@ -196,7 +213,8 @@ if ( ! class_exists( 'WKMP_Notification_Functions' ) ) {
 			$author_id    = $product_data->post_author;
 			$content      = 'wkmp_out_of_stock';
 			$now          = new \DateTime( 'now' );
-			$args         = array(
+
+			$args = array(
 				'type'      => 'product',
 				'author_id' => $author_id,
 				'context'   => $product->get_id(),
@@ -204,6 +222,7 @@ if ( ! class_exists( 'WKMP_Notification_Functions' ) ) {
 				'read_flag' => 0,
 				'timestamp' => $now->format( 'Y-m-d H:i:s' ),
 			);
+
 			$this->db_obj->wkmp_add_new_notification( $args );
 		}
 
@@ -218,7 +237,6 @@ if ( ! class_exists( 'WKMP_Notification_Functions' ) ) {
 			$items      = $order->get_items();
 
 			if ( ! empty( $items ) ) {
-
 				foreach ( $items as $item ) {
 					if ( isset( $item['product_id'] ) && $item['product_id'] > 0 ) {
 						$product      = get_post( $item['product_id'] );

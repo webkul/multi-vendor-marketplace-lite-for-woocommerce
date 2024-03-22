@@ -1,8 +1,9 @@
 <?php
+
 /**
  * MP Pro Dependency checker class.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  */
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -13,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * Checks if MP Pro is enabled.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  */
 class WKMP_Pro_Dependencies {
 	/**

@@ -2,7 +2,7 @@
 /**
  * Front hooks template
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  *
  * @version 5.0.0
  */
@@ -457,7 +457,6 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 						);
 
 						$seller_db_obj->wkmp_insert_seller( $seller_data );
-
 					} else {
 						$seller_db_obj->wkmp_update_seller_role( $user_id, 'seller' );
 					}
@@ -577,7 +576,6 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 			global $current_user;
 
 			if ( in_array( 'wk_marketplace_seller', $current_user->roles, true ) && get_option( '_wkmp_separate_seller_dashboard', false ) ) {
-
 				$admin_bar->add_menu(
 					array(
 						'id'    => 'wkmp-front-dashboard',
@@ -623,7 +621,6 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 			$nonce = \WK_Caching::wk_get_request_data( 'wkmp-user-nonce', array( 'method' => 'post' ) );
 
 			if ( ! empty( $nonce ) && wp_verify_nonce( $nonce, 'wkmp-user-nonce-action' ) ) {
-
 				include_once ABSPATH . 'wp-admin/includes/image.php';
 				include_once ABSPATH . 'wp-admin/includes/file.php';
 				include_once ABSPATH . 'wp-admin/includes/media.php';
@@ -676,7 +673,26 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 					if ( $message ) {
 						$errors['wkmp_avatar_file'] = $message;
 					} else {
-						$data['_thumbnail_id_avatar'] = intval( media_handle_upload( 'wkmp_avatar_file', $seller_id ) );
+						$avatar_file = media_handle_upload( 'wkmp_avatar_file', $seller_id );
+						if ( is_wp_error( $avatar_file ) ) {
+							$errors['wkmp_avatar_file'] = $avatar_file->get_error_message();
+						} else {
+							$data['_thumbnail_id_avatar'] = intval( $avatar_file );
+						}
+					}
+				}
+
+				if ( isset( $_FILES['wkmp_avatar_file'] ) && isset( $_FILES['wkmp_avatar_file']['name'] ) && wc_clean( $_FILES['wkmp_avatar_file']['name'] ) ) {
+					$message = $this->wkmp_validate_image( wc_clean( $_FILES['wkmp_avatar_file'] ) );
+					if ( $message ) {
+						$errors['wkmp_avatar_file'] = $message;
+					} else {
+						$avatar_file = media_handle_upload( 'wkmp_avatar_file', $seller_id );
+						if ( is_wp_error( $avatar_file ) ) {
+							$errors['wkmp_avatar_file'] = $avatar_file->get_error_message();
+						} else {
+							$data['_thumbnail_id_avatar'] = intval( $avatar_file );
+						}
 					}
 				}
 
@@ -685,7 +701,12 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 					if ( $message ) {
 						$errors['wkmp_logo_file'] = $message;
 					} else {
-						$data['_thumbnail_id_company_logo'] = intval( media_handle_upload( 'wkmp_logo_file', $seller_id ) );
+						$thumb_file = media_handle_upload( 'wkmp_logo_file', $seller_id );
+						if ( is_wp_error( $thumb_file ) ) {
+							$errors['wkmp_logo_file'] = $thumb_file->get_error_message();
+						} else {
+							$data['_thumbnail_id_company_logo'] = intval( $thumb_file );
+						}
 					}
 				}
 
@@ -694,9 +715,16 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 					if ( $message ) {
 						$errors['wkmp_banner_file'] = $message;
 					} else {
-						$data['_thumbnail_id_shop_banner'] = intval( media_handle_upload( 'wkmp_banner_file', $seller_id ) );
+						$shop_file = media_handle_upload( 'wkmp_banner_file', $seller_id );
+						if ( is_wp_error( $shop_file ) ) {
+							$errors['wkmp_banner_file'] = $shop_file->get_error_message();
+						} else {
+							$data['_thumbnail_id_shop_banner'] = intval( $shop_file );
+						}
 					}
 				}
+
+				$data = apply_filters( 'wkmp_seller_profile_update_data', $data, $errors );
 
 				if ( empty( $errors ) ) {
 					$data['billing_phone'] = $data['wkmp_shop_phone'];

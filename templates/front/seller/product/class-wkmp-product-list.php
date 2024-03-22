@@ -2,7 +2,7 @@
 /**
  * Seller product at front.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  *
  * @version 5.0.0
  */
@@ -207,7 +207,6 @@ if ( ! class_exists( 'WKMP_Product_List' ) ) {
 			$nonce_min_update = \WK_Caching::wk_get_request_data( 'wkmp-min-order-nonce', array( 'method' => 'post' ) );
 
 			if ( ! empty( $nonce_min_update ) && wp_verify_nonce( $nonce_min_update, 'wkmp-min-order-nonce-action' ) ) {
-
 				$qty    = empty( $_POST['_wkmp_max_product_qty_limit'] ) ? 0 : intval( wp_unslash( $_POST['_wkmp_max_product_qty_limit'] ) );
 				$amount = empty( $_POST['_wkmp_minimum_order_amount'] ) ? '' : wc_clean( $_POST['_wkmp_minimum_order_amount'] );
 

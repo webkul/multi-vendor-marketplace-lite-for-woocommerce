@@ -2,7 +2,7 @@
 /**
  * WK Caching Core loader class.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  */
 defined( 'ABSPATH' ) || exit(); // Exit if access directly.
 
@@ -75,9 +75,8 @@ if ( ! class_exists( 'WK_Caching_Core_Loader' ) ) {
 				function ( $a, $b ) {
 					if ( version_compare( $a['version'], $b['version'], '=' ) ) {
 						return 0;
-					} else {
-						return ( version_compare( $a['version'], $b['version'], '<' ) ) ? - 1 : 1;
 					}
+					return ( version_compare( $a['version'], $b['version'], '<' ) ) ? - 1 : 1;
 				}
 			);
 

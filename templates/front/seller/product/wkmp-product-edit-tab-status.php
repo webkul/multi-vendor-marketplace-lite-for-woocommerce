@@ -2,7 +2,7 @@
 /**
  * Seller product edit Status Product tab.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  *
  * @version 5.2.0
  */
@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit; // Exit if access directly.
 						$prod_label  = ( 'publish' === $prod_status ) ? esc_html__( 'Online', 'wk-marketplace' ) : esc_html__( 'Draft', 'wk-marketplace' );
 						?>
 						<span class="mp-toggle-selected-display <?php echo ( 'publish' === $prod_status ) ? 'green' : ''; ?>"><?php echo esc_html( $prod_label ); ?></span>
-						<?php } ?>
+					<?php } ?>
 				</div>
 				<div id="wkmp_product_status_checkbox_wrap" class="wkmp-toggle-select-container">
 					<label for="Online"><input class="wkmp-toggle-select" type="radio" name="mp_product_status" value="publish" <?php checked( 'publish', $prod_status, true ); ?>><?php esc_html_e( 'Online', 'wk-marketplace' ); ?></label>
@@ -32,7 +32,9 @@ defined( 'ABSPATH' ) || exit; // Exit if access directly.
 		</div>
 	<?php } ?>
 
-	<?php if ( 'simple' === $product->get_type() ) { ?>
+	<?php $show_vertual = 'simple' === $product->get_type(); ?>
+
+	<?php if ( apply_filters( 'wkmp_show_vertual_downloadable', $show_vertual, $product ) ) { ?>
 		<div class="wkmp-side-head">
 			<label class="checkbox-inline">
 				<input type="checkbox" id="_ckvirtual" class="wk-dwn-check" name="_virtual" value="yes" <?php echo ( isset( $meta_arr['_virtual'] ) && 'yes' === $meta_arr['_virtual'] ) ? 'checked' : ''; ?>/>&nbsp;&nbsp;

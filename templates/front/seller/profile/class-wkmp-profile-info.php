@@ -2,7 +2,7 @@
 /**
  * Seller product at front.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -173,12 +173,12 @@ if ( ! class_exists( 'WKMP_Profile_Info' ) ) {
 					</div><!-- main_container -->
 				</div><!-- woocommerce-account -->
 				<?php
-
 			}
 
 			if ( ! $this->seller_id && ! get_option( '_wkmp_separate_seller_registration' ) ) {
+				$registration_msg = apply_filters( 'wkmp_seller_registration_message', esc_html__( 'Want to sell your own products...!', 'wk-marketplace' ) );
 				?>
-				<h3><?php esc_html_e( 'Want to sell your own products...!', 'wk-marketplace' ); ?></h3><br/>
+				<h3><?php echo esc_html( $registration_msg ); ?></h3><br/>
 				<h3>
 					<a href="<?php echo esc_url( get_permalink( get_option( 'woocommerce_myaccount_page_id' ) ) ); ?>"> <?php esc_html_e( 'Login Here', 'wk-marketplace' ); ?> </a> <?php esc_html_e( 'OR', 'wk-marketplace' ); ?>
 					<a href="<?php echo esc_url( get_permalink( get_option( 'woocommerce_myaccount_page_id' ) ) ); ?>">  <?php esc_html_e( 'Register', 'wk-marketplace' ); ?></a>

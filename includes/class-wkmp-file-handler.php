@@ -2,7 +2,7 @@
 /**
  * File handler class.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -22,7 +22,6 @@ if ( ! class_exists( 'WKMP_File_Handler' ) ) {
 	 * File handler class
 	 */
 	class WKMP_File_Handler {
-
 		/**
 		 * Instance variable
 		 *
@@ -43,6 +42,14 @@ if ( ! class_exists( 'WKMP_File_Handler' ) ) {
 				Front\WKMP_Front_Hooks::get_instance();
 				Front\WKMP_Front_Action_Hooks::get_instance();
 				FrontTemplates\WKMP_Front_Template_Hooks::get_instance();
+
+				$is_block_checkout = \WC_Blocks_Utils::has_block_in_page( get_option( 'woocommerce_checkout_page_id' ), 'woocommerce/checkout' );
+				$is_block_cart     = \WC_Blocks_Utils::has_block_in_page( get_option( 'woocommerce_cart_page_id' ), 'woocommerce/cart' );
+
+				// Block JS.
+				if ( ( $is_block_cart ) || ( $is_block_checkout ) ) {
+					Front\WKMP_Front_Block_Hooks::get_instance();
+				}
 			}
 
 			WKMP_Emails::get_instance();

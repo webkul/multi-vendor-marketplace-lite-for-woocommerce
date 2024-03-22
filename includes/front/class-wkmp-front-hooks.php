@@ -2,7 +2,7 @@
 /**
  * Front hooks template
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -58,7 +58,7 @@ if ( ! class_exists( 'WKMP_Front_Hooks' ) ) {
 			add_action( 'woocommerce_account_navigation', array( $function_handler, 'wkmp_show_register_success_notice' ), 1 );
 
 			// Adding sold item meta to order items.
-			add_action( 'woocommerce_checkout_create_order_line_item', array( $function_handler, 'wkmp_add_order_item_meta' ), 10, 4 );
+			add_action( 'woocommerce_checkout_create_order_line_item', array( $function_handler, 'wkmp_add_sold_by_order_item_meta' ), 10, 4 );
 
 			// Validating and showing notice on cart page when cart total is less than threshold amount.
 			add_action( 'woocommerce_checkout_process', array( $function_handler, 'wkmp_validate_minimum_order_amount' ) );
@@ -80,7 +80,7 @@ if ( ! class_exists( 'WKMP_Front_Hooks' ) ) {
 			add_filter( 'woocommerce_account_menu_item_classes', array( $function_handler, 'wkmp_wc_menu_active_class' ), 10, 2 );
 
 			// All in one SEO compatibility.
-			add_filter( 'aioseo_conflicting_shortcodes', array( $function_handler, 'wkmp_remove_marketplace_shortcode' ), 10, 1 );
+			add_filter( 'aioseo_conflicting_shortcodes', array( $function_handler, 'wkmp_remove_mp_shortcode_from_aioseo_shortcode_lists' ) );
 
 			$seller_id   = get_current_user_id();
 			$seller_user = get_user_by( 'ID', $seller_id );

@@ -2,7 +2,7 @@
 /**
  * Front template Functions.
  *
- * @package Multi Vendor Marketplace
+ * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
  */
 
@@ -207,7 +207,6 @@ if ( ! class_exists( 'WKMP_Front_Template_Functions' ) ) {
 
 			// Seller endpoints title.
 			if ( in_the_loop() && $wkmarketplace->wkmp_user_is_seller( $customer_id ) && ! is_admin() && is_main_query() && is_account_page() ) {
-
 				$seller_endpoint = get_option( '_wkmp_dashboard_endpoint', 'seller-dashboard' );
 
 				if ( isset( $wp_query->query_vars[ $seller_endpoint ] ) ) {
@@ -240,8 +239,6 @@ if ( ! class_exists( 'WKMP_Front_Template_Functions' ) ) {
 				if ( isset( $wp_query->query_vars[ $seller_endpoint ] ) ) {
 					$title = get_option( '_wkmp_edit_product_endpoint_name', esc_html__( 'Edit Product', 'wk-marketplace' ) );
 					remove_filter( 'the_title', array( $this, 'wkmp_endpoint_title' ) );
-
-					return $title;
 				}
 
 				$seller_endpoint = get_option( '_wkmp_order_history_endpoint', 'order-history' );
@@ -445,7 +442,7 @@ if ( ! class_exists( 'WKMP_Front_Template_Functions' ) ) {
 			$show_info = empty( $show_info ) ? 0 : intval( $show_info );
 			if ( 200 === $show_info ) {
 				?>
-			<input type="hidden" data-lwdt="202401231240" data-wkmp_lite_version="<?php echo esc_attr( WKMP_LITE_VERSION ); ?>">
+			<input type="hidden" data-lwdt="202403221600" data-wkmp_lite_version="<?php echo esc_attr( WKMP_LITE_VERSION ); ?>">
 				<?php
 			}
 		}

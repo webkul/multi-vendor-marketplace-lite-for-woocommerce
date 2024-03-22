@@ -8,10 +8,11 @@ module.exports = {
 	entry: {
 		adminJS: './assets/build/admin/js/admin.js',
 		frontJS: './assets/build/front/js/front.js',
+		frontBlockJS: './assets/build/front/js/front-block.js',
 	},
 	output: {
 		filename: (data) => {
-			return data.chunk.name === 'adminJS' ? 'assets/dist/admin/js/admin.min.js' : data.chunk.name === 'frontJS' ? 'assets/dist/front/js/front.min.js' : [];
+			return data.chunk.name === 'adminJS' ? 'assets/dist/admin/js/admin.min.js' : data.chunk.name === 'frontJS' ? 'assets/dist/front/js/front.min.js' : data.chunk.name === 'frontBlockJS' ? 'assets/dist/front/js/front-block.min.js' : [];
 		},
 		path: path.resolve( __dirname ),
 	},
