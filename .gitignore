@@ -9,3 +9,4 @@ package.lock
 package-lock.json
 stylelint.config.js
 phpcs.xml.dist
+/wk_caching
