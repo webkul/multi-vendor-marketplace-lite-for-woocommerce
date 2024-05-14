@@ -537,9 +537,7 @@ if ( ! class_exists( 'WKMP_Orders' ) ) {
 
 				if ( ! empty( $ship_data ) ) {
 					$shipping_cost         = $ship_data[0]->meta_value;
-					$data['shipping_cost'] = wc_format_decimal( $ship_data[0]->meta_value, 2 );
-				} else {
-					$data['shipping_cost'] = '0.00';
+					$data['shipping_cost'] = wc_format_decimal( $shipping_cost, 2 );
 				}
 			}
 
@@ -566,7 +564,9 @@ if ( ! class_exists( 'WKMP_Orders' ) ) {
 					}
 				}
 
-				if ( intval( $product_post->post_author ) === intval( $this->seller_id ) ) {
+				$is_seller_product = apply_filters( 'wkmp_is_seller_product_invoice_data', intval( $product_post->post_author ) === intval( $this->seller_id ), $product, $this->seller_id );
+
+				if ( $is_seller_product ) {
 					$subtotal += $value_data['total'];
 
 					$data['ordered_products'][ $product_id ] = array(
@@ -608,7 +608,7 @@ if ( ! class_exists( 'WKMP_Orders' ) ) {
 				$meta_data['value'] = $common_functions->wkmp_validate_sold_by_order_item_meta( $meta_value, (object) $meta_data );
 			}
 
-			return $meta_data;
+			return apply_filters( 'wkmp_formatted_order_meta_data', $meta_data );
 		}
 	}
 }

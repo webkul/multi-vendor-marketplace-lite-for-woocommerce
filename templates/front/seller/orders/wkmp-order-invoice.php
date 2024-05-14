@@ -35,10 +35,16 @@ require_once WKMP_LITE_PLUGIN_FILE . '/templates/common/wkmp-order-invoice-heade
 				<a href="<?php echo esc_url( $data['store_url'] ); ?>" target="_blank"><?php echo esc_url( $data['store_url'] ); ?></a>
 			</td>
 			<td>
-				<b><?php esc_html_e( 'Order Date :', 'wk-marketplace' ); ?></b><?php echo esc_html( $data['date_created'] ); ?><br>
-				<b><?php esc_html_e( 'Order ID :', 'wk-marketplace' ); ?> </b><?php echo esc_html( $order_id ); ?><br>
-				<b><?php esc_html_e( 'Payment Method :', 'wk-marketplace' ); ?></b><?php echo esc_html( $data['payment_method'] ); ?><br>
-				<b><?php esc_html_e( 'Shipping Method :', 'wk-marketplace' ); ?></b><?php echo esc_html( $data['shipping_method'] ); ?><br>
+				<b><?php esc_html_e( 'Order Date: ', 'wk-marketplace' ); ?></b><?php echo esc_html( $data['date_created'] ); ?><br>
+				<b><?php esc_html_e( 'Order ID: ', 'wk-marketplace' ); ?> </b><?php echo esc_html( $order_id ); ?><br>
+				<b><?php esc_html_e( 'Payment Method: ', 'wk-marketplace' ); ?></b><?php echo esc_html( $data['payment_method'] ); ?><br>
+				<?php
+				if ( ! empty( $data['shipping_method'] ) ) {
+					?>
+					<b><?php esc_html_e( 'Shipping Method: ', 'wk-marketplace' ); ?></b><?php echo esc_html( $data['shipping_method'] ); ?><br>
+					<?php
+				}
+				?>
 			</td>
 		</tr>
 		</tbody>
@@ -120,11 +126,11 @@ require_once WKMP_LITE_PLUGIN_FILE . '/templates/common/wkmp-order-invoice-heade
 		</tr>
 			<?php
 		}
-		if ( isset( $shipping_cost ) ) {
+		if ( isset( $data['shipping_cost'] ) ) {
 			?>
 			<tr>
 				<td class="text-right" colspan="3"><b><?php esc_html_e( 'Shipping', 'wk-marketplace' ); ?></b></td>
-				<td class="text-right"><?php echo esc_html( $currency_symbol . $shipping_cost ); ?></td>
+				<td class="text-right"><?php echo esc_html( $currency_symbol . $data['shipping_cost'] ); ?></td>
 			</tr>
 		<?php } ?>
 
@@ -132,6 +138,14 @@ require_once WKMP_LITE_PLUGIN_FILE . '/templates/common/wkmp-order-invoice-heade
 			<tr>
 				<td class="text-right" colspan="3"><b><?php esc_html_e( 'Tax', 'wk-marketplace' ); ?></b></td>
 				<td class="text-right"><?php echo wp_kses_data( wc_price( $seller_order_tax, $cur_symbol ) ); ?></td>
+			</tr>
+			<?php
+		}
+		if ( ! empty( $refund_data['refunded_amount'] ) ) {
+			?>
+			<tr>
+				<td class="text-right" colspan="3"><b><?php esc_html_e( 'Refunded', 'wk-marketplace' ); ?></b></td>
+				<td class="text-right"><?php echo esc_html( $currency_symbol . wc_format_decimal( $refund_data['refunded_amount'], 2 ) ); ?></td>
 			</tr>
 		<?php } ?>
 
@@ -141,18 +155,13 @@ require_once WKMP_LITE_PLUGIN_FILE . '/templates/common/wkmp-order-invoice-heade
 			if ( ! empty( $refund_data['refunded_amount'] ) ) {
 				?>
 				<td class="text-right"><strong>
-						<del><?php echo esc_html( $currency_symbol . $subtotal_refunded ); ?></del>
+						<del><?php echo esc_html( $currency_symbol . $data['subtotal_refunded'] ); ?></del>
 					</strong><?php echo esc_html( $currency_symbol . apply_filters( 'wkmp_add_order_fee_to_total', round( floatval( $data['total'] ), 2 ), $order_id ) ); ?></td>
 			<?php } else { ?>
 				<td class="text-right"><?php echo esc_html( $currency_symbol . apply_filters( 'wkmp_add_order_fee_to_total', $data['total'], $order_id ) ); ?></td>
 			<?php } ?>
 		</tr>
-		<?php if ( ! empty( $refund_data['refunded_amount'] ) ) { ?>
-			<tr>
-				<td class="text-right" colspan="3"><b><?php esc_html_e( 'Refunded', 'wk-marketplace' ); ?></b></td>
-				<td class="text-right"><?php echo esc_html( $currency_symbol . wc_format_decimal( $refund_data['refunded_amount'], 2 ) ); ?></td>
-			</tr>
-		<?php } ?>
+
 		</tbody>
 	</table>
 

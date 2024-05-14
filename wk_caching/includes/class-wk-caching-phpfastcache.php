@@ -72,6 +72,8 @@ if ( ! class_exists( 'WK_Caching_PHPFastCache' ) ) {
 				$this->psr_16_adapter = new Psr16Adapter( $driver );
 			}
 
+			WK_Caching::log( "Set PHP FastCache, Driver: $driver, key: $fast_key, cache key: $cache_key, Cache group: $cache_group, Expiry: $expiry" );
+
 			$this->psr_16_adapter->set( $fast_key, $cache_value, $expiry );
 
 			$all_keys = $this->psr_16_adapter->get( $this->cached_key_name );
@@ -80,6 +82,8 @@ if ( ! class_exists( 'WK_Caching_PHPFastCache' ) ) {
 			array_push( $all_keys, $fast_key );
 
 			$all_keys = array_unique( $all_keys );
+
+			WK_Caching::log( 'All existing keys in Fast Cache: ' . print_r( $all_keys, true ) );
 
 			$this->psr_16_adapter->set( $this->cached_key_name, $all_keys ); // Never expires.
 		}
@@ -215,6 +219,9 @@ if ( ! class_exists( 'WK_Caching_PHPFastCache' ) ) {
 					}
 				}
 			}
+
+			WK_Caching::log( "Delete PHP Fast Cache key: $fast_key, cache key: $cache_key, Deleted: $result, Fast keys: " . print_r( $fast_keys, true ) );
+
 			return $result;
 		}
 	}

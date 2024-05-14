@@ -419,7 +419,10 @@ if ( ! empty( $order_data ) ) {
 							?>
 							<tr>
 								<th scope="row"><b><?php esc_html_e( 'Payment Method: ', 'wk-marketplace' ); ?></b></th>
-								<td class="toptable"><?php echo esc_html( $payment_method ); ?></td>
+								<td class="toptable">
+									<?php echo esc_html( $payment_method ); ?>
+									<?php do_action( 'wkmp_after_payment_method_on_order_views', $seller_order ); ?>
+								</td>
 							</tr>
 							<?php
 						}

@@ -18,7 +18,6 @@
 }
 .mp-dashboard-wrapper h2 {
 	margin: 0;
-	color: #96588a;
 	font-size: 24px;
 	font-weight: 700;
 }
@@ -29,7 +28,6 @@
 .mp-dashboard-wrapper .summary-icon {
 	float: right;
 	font-size: 24px;
-	color: #96588a;
 	border: 1px solid #ccc;
 	width: 60px;
 	height: 60px;
@@ -89,7 +87,6 @@
 .mp-dashboard-wrapper .mp-store-top-billing-country h4 {
 	font-size: 18px;
 	font-weight: 600;
-	color: #96588a;
 }
 .mp-dashboard-wrapper .mp-store-recent-orders h4 a,
 .mp-dashboard-wrapper .mp-store-top-billing-country h4 a {
@@ -169,7 +166,6 @@
 }
 .mp-dashboard-wrapper .mp-store-sale-order-history-section .header p {
 	float: left;
-	color: #96588a;
 }
 .mp-dashboard-wrapper .mp-store-sale-order-history-section .header .select-interval {
 	float: right;
@@ -453,6 +449,12 @@
 	.mp-shop-social-links
 	.mp-social-icon.twitter:before {
 	content: "\e97b";
+}
+.mp-profile-wrapper
+	.mp-shop-social-links
+	.mp-social-icon.twitter-x {
+    position: relative;
+    top: 6px;
 }
 .mp-profile-wrapper
 	.mp-shop-social-links
@@ -1314,31 +1316,6 @@ table.wc-shipping-zones-list th:nth-child(2) {
 .wc-shipping-zones-list td p {
 	font-size: 18px;
 }
-.shipping-extended ul li {
-	display: inline-block;
-	margin: 5px 10px;
-	border: 2px solid #883f7a;
-	padding: 5px;
-	border-radius: 3px;
-	background-color: #96588a;
-}
-.shipping-extended ul li a {
-	color: #fff;
-}
-.shipping-extended ul li:nth-child(1) {
-	margin-left: 0;
-}
-.shipping-extended ul li:last-child {
-	display: inherit;
-	margin: 0;
-	padding: 0;
-	border-radius: 0;
-	background-color: #fff;
-	border: none;
-}
-.shipping-extended ul li:last-child a {
-	color: #96588a;
-}
 .wc-shipping-zone-rows .list-shipping ul li {
 	margin: 0 5px 5px 3px;
 	padding: 4px 8px;
@@ -1746,4 +1723,34 @@ form#wkmp-product-list-form .wkmp-minimum-order.settings {
     width: 70%;
     float: left;
     text-align: left;
+}
+.wkmp-seller-endpoints .wkmp-product-navigation .wkmp-back-to-products-list {
+    position: relative;
+    top: 15px;
+    padding-right: 10px;
+	text-decoration: none;
+}
+.wkmp-seller-endpoints .wkmp-product-navigation .wkmp-pro-product-view-link {
+    float: right;
+    text-decoration: none;
+	font-size: 20px;
+    font-weight: 500;
+}
+.wkmp-seller-endpoints .wkmp-product-navigation .wkmp-pro-product-view-link:after {
+    content: "\f504";
+    font-size: 22px;
+    font-family: dashicons;
+	font-size: 20px;
+    top: 2px;
+    position: relative;
+}
+.wkmp-seller-endpoints .wkmp-product-navigation {
+    margin-bottom: 20px;
+}
+.wkmp-shop-follower-table thead tr td:first-child{
+	width: 1px;
+}
+
+.wkmp-shop-follower-table thead tr td:last-child{
+	width: 17%
 }

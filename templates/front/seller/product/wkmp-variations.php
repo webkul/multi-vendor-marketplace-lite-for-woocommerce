@@ -83,13 +83,13 @@ $hide_virtual_style = 'display:' . ( isset( $variation_arr['_virtual'] ) && 'yes
 					<tr class="variable_pricing">
 						<td style="width: 50%;">
 							<label><?php esc_html_e( 'Regular Price: ', 'wk-marketplace' ) . '(' . $wc_currency . ')'; ?></label>
-							<input size="5" name="wkmp_variable_regular_price[<?php echo esc_attr( $variation_id ); ?>]" value="<?php echo isset( $variation_arr['_regular_price'] ) ? esc_attr( $variation_arr['_regular_price'] ) : ''; ?>" class="wc_input_price wkmp_variable_regular_price wkmp_product_input" placeholder="<?php esc_attr_e( 'Variation price (required)', 'wk-marketplace' ); ?>" type="text">
+							<input size="5" name="wkmp_variable_regular_price[<?php echo esc_attr( $variation_id ); ?>]" value="<?php echo isset( $variation_arr['_regular_price'] ) ? esc_attr( wc_format_localized_decimal( $variation_arr['_regular_price'] ) ) : ''; ?>" class="wc_input_price wkmp_variable_regular_price wkmp_product_input" placeholder="<?php esc_attr_e( 'Variation price (required)', 'wk-marketplace' ); ?>" type="text">
 						</td>
 						<td>
 							<label><?php esc_html_e( 'Sale Price: ', 'wk-marketplace' ) . '(' . $wc_currency . ')'; ?>
 								<a href="javascript:void(0);" class="mp_sale_schedule"><?php esc_html_e( 'Schedule', 'wk-marketplace' ); ?></a><a href="javascript:void(0);" class="mp_cancel_sale_schedule" style="display:none"><?php esc_html_e( 'Cancel schedule', 'wk-marketplace' ); ?></a>
 							</label>
-							<input size="5" name="wkmp_variable_sale_price[<?php echo esc_attr( $variation_id ); ?>]" value="<?php echo isset( $variation_arr['_sale_price'] ) ? esc_attr( $variation_arr['_sale_price'] ) : ''; ?>" class="wc_input_price wkmp_variable_sale_price wkmp_product_input" type="text">
+							<input size="5" name="wkmp_variable_sale_price[<?php echo esc_attr( $variation_id ); ?>]" value="<?php echo isset( $variation_arr['_sale_price'] ) ? esc_attr( wc_format_localized_decimal( $variation_arr['_sale_price'] ) ) : ''; ?>" class="wc_input_price wkmp_variable_sale_price wkmp_product_input" type="text">
 							<span class="sale_pr_error error-class"></span>
 						</td>
 					</tr>
@@ -129,13 +129,13 @@ $hide_virtual_style = 'display:' . ( isset( $variation_arr['_virtual'] ) && 'yes
 					<tr class="virtual" style="<?php echo esc_attr( $hide_virtual_style ); ?>">
 						<td style="display: table-cell;" class="mp_hide_if_variation_virtual">
 							<label><?php echo wp_sprintf( /* translators: %s: Weight unit. */ esc_html__( 'Weight (%s):', 'wk-marketplace' ), esc_html( get_option( 'woocommerce_weight_unit', 'kg' ) ) ); ?></label>
-							<input size="5" name="wkmp_variable_weight[<?php echo esc_attr( $variation_id ); ?>]" value="<?php echo isset( $variation_arr['_weight'] ) ? esc_attr( $variation_arr['_weight'] ) : ''; ?>" placeholder="0" class="wc_input_decimal wkmp_product_input" type="text">
+							<input size="5" name="wkmp_variable_weight[<?php echo esc_attr( $variation_id ); ?>]" value="<?php echo isset( $variation_arr['_weight'] ) ? esc_attr( wc_format_localized_decimal( $variation_arr['_weight'] ) ) : ''; ?>" placeholder="0" class="wc_input_decimal wkmp_product_input" type="text">
 						</td>
 						<td style="display: table-cell;" class="dimensions_field mp_hide_if_variation_virtual">
 							<label for="product_length"><?php echo wp_sprintf( /* translators: %s: Weight unit. */ esc_html__( 'Dimensions (L×W×H) (%s):', 'wk-marketplace' ), esc_html( get_option( 'woocommerce_dimension_unit', 'cm' ) ) ); ?></label>
-							<input id="product_length_<?php echo esc_attr( $variation_id ); ?>" class="input-text wc_input_decimal wkmp_product_input" size="6" name="wkmp_variable_length[<?php echo esc_attr( $variation_id ); ?>]" value="<?php echo isset( $variation_arr['_length'] ) ? esc_attr( $variation_arr['_length'] ) : ''; ?>" placeholder="0" type="text">
-							<input class="input-text wc_input_decimal wkmp_product_input" size="6" name="wkmp_variable_width[<?php echo esc_attr( $variation_id ); ?>]" value="<?php echo isset( $variation_arr['_width'] ) ? esc_attr( $variation_arr['_width'] ) : ''; ?>" placeholder="0" type="text">
-							<input class="input-text wc_input_decimal last wkmp_product_input" size="6" name="wkmp_variable_height[<?php echo esc_attr( $variation_id ); ?>]" value="<?php echo isset( $variation_arr['_height'] ) ? esc_attr( $variation_arr['_height'] ) : ''; ?>" placeholder="0" type="text">
+							<input id="product_length_<?php echo esc_attr( $variation_id ); ?>" class="input-text wc_input_decimal wkmp_product_input" size="6" name="wkmp_variable_length[<?php echo esc_attr( $variation_id ); ?>]" value="<?php echo isset( $variation_arr['_length'] ) ? esc_attr( wc_format_localized_decimal( $variation_arr['_length'] ) ) : ''; ?>" placeholder="0" type="text">
+							<input class="input-text wc_input_decimal wkmp_product_input" size="6" name="wkmp_variable_width[<?php echo esc_attr( $variation_id ); ?>]" value="<?php echo isset( $variation_arr['_width'] ) ? esc_attr( wc_format_localized_decimal( $variation_arr['_width'] ) ) : ''; ?>" placeholder="0" type="text">
+							<input class="input-text wc_input_decimal last wkmp_product_input" size="6" name="wkmp_variable_height[<?php echo esc_attr( $variation_id ); ?>]" value="<?php echo isset( $variation_arr['_height'] ) ? esc_attr( wc_format_localized_decimal( $variation_arr['_height'] ) ) : ''; ?>" placeholder="0" type="text">
 						</td>
 					</tr>
 

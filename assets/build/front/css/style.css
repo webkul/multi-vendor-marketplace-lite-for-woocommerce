@@ -51,7 +51,6 @@
 	color: #555;
 	background-color: #fff;
 	background-image: none;
-	border: 1px solid #96588a;
 	border-radius: 3px;
 }
 .wkmp-form-wrap .form-group.wkmp-popup-model {
@@ -69,11 +68,6 @@
 }
 .wkmp-form-wrap .form-group.wkmp-popup-model .wkmp-width-45 input[type="number"] {
 	width: 95%;
-}
-.wkmp-button-danger {
-	color: #fff;
-	background-color: #e3503e;
-	border-color: #dd3520;
 }
 .wkmp-button-success {
 	color: #fff;
@@ -191,7 +185,7 @@
 /* General Seller register buttons ends */
 
 /*Registration fields css ends here*/
-.mp-product-author-shop .wkmp-loader-wrapper {
+.wkmp-product-author-shop .wkmp-loader-wrapper {
 	display: inline-block;
 	position: relative;
 	left: 5px;
@@ -265,11 +259,8 @@
 	cursor: help;
 	margin: 0;
 }
-.mp-product-author-shop .dashicons-heart{
+.wkmp-product-author-shop .dashicons-heart{
 	font-size:25px;
 	margin-top:3px;
 	cursor:pointer;
-}
-.mp-product-author-shop .wkmp_active_heart{
-	color:#96588a;
 }

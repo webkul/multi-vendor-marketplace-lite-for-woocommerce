@@ -20,5 +20,5 @@ $asset_path = ( defined( 'WKWC_DEV' ) && true === WKWC_DEV ) ? 'build' : 'dist';
 	</head>
 	<body>
 	<div class="mp-invoice-wrapper">
-		<button class="wkmp_print_invoice_btn" onclick="javascript:window.print()"><img src="<?php echo esc_url( WKMP_LITE_PLUGIN_URL . '/assets/images/print_btn.webp' ); ?>"></button>
+		<button class="wkmp_print_invoice_btn" onclick="javascript:window.print()"><img src="<?php echo esc_url( WKMP_LITE_PLUGIN_URL . 'assets/images/print_btn.webp' ); ?>"></button>
 		<h1><?php echo wp_sprintf( /* translators: %d: Order number. */ esc_html__( 'Invoice Of Order #%d', 'wk-marketplace' ), esc_html( $order_id ) ); ?></h1>

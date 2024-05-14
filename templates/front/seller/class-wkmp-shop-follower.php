@@ -145,11 +145,6 @@ if ( ! class_exists( 'WKMP_Shop_Follower' ) ) {
 				wc_print_notice( esc_html__( 'Notification mail has been send successfully', 'wk-marketplace' ), 'success' );
 			}
 
-			$customer_id = \WK_Caching::wk_get_request_data( 'customer_id', array( 'filter' => 'int' ) );
-			if ( $customer_id > 0 ) {
-				$this->wkmp_delete_followers( array( $customer_id ) );
-			}
-
 			$followers = $this->wkmp_get_seller_followers_data( $this->seller_id );
 			?>
 			<div class="wkmp-table-action-wrap">
@@ -164,13 +159,13 @@ if ( ! class_exists( 'WKMP_Shop_Follower' ) ) {
 
 			<form action="" method="post" enctype="multipart/form-data" id="wkmp-followers-list" style="margin-bottom:unset;">
 				<div class="wkmp-table-responsive">
-					<table class="table table-bordered table-hover">
+					<table class="table table-bordered table-hover wkmp-shop-follower-table">
 						<thead>
 						<tr>
-							<td style="width:1px;"><input type="checkbox" id="wkmp-checked-all"></td>
+							<td><input type="checkbox" id="wkmp-checked-all"></td>
 							<td><?php esc_html_e( 'Customer Name', 'wk-marketplace' ); ?></td>
 							<td><?php esc_html_e( 'Customer Email', 'wk-marketplace' ); ?></td>
-							<td style="width:17%;"><?php esc_html_e( 'Action', 'wk-marketplace' ); ?></td>
+							<td><?php esc_html_e( 'Action', 'wk-marketplace' ); ?></td>
 						</tr>
 						</thead>
 						<tbody>
@@ -184,7 +179,7 @@ if ( ! class_exists( 'WKMP_Shop_Follower' ) ) {
 									<td><?php echo empty( $follower_name ) ? esc_html__( 'NA', 'wk-marketplace' ) : esc_html( $follower_name ); ?></td>
 									<td><?php echo esc_html( $follower['follower_email'] ); ?></td>
 									<td>
-										<a href="?customer_id=<?php echo esc_attr( $follower_id ); ?>" class="button" style="padding:12px;"><span class="dashicons dashicons-trash"></span></a>
+										<a href="javascript:void(0)" class="button wkmp-trash-shop-follower"><span class="dashicons dashicons-trash"></span></a>
 									</td>
 								</tr>
 							<?php } ?>

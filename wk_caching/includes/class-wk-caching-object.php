@@ -51,7 +51,6 @@ if ( ! class_exists( 'WK_Caching_Object' ) ) {
 		 * @param string|int $data_group The data group.
 		 */
 		public function set( $key, $data, $data_group = '0' ) {
-			WK_Caching::log( "WK_Caching_Object Set Cache key: $key, Cache group: $data_group" );
 			$this->cache[ $data_group ][ $key ] = $data;
 		}
 

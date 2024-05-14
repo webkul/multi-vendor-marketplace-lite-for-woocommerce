@@ -367,6 +367,9 @@ if ( ! class_exists( 'WKMP_Product_Form' ) ) {
 					$price       = empty( $posted_data['regu_price'] ) ? '' : $posted_data['regu_price'];
 					$sales_price = empty( $posted_data['sale_price'] ) ? '' : $posted_data['sale_price'];
 
+					$price       = is_null( $price ) ? '' : wc_format_decimal( trim( stripslashes( $price ) ) );
+					$sales_price = is_null( $sales_price ) ? '' : wc_format_decimal( trim( stripslashes( $sales_price ) ) );
+
 					$product_short_desc = empty( $posted_data['short_desc'] ) ? '' : $posted_data['short_desc'];
 
 					$product_data = array(
@@ -641,10 +644,12 @@ if ( ! class_exists( 'WKMP_Product_Form' ) ) {
 			$variable_weights = empty( $_POST['wkmp_variable_weight'] ) ? array() : wc_clean( $_POST['wkmp_variable_weight'] );
 
 			foreach ( $var_attr_ids as $var_id ) {
-				$var_regu_price[ $var_id ] = is_numeric( $regular_prices[ $var_id ] ) ? $regular_prices[ $var_id ] : '';
+				$var_regu_price[ $var_id ] = is_numeric( wc_format_decimal( trim( stripslashes( $regular_prices[ $var_id ] ) ) ) ) ? wc_format_decimal( trim( stripslashes( $regular_prices[ $var_id ] ) ) ) : '';
 
-				if ( isset( $sale_prices[ $var_id ] ) && is_numeric( $sale_prices[ $var_id ] ) && $sale_prices[ $var_id ] < $var_regu_price[ $var_id ] ) {
-					$var_sale_price[ $var_id ] = $sale_prices[ $var_id ];
+				$sale_var_price = ( isset( $sale_prices[ $var_id ] ) && is_numeric( wc_format_decimal( trim( stripslashes( $sale_prices[ $var_id ] ) ) ) ) ) ? wc_format_decimal( trim( stripslashes( $sale_prices[ $var_id ] ) ) ) : '';
+
+				if ( '' !== $sale_var_price && $sale_var_price < $var_regu_price[ $var_id ] ) {
+					$var_sale_price[ $var_id ] = $sale_var_price;
 				} else {
 					$var_sale_price[ $var_id ] = '';
 				}
@@ -672,26 +677,28 @@ if ( ! class_exists( 'WKMP_Product_Form' ) ) {
 					}
 				}
 
-				if ( isset( $sale_prices[ $var_id ] ) && is_numeric( $sale_prices[ $var_id ] ) && $sale_prices[ $var_id ] < $regular_prices[ $var_id ] ) {
-					$variation_data['_sale_price'][] = $sale_prices[ $var_id ];
+				$_sale_var_price = ( isset( $sale_prices[ $var_id ] ) && is_numeric( wc_format_decimal( trim( stripslashes( $sale_prices[ $var_id ] ) ) ) ) ) ? wc_format_decimal( trim( stripslashes( $sale_prices[ $var_id ] ) ) ) : '';
+
+				if ( '' !== $_sale_var_price && is_numeric( $_sale_var_price ) && $_sale_var_price < $regular_prices[ $var_id ] ) {
+					$variation_data['_sale_price'][] = $_sale_var_price;
 				} else {
 					$variation_data['_sale_price'][] = '';
 				}
 
 				if ( empty( $sale_prices[ $var_id ] ) ) {
-					$variation_data['_price'][] = is_numeric( $regular_prices[ $var_id ] ) ? $regular_prices[ $var_id ] : '';
+					$variation_data['_price'][] = is_numeric( wc_format_decimal( trim( stripslashes( $regular_prices[ $var_id ] ) ) ) ) ? wc_format_decimal( trim( stripslashes( $regular_prices[ $var_id ] ) ) ) : '';
 				} else {
-					$variation_data['_price'][] = is_numeric( $sale_prices[ $var_id ] ) ? $sale_prices[ $var_id ] : '';
+					$variation_data['_price'][] = is_numeric( wc_format_decimal( trim( stripslashes( $sale_prices[ $var_id ] ) ) ) ) ? wc_format_decimal( trim( stripslashes( $sale_prices[ $var_id ] ) ) ) : '';
 				}
 
-				$variation_data['_regular_price'][] = is_numeric( $regular_prices[ $var_id ] ) ? $regular_prices[ $var_id ] : '';
+				$variation_data['_regular_price'][] = is_numeric( wc_format_decimal( trim( stripslashes( $regular_prices[ $var_id ] ) ) ) ) ? wc_format_decimal( trim( stripslashes( $regular_prices[ $var_id ] ) ) ) : '';
 
 				if ( ! empty( $sales_to ) ) {
-					$variation_data['_sale_price_dates_to'][] = $sales_to[ $var_id ];
+					$variation_data['_sale_price_dates_to'][] = wc_format_decimal( trim( stripslashes( $sales_to[ $var_id ] ) ) );
 				}
 
 				if ( isset( $sales_from ) ) {
-					$variation_data['_sale_price_dates_from'][] = $sales_from[ $var_id ];
+					$variation_data['_sale_price_dates_from'][] = wc_format_decimal( trim( stripslashes( $sales_from[ $var_id ] ) ) );
 				}
 
 				$variation_data['_backorders'][] = $backorders[ $var_id ];
@@ -726,9 +733,9 @@ if ( ! class_exists( 'WKMP_Product_Form' ) ) {
 					$variation_data['_sku'][] = '';
 				}
 
-				$variation_data['_width'][]        = is_numeric( $variable_widths[ $var_id ] ) ? $variable_widths[ $var_id ] : '';
-				$variation_data['_height'][]       = is_numeric( $variable_heights[ $var_id ] ) ? $variable_heights[ $var_id ] : '';
-				$variation_data['_length'][]       = is_numeric( $variable_lengths[ $var_id ] ) ? $variable_lengths[ $var_id ] : '';
+				$variation_data['_width'][]        = is_numeric( wc_format_decimal( trim( stripslashes( $variable_widths[ $var_id ] ) ) ) ) ? wc_format_decimal( trim( stripslashes( $variable_widths[ $var_id ] ) ) ) : '';
+				$variation_data['_height'][]       = is_numeric( wc_format_decimal( trim( stripslashes( $variable_heights[ $var_id ] ) ) ) ) ? wc_format_decimal( trim( stripslashes( $variable_heights[ $var_id ] ) ) ) : '';
+				$variation_data['_length'][]       = is_numeric( wc_format_decimal( trim( stripslashes( $variable_lengths[ $var_id ] ) ) ) ) ? wc_format_decimal( trim( stripslashes( $variable_lengths[ $var_id ] ) ) ) : '';
 				$variation_data['_virtual'][]      = $virtual_variable;
 				$variation_data['_downloadable'][] = $downloadable_variable;
 				$thumbnail_id                      = $variable_img_ids[ $var_id ];
@@ -739,8 +746,8 @@ if ( ! class_exists( 'WKMP_Product_Form' ) ) {
 					$variation_data['_thumbnail_id'][] = 0;
 				}
 
-				$variation_data['_weight'][]     = is_numeric( $variable_weights[ $var_id ] ) ? $variable_weights[ $var_id ] : '';
-				$variation_data['_menu_order'][] = is_numeric( $var_menu_orders[ $var_id ] ) ? $var_menu_orders[ $var_id ] : '';
+				$variation_data['_weight'][]     = is_numeric( wc_format_decimal( trim( stripslashes( $variable_weights[ $var_id ] ) ) ) ) ? wc_format_decimal( trim( stripslashes( $variable_weights[ $var_id ] ) ) ) : '';
+				$variation_data['_menu_order'][] = is_numeric( wc_format_decimal( trim( stripslashes( $var_menu_orders[ $var_id ] ) ) ) ) ? wc_format_decimal( trim( stripslashes( $var_menu_orders[ $var_id ] ) ) ) : '';
 
 				/* Variation for downloadable product */
 				if ( 'yes' === $downloadable_variable ) {
@@ -798,11 +805,14 @@ if ( ! class_exists( 'WKMP_Product_Form' ) ) {
 			$errors   = array();
 			$wpdb_obj = $this->wpdb;
 
-			if ( ! is_numeric( $data['regu_price'] ) && ! empty( $data['regu_price'] ) ) {
-				$errors[] = esc_html__( 'Regular Price is not a number.', 'wk-marketplace' );
+			$regu_price = is_null( $data['regu_price'] ) ? '' : wc_format_decimal( trim( stripslashes( $data['regu_price'] ) ) );
+			$sale_price = is_null( $data['sale_price'] ) ? '' : wc_format_decimal( trim( stripslashes( $data['sale_price'] ) ) );
+
+			if ( ! is_numeric( $regu_price ) && ! empty( $regu_price ) ) {
+				$errors[] = esc_html__( 'Regular Price is not valid.', 'wk-marketplace' );
 			}
 
-			if ( ! is_numeric( $data['sale_price'] ) && ! empty( $data['sale_price'] ) ) {
+			if ( ! is_numeric( $sale_price ) && ! empty( $sale_price ) ) {
 				$errors[] = esc_html__( 'Sale Price is not a number.', 'wk-marketplace' );
 			}
 

@@ -1,15 +1,16 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: https://webkul.uvdesk.com/en/customer/create-ticket/\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-01-15T14:11:09+00:00\n"
+"POT-Creation-Date: 2024-05-09T06:03:00+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.6.0\n"
+"language-team: LANGUAGE <EMAIL@ADDRESS>\n"
 "X-Domain: wk_caching\n"
 
 #. Translators: %d: product filepath.
@@ -33,29 +34,29 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: includes/class-wk-caching.php:105
+#: includes/class-wk-caching.php:104
 msgid "Clear all"
 msgstr ""
 
 #. Translators: %s: Saved cache keys count.
-#: includes/class-wk-caching.php:108
+#: includes/class-wk-caching.php:107
 msgid " Saved keys count on PHPFastcache: %s"
 msgstr ""
 
 #. Translators: %s: Saved cache keys count.
-#: includes/class-wk-caching.php:109
+#: includes/class-wk-caching.php:108
 msgid "Show Keys on PHPFastcache"
 msgstr ""
 
-#: includes/class-wk-caching.php:110
+#: includes/class-wk-caching.php:109
 msgid "Show Data on PHPFastcache"
 msgstr ""
 
-#: includes/class-wk-caching.php:172
+#: includes/class-wk-caching.php:171
 msgid "WK Caching"
 msgstr ""
 
 #. translators: %s current user id
-#: includes/class-wk-caching.php:214
+#: includes/class-wk-caching.php:213
 msgid "User in action: %s: "
 msgstr ""

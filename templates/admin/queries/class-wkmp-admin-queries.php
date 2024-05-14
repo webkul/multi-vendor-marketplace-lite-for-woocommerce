@@ -76,9 +76,9 @@ if ( ! class_exists( 'WKMP_Admin_Queries' ) ) {
 		 */
 		public function thickbox_content( $query ) {
 			?>
-			<div id="meta-box-<?php echo esc_attr( $query['id'] ); ?>" class="meta-bx" style="display:none">
+			<div id="meta-box-<?php echo esc_attr( $query['id'] ); ?>" class="meta-bx wkmp-hide">
 				<h2><?php esc_html_e( 'Reply to ', 'wk-marketplace' ); ?><?php echo esc_html( $query['seller_name'] ); ?> </h2>
-				<table style="width:100%">
+				<table class="wkmp-ask-query-reply-modal">
 					<tr>
 						<td><label><h4><b> <?php esc_html_e( 'Subject', 'wk-marketplace' ); ?> </b></h4></label></td>
 						<td colspan="2"><span> <?php echo esc_html( $query['subject'] ); ?> </span></td>
@@ -90,7 +90,7 @@ if ( ! class_exists( 'WKMP_Admin_Queries' ) ) {
 				</table>
 				<div class="reply-mes">
 					<label><h3> <?php esc_html_e( 'Reply Message', 'wk-marketplace' ); ?> </h3></label>
-					<textarea name="reply" class="admin_msg_to_seller" style="white-space: pre-wrap; margin:10px;width:90%" rows="5" cols="60"></textarea>
+					<textarea name="reply" class="wkmp-admin_msg_to_seller" rows="5" cols="60"></textarea>
 				</div>
 				<button class="button-primary seller-query-revert" data-qid="<?php echo esc_attr( intval( $query['id'] ) ); ?>"><?php esc_html_e( 'Send', 'wk-marketplace' ); ?></button>
 			</div>

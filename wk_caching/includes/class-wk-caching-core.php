@@ -45,7 +45,6 @@ if ( ! class_exists( 'WK_Caching_Core' ) ) {
 		 * @param int        $expiry Expiry in seconds in case of transient.
 		 */
 		public function set( $key, $data, $data_group, $expiry = 3600 ) {
-			WK_Caching::log( "Set Cache key: $key, Cache group: $data_group" );
 			$cache_obj = WK_Caching_Object::get_instance();
 			$cache_obj->set( $key, $data, $data_group );
 
@@ -62,7 +61,6 @@ if ( ! class_exists( 'WK_Caching_Core' ) ) {
 		 * @return bool|mixed
 		 */
 		public function get( $key, $data_group ) {
-			WK_Caching::log( "Get Cache key: $key, Cache group: $data_group" );
 			$cache_obj = WK_Caching_Object::get_instance();
 			$data      = $cache_obj->get( $key, $data_group );
 
@@ -71,6 +69,7 @@ if ( ! class_exists( 'WK_Caching_Core' ) ) {
 			}
 
 			$transient_obj = WK_Caching_Transient::get_instance();
+
 			return $transient_obj->get( $key, $data_group );
 		}
 
@@ -82,8 +81,6 @@ if ( ! class_exists( 'WK_Caching_Core' ) ) {
 		 * @return bool|mixed
 		 */
 		public function get_all( $type = '' ) {
-			WK_Caching::log( "Get all cached data. Type: $type" );
-
 			$transient_obj = WK_Caching_Transient::get_instance();
 			return $transient_obj->get_all( $type );
 		}
@@ -98,7 +95,6 @@ if ( ! class_exists( 'WK_Caching_Core' ) ) {
 		 * @return bool
 		 */
 		public function reset( $key = '', $data_group = '', $force = false ) {
-			WK_Caching::log( "Reset Cache key: $key, Cache group: $data_group, Force: $force" );
 			$cache_obj = WK_Caching_Object::get_instance();
 			$cache_obj->reset( $data_group, $force );
 

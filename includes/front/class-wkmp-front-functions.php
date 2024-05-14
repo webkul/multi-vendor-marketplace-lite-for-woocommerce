@@ -546,11 +546,11 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 					<?php
 					if ( empty( get_option( '_wkmp_separate_seller_dashboard', false ) ) ) {
 						?>
-					/** Margin after ask admin if Separate admin dashboard disabled. */
-					.woocommerce-account .woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--<?php echo esc_attr( get_option( '_wkmp_asktoadmin_endpoint', 'seller-ask-admin' ) ); ?> {
-						margin-bottom: 40px;
-						border-bottom: 1px solid #ccc !important;
-					}
+						/** Margin after ask admin if Separate admin dashboard disabled. */
+						.woocommerce-account .woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--<?php echo esc_attr( get_option( '_wkmp_asktoadmin_endpoint', 'seller-ask-admin' ) ); ?> {
+							margin-bottom: 40px;
+							border-bottom: 1px solid #ccc !important;
+						}
 						<?php
 					}
 					?>
@@ -577,7 +577,6 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 						content: "<?php echo esc_attr( $total_count ); ?>";
 						display: inline-block;
 						margin-left: 5px;
-						background-color: #96588a;
 						color: #fff;
 						padding: 0 6px;
 						border-radius: 3px;
@@ -652,6 +651,7 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 			}
 
 			if ( $user_id > 0 ) {
+				$active_color = apply_filters( 'wkmp_active_color_code', '#96588a' );
 				?>
 				<style>
 					/**Favorite Sellers */
@@ -660,6 +660,9 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 						font-family: 'Webkul Rango';
 						font-size: 20px;
 						font-weight: normal;
+					}
+					.wkmp-product-author-shop .wkmp_active_heart, .mp-dashboard-wrapper h2,.mp-dashboard-wrapper .summary-icon,.mp-dashboard-wrapper .mp-store-top-billing-country h4, .mp-dashboard-wrapper .mp-store-sale-order-history-section .header p {
+						color:<?php echo esc_attr( $active_color ); ?>;
 					}
 				</style>
 				<?php
@@ -805,13 +808,13 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 					$item_id         = $item->get_id();
 					$assigned_seller = wc_get_order_item_meta( $item_id, 'assigned_seller', true );
 					$tax_total       = 0;
+					$amount          = floatval( $item['line_total'] );
+					$product_qty     = intval( $item['quantity'] );
 
 					$product_id      = empty( $item['variation_id'] ) ? $item['product_id'] : $item['variation_id'];
-					$commission_data = $mp_commission->wkmp_calculate_product_commission( $product_id, $item['quantity'], $item['line_total'], $assigned_seller, $tax_total );
+					$commission_data = $mp_commission->wkmp_calculate_product_commission( $product_id, $product_qty, $amount, $assigned_seller, $tax_total );
 
 					$seller_id        = $commission_data['seller_id'];
-					$amount           = (float) $item['line_total'];
-					$product_qty      = $item['quantity'];
 					$discount_applied = number_format( (float) ( $item->get_subtotal() - $item->get_total() ), 2, '.', '' );
 					$admin_amount     = $commission_data['admin_commission'];
 					$seller_amount    = $commission_data['seller_amount'];
@@ -824,7 +827,7 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 							'order_id'           => $order_id,
 							'product_id'         => $product_id,
 							'seller_id'          => $seller_id,
-							'amount'             => number_format( (float) $amount, 2, '.', '' ),
+							'amount'             => number_format( $amount, 2, '.', '' ),
 							'admin_amount'       => number_format( (float) $admin_amount, 2, '.', '' ),
 							'seller_amount'      => number_format( (float) $seller_amount, 2, '.', '' ),
 							'quantity'           => $product_qty,

@@ -35,7 +35,7 @@ if ( empty( $mp_page_title ) ) {
 	</div>
 	<div class="mp-profile-information">
 		<div class="mp-shop-stats">
-			<img src="<?php echo esc_url( $shop_logo ); ?>" class="mp-shop-logo">
+			<img src="<?php echo esc_url( $avatar_image ); ?>" class="wkmp-seller-avatar">
 			<div class="mp-seller-avg-rating">
 				<?php if ( $quality ) { ?>
 					<h2><span class="single-star"></span><?php echo esc_html( number_format( $quality, 2 ) ); ?></h2>

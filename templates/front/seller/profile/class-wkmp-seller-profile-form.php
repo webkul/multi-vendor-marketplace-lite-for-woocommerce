@@ -140,7 +140,6 @@ if ( ! class_exists( 'WKMP_Seller_Profile_Form' ) ) {
 
 						<?php do_action( 'wkmp_add_fields_to_general_tab', $seller_info ); ?>
 
-
 						<div class="form-group">
 							<label for="user_email"><?php esc_html_e( 'E-Mail', 'wk-marketplace' ); ?></label>
 							<input class="form-control" type="text" name="wkmp_seller_email" id="user_email" value="<?php echo esc_attr( $seller_info['wkmp_seller_email'] ); ?>">

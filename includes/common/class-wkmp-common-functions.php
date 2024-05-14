@@ -625,12 +625,16 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 				include_once ABSPATH . 'wp-admin/includes/file.php';
 				include_once ABSPATH . 'wp-admin/includes/media.php';
 
-				$data['fist_name']        = empty( $_POST['wkmp_first_name'] ) ? '' : $this->wkmp_replace_accents_characters_to_normal( wc_clean( wp_unslash( $_POST['wkmp_first_name'] ) ) );
+				$data['first_name']       = empty( $_POST['wkmp_first_name'] ) ? '' : $this->wkmp_replace_accents_characters_to_normal( wc_clean( wp_unslash( $_POST['wkmp_first_name'] ) ) );
 				$data['last_name']        = empty( $_POST['wkmp_last_name'] ) ? '' : $this->wkmp_replace_accents_characters_to_normal( wc_clean( wp_unslash( $_POST['wkmp_last_name'] ) ) );
 				$data['shop_name']        = empty( $_POST['wkmp_shop_name'] ) ? '' : $this->wkmp_replace_accents_characters_to_normal( wc_clean( wp_unslash( $_POST['wkmp_shop_name'] ) ) );
 				$data['billing_country']  = empty( $_POST['wkmp_shop_country'] ) ? '' : wc_clean( wp_unslash( $_POST['wkmp_shop_country'] ) );
 				$data['billing_postcode'] = empty( $_POST['wkmp_shop_postcode'] ) ? '' : wc_clean( wp_unslash( $_POST['wkmp_shop_postcode'] ) );
 				$data['user_email']       = empty( $_POST['wkmp_seller_email'] ) ? '' : wc_clean( wp_unslash( $_POST['wkmp_seller_email'] ) );
+
+				$data['_thumbnail_id_avatar']       = empty( $_POST['wkmp_avatar_id'] ) ? '' : wc_clean( wp_unslash( $_POST['wkmp_avatar_id'] ) );
+				$data['_thumbnail_id_company_logo'] = empty( $_POST['wkmp_logo_id'] ) ? '' : wc_clean( wp_unslash( $_POST['wkmp_logo_id'] ) );
+				$data['_thumbnail_id_shop_banner']  = empty( $_POST['wkmp_banner_id'] ) ? '' : wc_clean( wp_unslash( $_POST['wkmp_banner_id'] ) );
 
 				if ( empty( $data['user_email'] ) ) {
 					$errors['wkmp_seller_email'] = esc_html__( 'Enter the valid E-Mail', 'wk-marketplace' );
@@ -642,7 +646,7 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 					}
 				}
 
-				if ( ! preg_match( '/^[-A-Za-z0-9_\s]{1,40}$/', $data['fist_name'] ) ) {
+				if ( ! preg_match( '/^[-A-Za-z0-9_\s]{1,40}$/', $data['first_name'] ) ) {
 					$errors['wkmp_first_name'] = esc_html__( 'Only letters and numbers are allowed.', 'wk-marketplace' );
 				}
 
@@ -668,7 +672,7 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 					$errors['wkmp_shop_postcode'] = esc_html__( 'Enter the valid post code', 'wk-marketplace' );
 				}
 
-				if ( isset( $_FILES['wkmp_avatar_file'] ) && isset( $_FILES['wkmp_avatar_file']['name'] ) && wc_clean( $_FILES['wkmp_avatar_file']['name'] ) ) {
+				if ( isset( $_FILES['wkmp_avatar_file'] ) && isset( $_FILES['wkmp_avatar_file']['name'] ) && ! empty( wc_clean( $_FILES['wkmp_avatar_file']['name'] ) ) ) {
 					$message = $this->wkmp_validate_image( wc_clean( $_FILES['wkmp_avatar_file'] ) );
 					if ( $message ) {
 						$errors['wkmp_avatar_file'] = $message;
@@ -682,21 +686,7 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 					}
 				}
 
-				if ( isset( $_FILES['wkmp_avatar_file'] ) && isset( $_FILES['wkmp_avatar_file']['name'] ) && wc_clean( $_FILES['wkmp_avatar_file']['name'] ) ) {
-					$message = $this->wkmp_validate_image( wc_clean( $_FILES['wkmp_avatar_file'] ) );
-					if ( $message ) {
-						$errors['wkmp_avatar_file'] = $message;
-					} else {
-						$avatar_file = media_handle_upload( 'wkmp_avatar_file', $seller_id );
-						if ( is_wp_error( $avatar_file ) ) {
-							$errors['wkmp_avatar_file'] = $avatar_file->get_error_message();
-						} else {
-							$data['_thumbnail_id_avatar'] = intval( $avatar_file );
-						}
-					}
-				}
-
-				if ( isset( $_FILES['wkmp_logo_file'] ) && isset( $_FILES['wkmp_logo_file']['name'] ) && wc_clean( $_FILES['wkmp_logo_file']['name'] ) ) {
+				if ( isset( $_FILES['wkmp_logo_file'] ) && isset( $_FILES['wkmp_logo_file']['name'] ) && ! empty( wc_clean( $_FILES['wkmp_logo_file']['name'] ) ) ) {
 					$message = $this->wkmp_validate_image( wc_clean( $_FILES['wkmp_logo_file'] ) );
 					if ( $message ) {
 						$errors['wkmp_logo_file'] = $message;
@@ -710,7 +700,7 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 					}
 				}
 
-				if ( isset( $_FILES['wkmp_banner_file'] ) && isset( $_FILES['wkmp_banner_file']['name'] ) && wc_clean( $_FILES['wkmp_banner_file']['name'] ) ) {
+				if ( isset( $_FILES['wkmp_banner_file'] ) && isset( $_FILES['wkmp_banner_file']['name'] ) && ! empty( wc_clean( $_FILES['wkmp_banner_file']['name'] ) ) ) {
 					$message = $this->wkmp_validate_image( wc_clean( $_FILES['wkmp_banner_file'] ) );
 					if ( $message ) {
 						$errors['wkmp_banner_file'] = $message;
@@ -823,14 +813,7 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 				$img_error = esc_html__( 'File size too large ', 'wk-marketplace' ) . '[ <= ' . number_format( wp_max_upload_size() / 1048576 ) . ' MB ]';
 			}
 
-			$file_type = ' ';
-			$file_name = empty( $file['tmp_name'] ) ? '' : $file['tmp_name'];
-
-			if ( function_exists( 'mime_content_type' ) ) {
-				$file_type = mime_content_type( $file_name );
-			} else {
-				$file_type = $this->wkmp_get_mime_type( $file );
-			}
+			$file_type = $this->wkmp_get_mime_type( $file );
 
 			$allowed_types = array(
 				'image/png',

@@ -44,7 +44,7 @@ if ( ! class_exists( 'WKMP_Customer_Favourite_Seller' ) ) {
 
 				if ( ! empty( $selected ) ) {
 					// Delete favorite sellers.
-					$this->wkmp_delete_customer_favourite_list( $selected );
+					$this->wkmp_delete_customer_favorite_list( $selected );
 				}
 			}
 
@@ -52,7 +52,7 @@ if ( ! class_exists( 'WKMP_Customer_Favourite_Seller' ) ) {
 
 			// Delete favorite seller.
 			if ( $seller_id > 0 ) {
-				$this->wkmp_delete_customer_favourite_list( array( $seller_id ) );
+				$this->wkmp_delete_customer_favorite_list( array( $seller_id ) );
 			}
 
 			$this->wkmp_display_customer_favourite_list();
@@ -140,7 +140,7 @@ if ( ! class_exists( 'WKMP_Customer_Favourite_Seller' ) ) {
 		 *
 		 * @return void
 		 */
-		public function wkmp_delete_customer_favourite_list( $seller_ids ) {
+		public function wkmp_delete_customer_favorite_list( $seller_ids ) {
 			$seller_ids = array_map( 'intval', $seller_ids );
 
 			if ( $seller_ids ) {

@@ -46,7 +46,7 @@ if ( ! class_exists( 'WKMP_File_Handler' ) ) {
 				$is_block_checkout = \WC_Blocks_Utils::has_block_in_page( get_option( 'woocommerce_checkout_page_id' ), 'woocommerce/checkout' );
 				$is_block_cart     = \WC_Blocks_Utils::has_block_in_page( get_option( 'woocommerce_cart_page_id' ), 'woocommerce/cart' );
 
-				// Block JS.
+				// Block cart-checkout related hooks and functions.
 				if ( ( $is_block_cart ) || ( $is_block_checkout ) ) {
 					Front\WKMP_Front_Block_Hooks::get_instance();
 				}

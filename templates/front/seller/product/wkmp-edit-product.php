@@ -50,6 +50,10 @@ if ( $post_row_data && intval( $product_auth ) === get_current_user_id() ) {
 	?>
 
 	<div class="wkmp-add-product-form">
+		<div class="wkmp-product-navigation">
+			<a href="<?php echo esc_url( wc_get_endpoint_url( get_option( '_wkmp_product_list_endpoint', 'seller-products' ) ) ); ?>" class="wkmp-back-to-products-list" title="<?php esc_attr_e( 'Back to Product List', 'wk-marketplace' ); ?>"><span class="dashicons dashicons-arrow-left-alt"></span></a>
+			<a href="<?php echo esc_url( get_permalink( $wk_pro_id ) ); ?>" class="wkmp-pro-product-view-link" target="_blank"  title="<?php esc_attr_e( 'View Product', 'wk-marketplace' ); ?>"><?php esc_html_e( 'View', 'wk-marketplace' ); ?></a>
+		</div>
 		<input type="hidden" name="var_variation_display" id="var_variation_display" value="<?php echo esc_attr( $display_variation ); ?>"/>
 
 		<ul id='edit_product_tab'>

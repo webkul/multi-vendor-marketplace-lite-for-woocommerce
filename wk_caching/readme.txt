@@ -1,19 +1,16 @@
 === Caching Submodule ===
 Contributors: Webkul
 Requires at least: 5.0
-Tested up to: 6.4
-Stable tag: 1.0.8
+Tested up to: 6.5
+Stable tag: 1.0.9
 Requires PHP: 7.4
 Tested up to PHP: 8.3
 WC requires at least: 5.0
-WC tested up to: 8.5
+WC tested up to: 8.8
 WPML Compatible: yes
 Multisite Compatible: yes
 
-Tags: wordpress, woocommerce, caching, speed, object caching, transient, file caching
-
-License: license.txt file included with plugin
-License URI: https://store.webkul.com/license.html
+Tags: woocommerce caching, object caching, transient caching, file caching, radis caching
 
 It is a submodule and will be pulled into our other modules to include the caching in each module and avoid repeated work.
 
@@ -33,6 +30,11 @@ No questions asked yet
 For any Query please generate a ticket at https://webkul.com/ticket/
 
 == Changelog ==
+
+= 1.0.9 (24-05-09) =
+Updated: Tags upto 5 as per WordPress standard.
+Updated: Tested upto values for WordPress 6.5 and WooCommerce 8.8
+Removed: unnecessary logging and printing.
 
 = 1.0.8 (23-12-27) =
 Added: Filter and settings to enable Redis cache from the current module.

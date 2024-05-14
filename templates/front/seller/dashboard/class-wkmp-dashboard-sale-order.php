@@ -171,6 +171,8 @@ if ( ! class_exists( 'WKMP_Dashboard_Sale_Order' ) ) {
 			}
 
 			if ( $order_amount ) {
+				$active_color         = apply_filters( 'wkmp_active_color_code', '#96588a' );
+				$graph_datasets_color = apply_filters( 'wkmp_graph_dataset_color_code', '#673AB7' );
 				?>
 				<div class="mp-store-sale-order-history-section">
 					<div class="header">
@@ -221,16 +223,16 @@ if ( ! class_exists( 'WKMP_Dashboard_Sale_Order' ) ) {
 							datasets: [
 								{
 									label: 'Sale',
-									borderColor: '#673AB7',
-									backgroundColor: '#673AB7',
+									borderColor: '<?php echo esc_attr( $graph_datasets_color ); ?>',
+									backgroundColor: '<?php echo esc_attr( $graph_datasets_color ); ?>',
 									data: $sales,
 									fill: false,
 									yAxisID: 'y-axis-1'
 								},
 								{
 									label: 'Order',
-									borderColor: '#96588A',
-									backgroundColor: '#96588A',
+									borderColor: '<?php echo esc_attr( $active_color ); ?>',
+									backgroundColor: '<?php echo esc_attr( $active_color ); ?>',
 									data: $count,
 									fill: false,
 									yAxisID: 'y-axis-2'

@@ -271,6 +271,9 @@ if ( ! class_exists( 'WKMP_Seller_Store_Info' ) ) {
 				$shop_logo = WKMP_LITE_PLUGIN_URL . 'assets/images/shop-logo.png';
 				$shop_logo = empty( $seller_info->shop_logo ) ? $shop_logo : $seller_info->shop_logo;
 
+				$avatar_image = WKMP_LITE_PLUGIN_URL . 'assets/images/generic-male.png';
+				$avatar_image = empty( $seller_info->avatar_image ) ? $avatar_image : $seller_info->avatar_image;
+
 				$shopurl_visibility = get_option( 'wkmp_shop_url_visibility', 'required' );
 
 				$seller_collection = site_url() . '/' . $this->marketplace->seller_page_slug . '/' . get_option( '_wkmp_seller_product_endpoint', 'seller-products' ) . '/';

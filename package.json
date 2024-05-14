@@ -1,6 +1,6 @@
 {
 	"name": "multi-vendor-marketplace-lite-for-woocommerce",
-	"version": "1.0.0",
+	"version": "1.1.1",
 	"description": "This plugin converts the WooCommerce store into multi-vendor store. Using this plugin, the seller can manage the inventory, shipment, seller profile page, seller collection page and much more.",
 	"main": "assets/front/build/js/front.js",
 	"scripts": {
@@ -11,9 +11,10 @@
 		"check-engines": "wp-scripts check-engines",
 		"submodules": "git submodule update --init --recursive",
 		"phpcbf": "cd $VAR && $PWD/.config/composer/vendor/squizlabs/php_codesniffer/bin/phpcbf --standard=$INIT_CWD/phpcs.xml --severity=1 --ignore-annotations --extensions=php,html $INIT_CWD/",
-		"phpcs": "cd $VAR && $PWD/.config/composer/vendor/squizlabs/php_codesniffer/bin/phpcs --standard=$INIT_CWD/phpcs.xml --severity=1 --ignore=*/wk_caching/* --report-source --report-xml=$INIT_CWD/phpcs-reports/phpcs-report-mp-lite-$(date \"+%Y-%m-%dT%H:%M:%S\").xml --ignore-annotations --extensions=php,html $INIT_CWD/",
-		"pot": "php -d xdebug.max_nesting_level=512 $(which wp) i18n make-pot --exclude=\"node_modules/,languages/,wk_caching/,.gitignore,.gitmodules,.gulpfile.js,.git,.webpack.config.js,package,json,package-lock.json,phpcs.xml,phpmd.xml,license.txt,readme.txt,assets/\" --headers='{\"Report-Msgid-Bugs-To\":\"https://wordpress.org/support/plugin/multi-vendor-marketplace-lite-for-woocommerce/\", \"language-team\":\"LANGUAGE <EMAIL@ADDRESS>\"}' . languages/wk-marketplace.pot",
-		"zip": "git submodule update --init --recursive && wp-scripts plugin-zip"
+		"phpcs": "mkdir -p phpcs-reports && cd $VAR && $PWD/.config/composer/vendor/squizlabs/php_codesniffer/bin/phpcs --standard=$INIT_CWD/phpcs.xml --severity=1 --ignore=*/wk_caching/* --report-source --report-xml=$INIT_CWD/phpcs-reports/phpcs-report-$(date \"+%Y-%m-%dT%H:%M:%S\").xml --ignore-annotations --extensions=php,html $INIT_CWD/",
+		"pot": "php -d xdebug.max_nesting_level=512 $(which wp) i18n make-pot --exclude=\"node_modules/,languages/,wk_caching/,.gitignore,.gitmodules,.gulpfile.js,.git,.webpack.config.js,package.json,package-lock.json,phpcs.xml,phpmd.xml,license.txt,readme.txt,assets/,$npm_package_name/\" --headers='{\"Report-Msgid-Bugs-To\":\"https://wordpress.org/support/plugin/multi-vendor-marketplace-lite-for-woocommerce/\", \"language-team\":\"LANGUAGE <EMAIL@ADDRESS>\"}' . languages/wk-marketplace.pot",
+		"zip": "git submodule update --init --recursive && wp-scripts plugin-zip",
+		"zip-for-codecanyon": "mkdir -p $npm_package_name && cp -r assets/ helper/ inc/ includes/ languages/ templates/ vendor/ wk_caching/ woocommerce/ class-wk-caching-core-loader.php readme.txt $npm_package_name.php $npm_package_name && zip -r $npm_package_name.zip $npm_package_name -x **/wk_caching/.gitignore -x **/wk_caching/.git -x **/wk_caching/composer.lock -x **/wk_caching/phpcs.xml -x **/wk_caching/composer.json && rm -r $npm_package_name"
 	},
 	"files": [
 		"/assets",
@@ -22,6 +23,7 @@
 		"/includes",
 		"/languages",
 		"/templates",
+		"vendor/",
 		"/wk_caching",
 		"/woocommerce",
 		"class-wk-caching-core-loader.php",

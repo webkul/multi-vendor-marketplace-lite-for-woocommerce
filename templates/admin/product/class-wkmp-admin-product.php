@@ -119,7 +119,7 @@ if ( ! class_exists( 'WKMP_Admin_Product' ) ) {
 				$button_attrs       = apply_filters( 'wkmp_seller_save_button_attributes', array( 'disabled' => true ) );
 				?>
 				<div class="alignleft actions bulkactions">
-					<select name="wkmp_change_seller" class="regular-text wkmp-select" style="min-width:200px;">
+					<select name="wkmp_change_seller" class="regular-text wkmp-select">
 						<option value=""><?php esc_html_e( 'Select Seller', 'wk-marketplace' ); ?></option>
 						<?php foreach ( $sellers as $key => $value ) { ?>
 							<option value="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $value ); ?></option>

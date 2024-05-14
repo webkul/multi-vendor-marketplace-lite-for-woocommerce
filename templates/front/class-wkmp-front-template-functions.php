@@ -94,7 +94,7 @@ if ( ! class_exists( 'WKMP_Front_Template_Functions' ) ) {
 				$url = apply_filters( 'wkmp_single_product_seller_profile_url', $url, $seller_id );
 
 				?>
-				<p data-wkmp_seller_id="<?php echo esc_attr( $seller_id ); ?>" class="mp-product-author-shop"><?php echo esc_html( $seller_label ); ?><a href="<?php echo esc_url( $url ); ?>"> <?php echo esc_html( ucfirst( get_user_meta( $seller_id, 'shop_name', true ) ) ); ?> </a> <?php echo wp_kses_post( $rating ); ?>
+				<p data-wkmp_seller_id="<?php echo esc_attr( $seller_id ); ?>" class="wkmp-product-author-shop"><?php echo esc_html( $seller_label ); ?><a href="<?php echo esc_url( $url ); ?>"> <?php echo esc_html( ucfirst( get_user_meta( $seller_id, 'shop_name', true ) ) ); ?> </a> <?php echo wp_kses_post( $rating ); ?>
 					<span class="<?php echo esc_attr( $fav_class ); ?>" id="wkmp-add-seller-as-favourite" title="<?php esc_attr_e( 'Add As Favourite Seller', 'wk-marketplace' ); ?>">
 						<input type="hidden" name="wkmp_seller_id" value="<?php echo esc_attr( $seller_id ); ?>"/>
 						<input type="hidden" name="wkmp_customer_id" value="<?php echo esc_attr( $customer_id ); ?>"/>
@@ -437,12 +437,12 @@ if ( ! class_exists( 'WKMP_Front_Template_Functions' ) ) {
 				</div>
 			</script>
 			<?php
-
 			$show_info = \WK_Caching::wk_get_request_data( 'wkmodule_info', array( 'filter' => 'int' ) );
 			$show_info = empty( $show_info ) ? 0 : intval( $show_info );
+
 			if ( 200 === $show_info ) {
 				?>
-			<input type="hidden" data-lwdt="202403221600" data-wkmp_lite_version="<?php echo esc_attr( WKMP_LITE_VERSION ); ?>">
+			<input type="hidden" data-lwdt="202405141200" multi-vendor-marketplace-lite-for-woocommerce="<?php echo esc_attr( get_file_data( WKMP_LITE_FILE, array( 'Version' => 'Version' ), false )['Version'] ); ?>">
 				<?php
 			}
 		}

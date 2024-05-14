@@ -33,7 +33,7 @@ if ( ! class_exists( 'WK_Caching' ) ) {
 		 * Define constants.
 		 */
 		public static function define_constants() {
-			defined( 'WK_CACHING_VERSION' ) || define( 'WK_CACHING_VERSION', '1.0.8' );
+			defined( 'WK_CACHING_VERSION' ) || define( 'WK_CACHING_VERSION', '1.0.9' );
 			defined( 'WK_CACHING_SUBMODULE_URL' ) || define( 'WK_CACHING_SUBMODULE_URL', plugin_dir_url( __DIR__ ) );
 			defined( 'WKMP_ALLOWED_WKMP_SELLER_DATA_COUNT' ) || define( 'WKMP_ALLOWED_WKMP_SELLER_DATA_COUNT', '-005.03' ); // Adding negative decimal values to avoid search. We'll use absint where we'll use it.
 		}
@@ -87,7 +87,6 @@ if ( ! class_exists( 'WK_Caching' ) ) {
 				</form>
 			</div>
 			<?php
-
 			$all_keys = array();
 
 			if ( class_exists( 'WK_Caching_Core' ) ) {
@@ -304,7 +303,6 @@ if ( ! class_exists( 'WK_Caching' ) ) {
 		 */
 		public static function wk_show_notice_on_admin( $message = '', $type = 'error', $args = array() ) {
 			if ( ! empty( $message ) ) {
-
 				if ( function_exists( 'wp_admin_notice' ) ) {
 					$args         = is_array( $args ) ? $args : array();
 					$args['type'] = empty( $args['type'] ) ? $type : $args['type'];
@@ -328,9 +326,10 @@ if ( ! class_exists( 'WK_Caching' ) ) {
 		public static function wk_caching_front_footer_info() {
 			$show_info = self::wk_get_request_data( 'wkmodule_info', array( 'filter' => 'int' ) );
 			$show_info = empty( $show_info ) ? 0 : intval( $show_info );
+
 			if ( 200 === $show_info ) {
 				?>
-			<input type="hidden" data-lwdt="202401231210" data-wk_caching_version="<?php echo esc_attr( WK_CACHING_VERSION ); ?>" data-wk_caching_slug="wk_caching">
+			<input type="hidden" data-lwdt="202405091110" wk_caching="<?php echo esc_attr( WK_CACHING_VERSION ); ?>">
 				<?php
 			}
 		}

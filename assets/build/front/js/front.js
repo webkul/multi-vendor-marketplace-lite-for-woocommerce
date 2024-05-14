@@ -58,17 +58,20 @@ wkmp(window).on('load', function () {
         }
     }
 
+    //Handle stock management.
 	wkmp(document).on('click', '#wk_stock_management', function () {
 		if (wkmp(this).is(':checked')) {
 			wkmp('.wkmp_profile_input #wk-mp-stock-qty').parent('.wkmp_profile_input').css('display', 'block');
 			wkmp('.wkmp_profile_input #_backorders').parent('.wkmp_profile_input').css('display', 'block');
-			wkmp('.wkmp_profile_input #wk-mp-stock-threshold').parent('.wkmp_profile_input').css('display', 'block');
+            wkmp('.wkmp_profile_input #wk-mp-stock-threshold').parent('.wkmp_profile_input').css('display', 'block');
+            wkmp('.wkmp_profile_input #_stock_status').parent('.wkmp_profile_input').css('display', 'none')
 		} else {
 			wkmp('.wkmp_profile_input #wk-mp-stock-qty').parent('.wkmp_profile_input').css('display', 'none');
 			wkmp('.wkmp_profile_input #_backorders').parent('.wkmp_profile_input').css('display', 'none');
-			wkmp('.wkmp_profile_input #wk-mp-stock-threshold').parent('.wkmp_profile_input').css('display', 'none');
+            wkmp('.wkmp_profile_input #wk-mp-stock-threshold').parent('.wkmp_profile_input').css('display', 'none');
+            wkmp('.wkmp_profile_input #_stock_status').parent('.wkmp_profile_input').css('display', 'block')
 		}
-	});
+    });
 
 	// Seller review box.
     wkmp('.mp-avg-rating-box-link').on('click', function (event) {
@@ -79,6 +82,7 @@ wkmp(window).on('load', function () {
 		}
     });
 
+    //Hide/open ratings.
     wkmp('body').on('click', function (event) {
         if (wkmp('.mp-avg-rating-box-link').hasClass('open')) {
             wkmp('.mp-avg-rating-box-link').removeClass('open');
@@ -369,6 +373,7 @@ wkmp(function () {
 		}
 	});
 
+    //Add favorite sellers.
 	wkmp('body').on('click', '#wkmp-add-seller-as-favourite', function () {
 		let seller_id = wkmp(this).find('input[name="wkmp_seller_id"]').val();
         let customer_id = wkmp(this).find('input[name="wkmp_customer_id"]').val();
@@ -478,11 +483,6 @@ wkmp(function () {
 		};
 
 		var res = query.filterWithIds([3]); // change these to your IDs.
-
-		res.each(function (v) {
-			console.log(v.toJSON());
-		});
-
 		// When images are selected, place IDs in hidden custom field and show thumbnails.
 
 		file_frame.on('select', function () {
@@ -534,19 +534,6 @@ wkmp(function () {
 			document.querySelector('#refund-amount').value = Math.round(refundTotal * 100) / 100;
 		});
 	}
-
-	//Add product start here.
-	wkmp(document).on('click', '#wk_stock_management', function () {
-		if (wkmp(this).is(':checked')) {
-			wkmp('.wkmp_profile_input #wk-mp-stock-qty').parent('.wkmp_profile_input').css('display', 'block')
-			wkmp('.wkmp_profile_input #_backorders').parent('.wkmp_profile_input').css('display', 'block')
-			wkmp('.wkmp_profile_input #_stock_status').parent('.wkmp_profile_input').css('display', 'none')
-		} else {
-			wkmp('.wkmp_profile_input #wk-mp-stock-qty').parent('.wkmp_profile_input').css('display', 'none')
-			wkmp('.wkmp_profile_input #_backorders').parent('.wkmp_profile_input').css('display', 'none')
-			wkmp('.wkmp_profile_input #_stock_status').parent('.wkmp_profile_input').css('display', 'block')
-		}
-    });
 
     // Change product status.
     wkmp('.wkmp-toggle-select').on('change', function () {
@@ -959,10 +946,6 @@ wkmp(function () {
 
 		var res = query.filterWithIds([3]); // change these to your IDs
 
-		res.each(function (v) {
-			console.log(v.toJSON());
-		});
-
 		// When images are selected, place IDs in hidden custom field and show thumbnails.
 		file_frame.on('select', function () {
 
@@ -1136,7 +1119,7 @@ wkmp(function () {
 			}
 
             if ('variable' !== pro_type && 'grouped' !== pro_type){
-				if (!wkmp_validate_price(regu_price)) {
+				if (!wkmp_validate_decimal_input(regu_price)) {
 					wkmp('#regl_pr_error').html(wkmpObj.mkt_tr.i18n_decimal_error );
 					error++;
 				} else {
@@ -1148,7 +1131,7 @@ wkmp(function () {
 			var regular = parseFloat(wkmp('#regu_price').val());
 			var sale = parseFloat(wkmp('#sale_price').val());
 			if (wkmp('#sale_price').val()) {
-				if (!wkmp_validate_price(sale_price)) {
+				if (!wkmp_validate_decimal_input(sale_price)) {
 					wkmp('#sale_pr_error').html(wkmpObj.mkt_tr.i18n_decimal_error);
 					error++;
 				} else if (sale > regular) {
@@ -1157,18 +1140,58 @@ wkmp(function () {
 				} else {
 					wkmp('#sale_pr_error').html('');
 				}
-			}
-			var product_sku = wkmp('#product_sku').val();
-			wkmp('.wkmp_variable_sku').each(function () {
-				var wkmp_variable_sku = wkmp(this).val();
-				var this_sel = this;
-			});
+            }
+
+            // variation weight price validation
+        	wkmp(document).on('blur', '.wc_input_decimal, #wk-mp-stock-qty', function () {
+                var no = wkmp(this).val();
+        		wkmp(this).parent('.wrap').children('.wkmp-error-class').remove()
+        		if (no && !wkmp_validate_decimal_input(no)) {
+                    wkmp(this).parent('.wrap').append('<span class="wkmp-error-class">' + wkmpObj.mkt_tr.i18n_decimal_error + '</span>')
+        		}
+            });
+
+            wkmp('.wkmp_marketplace_variation .wc_input_decimal, .wkmp-add-product-form .wc_input_decimal').each(function () {
+                var no = wkmp(this).val();
+        		wkmp(this).parent('.wrap').children('.wkmp-error-class').remove()
+        		if (no && !wkmp_validate_decimal_input(no)) {
+                    wkmp(this).parent('.wrap').append('<span class="wkmp-error-class">' + wkmpObj.mkt_tr.i18n_decimal_error + '</span>')
+                    error++;
+        		}
+            });
 
 			if (error) {
 				return false;
 			}
 		}
+    });
+
+    // Variation regular price validation.
+	wkmp(document).on('blur', '.wc_input_price', function () {
+        var no = wkmp(this).val();
+		wkmp(this).next('.wkmp-error-class').remove()
+		if (no && !wkmp_validate_decimal_input(no)) {
+            wkmp(this).after('<span class="wkmp-error-class">' + wkmpObj.mkt_tr.i18n_decimal_error + '</span>');
+		}
 	});
+
+	// variation weight price validation
+	wkmp(document).on('blur', '.wc_input_decimal, #wk-mp-stock-qty', function () {
+        var no = wkmp(this).val();
+		wkmp(this).parent('.wrap').children('.wkmp-error-class').remove()
+		if (no && !wkmp_validate_decimal_input(no)) {
+            wkmp(this).parent('.wrap').append('<span class="wkmp-error-class">' + wkmpObj.mkt_tr.i18n_decimal_error + '</span>')
+		}
+	});
+
+	// stock
+	wkmp(document).on('blur', '._weight_field .wc_input_decimal, #wk-mp-stock-qty', function () {
+		var no = wkmp(this).val();
+		wkmp(this).next('.wkmp-error-class').remove()
+		if (no && !wkmp_validate_decimal_input(no)) {
+            wkmp(this).after('<span class="wkmp-error-class">' + wkmpObj.mkt_tr.i18n_decimal_error + '</span>')
+		}
+    });
 
 	function trim_wkmp_value(item) {
 		item = wkmp.trim(item);
@@ -1271,32 +1294,6 @@ wkmp(function () {
 		});
 	}
 
-	// Variation regular price validation
-	wkmp(document).on('blur', '.wc_input_price', function () {
-        var no = wkmp(this).val();
-		wkmp(this).next('.wkmp-error-class').remove()
-		if (no && !wkmp.isNumeric(no)) {
-			wkmp(this).after('<span class="wkmp-error-class">' + wkmpObj.mkt_tr.i18n_decimal_error + '</span>')
-		}
-	});
-
-	// variation weight price validation
-	wkmp(document).on('blur', '.wc_input_decimal, #wk-mp-stock-qty', function () {
-		var no = wkmp(this).val();
-		wkmp(this).parent('.wrap').children('.wkmp-error-class').remove()
-		if (no && !wkmp.isNumeric(no)) {
-			wkmp(this).parent('.wrap').append('<span class="wkmp-error-class">' + wkmpObj.mkt_tr.mkt7 + '</span>')
-		}
-	});
-
-	// stock
-	wkmp(document).on('blur', '._weight_field .wc_input_decimal, #wk-mp-stock-qty', function () {
-		var no = wkmp(this).val();
-		wkmp(this).next('.wkmp-error-class').remove()
-		if (no && !wkmp.isNumeric(no)) {
-			wkmp(this).after('<span class="wkmp-error-class">' + wkmpObj.mkt_tr.mkt7 + '</span>')
-		}
-	});
 	// variation weight price validation
 	wkmp(document).on('keyup', '.wkmp_variable_stock', function () {
 		var no = wkmp(this).val();
@@ -1316,14 +1313,14 @@ wkmp(function () {
 	//product name validation.
 	wkmp('#product_name').blur(function () {
 		var product_name = wkmp('#product_name').val();
-		var ck_name = /^[A-Za-z0-9 _-]{1,40}$/;
 		if (_.isEmpty(product_name)) {
 			wkmp('#pro_name_error').html(wkmpObj.mkt_tr.mkt8);
 			return false;
 		} else {
 			wkmp('#pro_name_error').html('');
 		}
-	});
+    });
+
 	//product regular price validation
 	wkmp('#regu_price').blur(function () {
 		var regu_price = wkmp('#regu_price').val();
@@ -1333,7 +1330,7 @@ wkmp(function () {
 			pro_type = wkmp('#product-form').find('input[name="product_type"]').val()
         }
 
-		if ('variable' !== pro_type  && 'grouped' !== pro_type && !wkmp_validate_price(regu_price)) {
+		if ('variable' !== pro_type  && 'grouped' !== pro_type && !wkmp_validate_decimal_input(regu_price)) {
 			wkmp('#regl_pr_error').html(wkmpObj.mkt_tr.i18n_decimal_error);
 			return false;
 		} else {
@@ -1354,7 +1351,7 @@ wkmp(function () {
         }
 
 		if (!_.isEmpty( wkmp('#sale_price').val()) && 'variable' !== pro_type && 'grouped' !== pro_type) {
-			if (!wkmp_validate_price(sale_price)) {
+			if (!wkmp_validate_decimal_input(sale_price)) {
 				wkmp('#sale_pr_error').html(wkmpObj.mkt_tr.i18n_decimal_error);
 				return false;
 			} else if (sale >= regular) {
@@ -1371,7 +1368,7 @@ wkmp(function () {
 		var regular = parseFloat(wkmp(this).parent().siblings().children('.wkmp_variable_regular_price').val());
 		var sale = parseFloat(wkmp(this).val());
 		if ('' !== wkmp(this).val()) {
-			if (!wkmp_validate_price(sale_price)) {
+			if (!wkmp_validate_decimal_input(sale_price)) {
 				wkmp(this).siblings('.sale_pr_error').html(wkmpObj.mkt_tr.i18n_decimal_error);
 				return false;
 			} else if (sale >= regular) {
@@ -1594,7 +1591,7 @@ wkmp(function () {
 		return n !== Infinity && String(n) === str && n >= 0;
     }
 
-    function wkmp_validate_price(price) {
+    function wkmp_validate_decimal_input(price) {
         let valid = true;
 
         if ('' !== price) {
@@ -1684,6 +1681,12 @@ wkmp(function () {
         }
     });
     //Delete seller product ends - 5.2.0(21-12-28)
+
+    //submitting delete shop follower form on clicking row action.
+    wkmp('.wkmp-trash-shop-follower').on('click', function () {
+        wkmp(this).closest('tr').find('input[type=checkbox]').attr('checked', true);
+        wkmp(this).closest('form').submit();
+    });
 
     if ( window.history.replaceState ) {
 		window.history.replaceState( null, null, window.location.href );

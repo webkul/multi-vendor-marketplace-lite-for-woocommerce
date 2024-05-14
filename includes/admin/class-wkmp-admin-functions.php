@@ -83,7 +83,7 @@ if ( ! class_exists( 'WKMP_Admin_Functions' ) ) {
 			register_setting( 'wkmp-general-settings-group', 'wkmp_select_seller_page', array( $this, 'wkmp_update_selected_seller_page' ) );
 
 			register_setting( 'wkmp-product-settings-group', '_wkmp_wcml_allow_product_translate' );
-			register_setting( 'wkmp-product-settings-group', '_wkmp_seller_allowed_product_types', array( $this, 'wkmp_update_allowed_product_types' ) );
+			register_setting( 'wkmp-product-settings-group', '_wkmp_seller_allowed_product_types' );
 			register_setting( 'wkmp-product-settings-group', '_wkmp_seller_allowed_categories' );
 			register_setting( 'wkmp-product-settings-group', '_wkmp_enable_minimum_order_amount' );
 			register_setting( 'wkmp-product-settings-group', '_wkmp_minimum_order_amount' );
@@ -111,29 +111,14 @@ if ( ! class_exists( 'WKMP_Admin_Functions' ) ) {
 		 * @return float|string
 		 */
 		public function wkmp_validate_seller_commission_update( $commission ) {
+			$commission = is_null( $commission ) ? '' : wc_format_decimal( trim( stripslashes( $commission ) ) );
+
 			if ( is_numeric( $commission ) && $commission >= 0 && $commission <= 100 ) {
 				return $commission;
 			} else {
 				add_settings_error( '_wkmp_default_commission', 'commission-error', ( /* translators: %s Commission */ sprintf( esc_html__( 'Invalid default commission value %s. Must be between 0 & 100.', 'wk-marketplace' ), esc_attr( $commission ) ) ), 'error' );
 
 				return '';
-			}
-		}
-
-		/**
-		 * Updating seller allowed products with validation not empty.
-		 *
-		 * @param array $allowed_types Allowed types.
-		 *
-		 * @return float|string
-		 */
-		public function wkmp_update_allowed_product_types( $allowed_types ) {
-			if ( empty( $allowed_types ) ) {
-				add_settings_error( '_wkmp_seller_allowed_product_types', 'allowed-product-type-error', ( /* translators: %s Commission */ esc_html__( 'Atleast one product type must be allowed.', 'wk-marketplace' ) ), 'error' );
-
-				return array();
-			} else {
-				return $allowed_types;
 			}
 		}
 
@@ -582,8 +567,8 @@ if ( ! class_exists( 'WKMP_Admin_Functions' ) ) {
 
 			wp_nonce_field( 'wkmp_save_meta_box_seller', 'wkmp_seller_meta_box_nonce' );
 			?>
-			<div class="return-seller">
-				<select name="seller_id" style="width:100%">
+			<div class="wkmp-product-assigned-seller">
+				<select name="seller_id">
 					<option value="<?php echo esc_attr( get_current_user_id() ); ?>">--<?php esc_html_e( 'Select Seller', 'wk-marketplace' ); ?>---</option>
 					<?php
 					foreach ( $seller_ids as $user_id ) {

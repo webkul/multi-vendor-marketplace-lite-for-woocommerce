@@ -35,10 +35,10 @@ wkJQ( document ).ready(
 			function () {
 				wkJQ( '.wkmp-text-danger' ).remove();
 				let query_id      = wkJQ( this ).data( 'qid' );
-				let reply_message = wkJQ( this ).prev( 'div' ).find( '.admin_msg_to_seller' ).val();
+				let reply_message = wkJQ( this ).prev( 'div' ).find( '.wkmp-admin_msg_to_seller' ).val();
 				reply_message     = reply_message.replace( /\r\n|\r|\n/g, "<br/>" );
 				if (reply_message.length < 5) {
-					wkJQ( this ).prev( 'div' ).find( '.admin_msg_to_seller' ).before( '<div class="wkmp-text-danger">Message should be more than five character</div>' );
+					wkJQ( this ).prev( 'div' ).find( '.wkmp-admin_msg_to_seller' ).before( '<div class="wkmp-text-danger">Message should be more than five character</div>' );
 					return false;
 				}
 
@@ -65,8 +65,8 @@ wkJQ( document ).ready(
 			}
 		);
 
-		if (wkJQ( ".return-seller select" ).length) {
-			wkJQ( ".return-seller select" ).select2();
+		if (wkJQ( ".wkmp-product-assigned-seller select" ).length) {
+			wkJQ( ".wkmp-product-assigned-seller select" ).select2();
 		}
 
 		wkJQ( 'select#role' ).on(

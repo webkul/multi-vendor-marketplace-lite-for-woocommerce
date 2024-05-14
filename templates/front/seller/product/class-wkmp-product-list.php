@@ -245,8 +245,8 @@ if ( ! class_exists( 'WKMP_Product_List' ) ) {
 				$product_status = get_option( '_wkmp_allow_seller_to_publish', true ) ? 'publish' : 'draft';
 
 				$seller_id   = empty( $posted_data['seller_id'] ) ? get_current_user_id() : $posted_data['seller_id'];
-				$price       = ( is_numeric( $posted_data['regu_price'] ) ) ? $posted_data['regu_price'] : '';
-				$sales_price = ( is_numeric( $posted_data['sale_price'] ) ) ? $posted_data['sale_price'] : '';
+				$price       = is_null( $posted_data['regu_price'] ) ? '' : wc_format_decimal( trim( stripslashes( $posted_data['regu_price'] ) ) );
+				$sales_price = is_null( $posted_data['sale_price'] ) ? '' : wc_format_decimal( trim( stripslashes( $posted_data['sale_price'] ) ) );
 
 				$product_data = array(
 					'post_author'           => $seller_id,

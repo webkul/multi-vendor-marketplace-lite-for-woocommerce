@@ -3,11 +3,11 @@ Contributors: webkul
 Tags: marketplace, vendors, sellers, multi stores, b2c marketplace
 Requires at least: 5.0
 Tested up to: 6.5
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 Requires PHP: 7.4
 Tested up to PHP: 8.3
 WC requires at least: 5.0
-WC tested up to: 8.7
+WC tested up to: 8.8
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 WPML Compatible: no
@@ -17,7 +17,7 @@ This plugin converts the WooCommerce store into a multi-vendor store like Amazon
 
 == Description ==
 
-Marketplace Lite for WooCommerce is explicitly developed to switch your WooCommerce website into a multivendor platform that has multiple sellers with separate profiles.
+Marketplace Lite for WooCommerce is explicitly developed to switch your WooCommerce website into a multivendor platform like Amazon, eBay and Etsy that can have multiple sellers with their separate profiles.
 
 [Upgrade to Pro](https://store.webkul.com/woocommerce-multivendor-marketplace.html) to utilize the full power of Multi-Vendor Marketplace for WooCommerce and its [50+ Powerful Addons](https://store.webkul.com/woocommerce-plugins/Marketplace.html?limit=48)
 
@@ -222,6 +222,14 @@ For showing extensions and the support and services menu we are using our Webkul
 
 * Extensions ([Webkul Policy](https://webkul.com/privacy-policy/))
 
+Multi-Vendor Marketplace Lite for WooCommerce &#8211; Create Your Amazing B2C Multi-Vendor Marketplace Intuitively uses [Appsero](https://appsero.com) SDK to collect some telemetry data upon user's confirmation. This helps us to troubleshoot problems faster & make product improvements.
+
+Appsero SDK **does not gather any data by default.** The SDK only starts gathering basic telemetry data **when a user allows it via the admin notice**. We collect the data to ensure a great user experience for all our users.
+
+Integrating Appsero SDK **DOES NOT IMMEDIATELY** start gathering data, **without confirmation from users in any case.**
+
+Learn more about how [Appsero collects and uses this data](https://appsero.com/privacy-policy/).
+
  = Developer Resources =
 
 Marketplace Lite for WooCommerce is open-source software and is made to be extended. To reduce zip size and optimize the code, we have added minified css and js assets but developers can find non-minified (un-compressed) sources at our public ([github repository](https://github.com/webkul/multi-vendor-marketplace-lite-for-woocommerce/)) here.
@@ -278,6 +286,16 @@ For any Query please generate a ticket at https://webkul.com/ticket/
 8. **Seller Dashboard:** - Seller Frontend dashboard showing different statistics.
 
 == Changelog ==
+
+= 1.1.1 - 2024-05-14 =
+Added: Appsero services for collecting deactivation reasons on deactivation after admin's consent.
+Added: Support for comma decimal separator on seller's products.
+Added: View and back button on seller's product edit page.
+Replaced: Twitter icon with X icon on seller's profile page.
+Fixed: Issues with profile and shop images not updating correctly.
+Fixed: Issue with commission calculations.
+Fixed: Seller's first name was not updating from profile edit page.
+Fixed: Cart block issue dependency error.
 
 = 1.1.0 - 2024-03-22 =
 Added: Compatibility with WooCommerce Cart and Checkout blocks.

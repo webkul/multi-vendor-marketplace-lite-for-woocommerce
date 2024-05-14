@@ -15,10 +15,10 @@ if ( empty( $invoice_nonce ) || ( ! empty( $invoice_nonce ) && ! wp_verify_nonce
 }
 
 $order_detail_by_order_id = array();
-$get_item                 = $admin_order->get_items();
+$get_items                = $admin_order->get_items();
 $cur_symbol               = get_woocommerce_currency_symbol( $admin_order->get_currency() );
 
-foreach ( $get_item as $key => $value ) {
+foreach ( $get_items as $key => $value ) {
 	$value_data          = $value->get_data();
 	$product_id          = $value->get_product_id();
 	$variable_id         = $value->get_variation_id();
@@ -184,7 +184,6 @@ foreach ( $get_item as $key => $value ) {
 				$aaa            = $variation->get_variation_attributes();
 				$attribute_prop = strtoupper( $aaa[ 'attribute_' . strtolower( $attribute_name ) ] );
 				?>
-
 				<tr>
 					<td>
 						<?php echo esc_html( $details[ $i ]['product_name'] ); ?><br>

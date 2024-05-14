@@ -58,6 +58,7 @@ if ( ! class_exists( 'WKMP_Seller_Commission' ) ) {
 
 			if ( ! empty( $nonce ) && wp_verify_nonce( $nonce, 'wkmp-admin-seller-commission-nonce-action' ) ) {
 				$commission = empty( $_POST['wkmp_seller_commission'] ) ? '' : wc_clean( wp_unslash( $_POST['wkmp_seller_commission'] ) );
+				$commission = is_null( $commission ) ? '' : wc_format_decimal( trim( stripslashes( $commission ) ) );
 
 				if ( empty( $commission ) || ( is_numeric( $commission ) && $commission >= 0 && $commission <= 100 ) ) {
 					$commission_data = array( 'wkmp_seller_commission' => $commission );

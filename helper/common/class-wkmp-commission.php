@@ -230,13 +230,13 @@ if ( ! class_exists( 'WKMP_Commission' ) ) {
 		 *
 		 * @param int   $product_id product id.
 		 * @param int   $pro_qty product quantity.
-		 * @param int   $pro_price product price.
+		 * @param float $pro_price product price.
 		 * @param int   $assigned_seller seller field.
 		 * @param float $tax_amount tax amount.
 		 *
 		 * @return array
 		 */
-		public function wkmp_calculate_product_commission( $product_id = '', $pro_qty = '', $pro_price = '', $assigned_seller = '', $tax_amount = 0 ) {
+		public function wkmp_calculate_product_commission( $product_id, $pro_qty, $pro_price, $assigned_seller, $tax_amount = 0 ) {
 			$data = array();
 
 			if ( ! empty( $product_id ) ) {
@@ -250,10 +250,11 @@ if ( ! class_exists( 'WKMP_Commission' ) ) {
 
 				$commission_on_seller = $this->wkmp_get_seller_commission_info( $seller_id, 'commision_on_seller', ARRAY_A, true );
 				$commission_on_seller = apply_filters( 'wkmp_alter_seller_commission', $commission_on_seller, $product_id, $pro_qty, $seller_id );
-				$product_price        = $pro_price + $tax_amount;
-				$comm_type            = 'percent';
-				$commission_applied   = 0;
-				$admin_commission     = $product_price;
+
+				$product_price      = $pro_price + $tax_amount;
+				$comm_type          = 'percent';
+				$commission_applied = 0;
+				$admin_commission   = $product_price;
 
 				if ( empty( $commission_on_seller ) ) {
 					$default_commission = get_option( '_wkmp_default_commission', 0 );

@@ -154,13 +154,13 @@ defined( 'ABSPATH' ) || exit; // Exit if access directly.
 	?>
 	<div class="wkmp_profile_input" <?php echo esc_attr( $style ); ?> id="regularPrice">
 		<label for="regu_price"><?php esc_html_e( 'Regular Price', 'wk-marketplace' ); ?></label>
-		<input class="wkmp_product_input" type="text" name="regu_price" id="regu_price" value="<?php echo isset( $meta_arr['_regular_price'] ) ? esc_attr( $meta_arr['_regular_price'] ) : ''; ?>"/>
+		<input class="wkmp_product_input" type="text" name="regu_price" id="regu_price" value="<?php echo isset( $meta_arr['_regular_price'] ) ? esc_attr( wc_format_localized_decimal( $meta_arr['_regular_price'] ) ) : ''; ?>"/>
 		<div id="regl_pr_error" class="wkmp-error-class"></div>
 	</div>
 
 	<div class="wkmp_profile_input" <?php echo esc_attr( $style ); ?> id="salePrice">
 		<label for="sale_price"><?php esc_html_e( 'Sale Price', 'wk-marketplace' ); ?></label>
-		<input class="wkmp_product_input" type="text" name="sale_price" id="sale_price" value="<?php echo isset( $meta_arr['_sale_price'] ) ? esc_attr( $meta_arr['_sale_price'] ) : ''; ?>"/>
+		<input class="wkmp_product_input" type="text" name="sale_price" id="sale_price" value="<?php echo isset( $meta_arr['_sale_price'] ) ? esc_attr( wc_format_localized_decimal( $meta_arr['_sale_price'] ) ) : ''; ?>"/>
 		<div id="sale_pr_error" class="wkmp-error-class"></div>
 	</div>
 

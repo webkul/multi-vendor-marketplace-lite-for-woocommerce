@@ -36,7 +36,7 @@ $pro_disabled = $wkmarketplace->wkmp_is_pro_module_disabled();
 					)
 				);
 				?>
-				<input type="text" class="regular-text" id="wkmp-default-commission" name="_wkmp_default_commission" value="<?php echo esc_attr( get_option( '_wkmp_default_commission' ) ); ?>"/>
+				<input type="text" class="regular-text wc_input_decimal" id="wkmp-default-commission" name="_wkmp_default_commission" value="<?php echo esc_attr( wc_format_localized_decimal( get_option( '_wkmp_default_commission' ) ) ); ?>"/>
 			</td>
 		</tr>
 		<tr valign="top">
