@@ -202,7 +202,7 @@ if ( class_exists( 'WP_Filesystem_Direct' ) && ! class_exists( 'WK_Caching_File'
 		 *
 		 * @since 2.5.0
 		 *
-		 * @param string $d_path           Path to directory or file.
+		 * @param string $path           Path to directory or file.
 		 * @param bool   $include_hidden Optional. Whether to include details of hidden ("." prefixed) files.
 		 *                               Default true.
 		 * @param bool   $recursive      Optional. Whether to recursively include file details in nested directories.
@@ -222,26 +222,28 @@ if ( class_exists( 'WP_Filesystem_Direct' ) && ! class_exists( 'WK_Caching_File'
 		 *     @type mixed  $files       If a directory and $recursive is true, contains another array of files.
 		 * }
 		 */
-		public function dirlist( $d_path, $include_hidden = true, $recursive = false ) {
-			if ( $this->is_file( $d_path ) ) {
-				$limit_file = basename( $d_path );
-				$d_path     = dirname( $d_path );
+		public function dirlist( $path, $include_hidden = true, $recursive = false ) {
+			if ( $this->is_file( $path ) ) {
+				$limit_file = basename( $path );
+				$path       = dirname( $path );
 			} else {
 				$limit_file = false;
 			}
-			if ( ! $this->is_dir( $d_path ) ) {
+
+			if ( ! $this->is_dir( $path ) || ! $this->is_readable( $path ) ) {
 				return false;
 			}
 
-			$dir = dir( $d_path );
+			$dir = dir( $path );
+
 			if ( ! $dir ) {
 				return false;
 			}
 
-			$ret = array();
+			$path = trailingslashit( $path );
+			$ret  = array();
 
-			while ( false !== $dir->read() ) {
-				$entry         = $dir->read();
+			while ( false !== ( $entry = $dir->read() ) ) {
 				$struc         = array();
 				$struc['name'] = $entry;
 
@@ -257,20 +259,20 @@ if ( class_exists( 'WP_Filesystem_Direct' ) && ! class_exists( 'WK_Caching_File'
 					continue;
 				}
 
-				$struc['perms']       = $this->gethchmod( $d_path . '/' . $entry );
+				$struc['perms']       = $this->gethchmod( $path . $entry );
 				$struc['permsn']      = $this->getnumchmodfromh( $struc['perms'] );
 				$struc['number']      = false;
-				$struc['owner']       = $this->owner( $d_path . '/' . $entry );
-				$struc['group']       = $this->group( $d_path . '/' . $entry );
-				$struc['size']        = $this->size( $d_path . '/' . $entry );
-				$struc['lastmodunix'] = $this->mtime( $d_path . '/' . $entry );
+				$struc['owner']       = $this->owner( $path . $entry );
+				$struc['group']       = $this->group( $path . $entry );
+				$struc['size']        = $this->size( $path . $entry );
+				$struc['lastmodunix'] = $this->mtime( $path . $entry );
 				$struc['lastmod']     = gmdate( 'M j', $struc['lastmodunix'] );
 				$struc['time']        = gmdate( 'h:i:s', $struc['lastmodunix'] );
-				$struc['type']        = $this->is_dir( $d_path . '/' . $entry ) ? 'd' : 'f';
+				$struc['type']        = $this->is_dir( $path . $entry ) ? 'd' : 'f';
 
 				if ( 'd' === $struc['type'] ) {
 					if ( $recursive ) {
-						$struc['files'] = $this->dirlist( $d_path . '/' . $struc['name'], $include_hidden, $recursive );
+						$struc['files'] = $this->dirlist( $path . $struc['name'], $include_hidden, $recursive );
 					} else {
 						$struc['files'] = array();
 					}
@@ -278,8 +280,10 @@ if ( class_exists( 'WP_Filesystem_Direct' ) && ! class_exists( 'WK_Caching_File'
 
 				$ret[ $struc['name'] ] = $struc;
 			}
+
 			$dir->close();
 			unset( $dir );
+
 			return $ret;
 		}
 
@@ -298,14 +302,14 @@ if ( class_exists( 'WP_Filesystem_Direct' ) && ! class_exists( 'WK_Caching_File'
 		/**
 		 * If file exists.
 		 *
-		 * @param string $file File name.
+		 * @param string $file_name File name.
 		 *
 		 * @return bool
 		 */
-		public function exists( $file ) {
-			$file = $this->file_path( $file );
+		public function exists( $file_name ) {
+			$file_path = $this->file_path( $file_name );
 
-			return parent::exists( $file );
+			return parent::exists( $file_path );
 		}
 
 		/**
@@ -343,6 +347,45 @@ if ( class_exists( 'WP_Filesystem_Direct' ) && ! class_exists( 'WK_Caching_File'
 					$this->mkdir( $dir );
 				}
 			}
+		}
+
+		/**
+		 * Get all cached data or keys.
+		 *
+		 * @param string     $type Return type. Data or keys.
+		 * @param array      $keys Data keys, If $type is 'data' then all keys for which data is to be retrieved.
+		 * @param string|int $data_group The data group.
+		 *
+		 * @return bool|array
+		 */
+		public function get_all( $type = '', $keys = array(), $data_group = '' ) {
+			$path = $this->get_module_dir();
+			return $this->get_file_list( $path, array() );
+		}
+
+		/**
+		 * Get all folder and file name list.
+		 *
+		 * @param string $dir_path Directory path.
+		 * @param array  $result File list.
+		 *
+		 * @return array()
+		 */
+		public function get_file_list( $dir_path, $result = array() ) {
+			if ( $this->is_dir( $dir_path ) ) {
+				$all_dirs = scandir( $dir_path );
+				foreach ( $all_dirs as $dir ) {
+					if ( in_array( $dir, array( '.', '..', '.htaccess' ), true ) ) {
+						continue;
+					}
+
+					if ( $this->is_dir( $this->get_module_dir() . $dir ) ) {
+						$result = $this->get_file_list( $this->get_module_dir() . $dir, $result );
+					}
+					$result[] = $dir;
+				}
+			}
+			return $result;
 		}
 	}
 }

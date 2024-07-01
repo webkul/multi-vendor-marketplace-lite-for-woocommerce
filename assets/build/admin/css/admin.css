@@ -31,7 +31,6 @@ fieldset.mp-fieldset table {
   background-color: #5cb85c;
   border-color: #4cae4c;
 }
-
 .wk-transaction-view {
   line-height: 30px;
 }
@@ -421,7 +420,6 @@ fieldset.mp-fieldset table {
   z-index: 1;
   width: 100%;
 }
-
 .form-table .wkmp-section td {
   padding: 5px 0 0 0;
 }
@@ -476,8 +474,7 @@ fieldset.mp-fieldset table {
   align-items: center;
   justify-content: end;
 }
-
-/** Upgrade to pro popup starts **/
+/* Upgrade to pro popup starts **/
 .wkmp_show_pro_upgrade_poupup{
   position: fixed; /* Sit on top of the page content */
   width: 100%; /* Full width (cover the whole page) */
@@ -489,7 +486,6 @@ fieldset.mp-fieldset table {
   z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
   cursor: pointer; /* Add a pointer on hover */
 }
-
 .wkmp_pro_lock {
     background-image: url("../../../images/wkmp-pro-lock.svg");
     background-repeat: no-repeat;
@@ -502,9 +498,7 @@ fieldset.mp-fieldset table {
     vertical-align: middle;
     margin-left: 10px;
 }
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@800&family=Poppins:wght@400;600;800&family=Roboto:wght@400;500;700&display=swap');
-
 .wkmp_show_pro_upgrade_poupup {
 	background: linear-gradient(257deg, #ADC9DD -16%, #D9EFFF 106%);
 	border-radius: 4px;
@@ -512,13 +506,10 @@ fieldset.mp-fieldset table {
 	max-width: 498px;
 	margin: 50px auto;
 }
-
 .wkmp_show_pro_upgrade_poupup .upgrade-popup-content {
 	position: relative;
 	z-index: 2;
-
 }
-
 .wkmp_show_pro_upgrade_poupup .upgrade-popup-content .upgrade-logo {
 	display: flex;
 	align-items: center;
@@ -534,7 +525,6 @@ fieldset.mp-fieldset table {
 	color: #1B2023;
 	margin-top: 16px;
 }
-
 .wkmp_show_pro_upgrade_poupup .upgrade-popup-content .upgrade-content {
 	font-size: 16px;
 	font-weight: 400;
@@ -542,14 +532,12 @@ fieldset.mp-fieldset table {
 	margin-top: 16px;
 	max-width: 324px;
 }
-
 .wkmp_show_pro_upgrade_poupup .upgrade-popup-content .upgrade-btns {
 	margin-top: 16px;
 	display: flex;
 	align-items: center;
 	gap: 16px;
 }
-
 .wkmp_show_pro_upgrade_poupup .upgrade-popup-content .upgrade-btns .upgr-btn {
 	font-size: 14px;
 	font-weight: 500;
@@ -574,7 +562,6 @@ fieldset.mp-fieldset table {
 	color: #ffffff;
 	background-color: #2271B1;
 }
-
 .wkmp_show_pro_upgrade_poupup .upgrade-popup-content .upgrade-close {
 	display: inline-block;
 	width: 20px;
@@ -587,11 +574,9 @@ fieldset.mp-fieldset table {
 	cursor: pointer;
 	transition: .1s ease-in;
 }
-
 .wkmp_show_pro_upgrade_poupup .upgrade-popup-content .upgrade-close:hover {
 	box-shadow: 0 0 4px 0 #000000;
 }
-
 .wkmp_show_pro_upgrade_poupup .upgrade-popup-content .upgrade-close:before, .wkmp_show_pro_upgrade_poupup .upgrade-popup-content .upgrade-close:after {
 	content: '';
 	width: 10px;
@@ -603,11 +588,9 @@ fieldset.mp-fieldset table {
 	top: 9px;
 	left: 5px
 }
-
 .wkmp_show_pro_upgrade_poupup .upgrade-popup-content .upgrade-close:after {
 	transform: rotate(315deg);
 }
-
 .wkmp_show_pro_upgrade_poupup .upgrade-popup-content .upgrade-watermark {
 	position: absolute;
 	right: 0;
@@ -623,15 +606,14 @@ fieldset.mp-fieldset table {
   background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
   z-index: 1;
 }
-/** Upgrade to pro popup ends **/
+/* Upgrade to pro popup ends */
 
-/** Upgrade to pro banner starts **/
+/* Upgrade to pro banner starts */
 .wkmp-upgrade-pro-banner-notice section {
     display: block;
     margin: 0;
     padding: 0;
 }
-
 .wkmp-upgrade-pro-banner-notice .upgrade-banner-design {
     margin: auto;
     gap: 24px;
@@ -661,7 +643,6 @@ fieldset.mp-fieldset table {
     flex-direction: column;
     gap: 16px;
 }
-
 .wkmp-upgrade-pro-banner-notice .upgrade-banner-wrap .upgrade-banner-content .upgrade-title {
     color: #000;
     font-size: 24px;
@@ -675,13 +656,11 @@ fieldset.mp-fieldset table {
     font-weight: 700;
     margin: 0;
 }
-
 .wkmp-upgrade-pro-banner-notice .upgrade-banner-wrap .upgrade-banner-content .upgrade-content {
     color: #333;
     font-size: 18px;
     margin: 0;
 }
-
 .wkmp-upgrade-pro-banner-notice .upgrade-banner-wrap .upgrade-banner-content .upgrade-banner-box .upgrade-checkbox {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -691,7 +670,6 @@ fieldset.mp-fieldset table {
     list-style: none;
     margin: 0;
 }
-
 .wkmp-upgrade-pro-banner-notice .upgrade-banner-wrap .upgrade-banner-content .upgrade-banner-box .upgrade-checkbox .upgrade-tittle {
     display: flex;
     gap: 8px;
@@ -700,7 +678,6 @@ fieldset.mp-fieldset table {
     font-weight: 400;
     margin: 0;
 }
-
 .wkmp-upgrade-pro-banner-notice .upgrade-banner-wrap .upgrade-banner-content .upgrade-banner-box .upgrade-checkbox .upgrade-tittle:before {
     content: '';
     display: inline-block;
@@ -709,7 +686,6 @@ fieldset.mp-fieldset table {
     background-image: url('../../../images/wkmp-pro-check-circle.svg');
     vertical-align: middle;
 }
-
 .wkmp-upgrade-pro-banner-notice .upgrade-banner-wrap .upgrade-banner-content .upgr-btn {
     display: inline-flex;
     padding: 12px 24px;
@@ -724,43 +700,36 @@ fieldset.mp-fieldset table {
     font-weight: 500;
     transition: .3s ease-in;
 }
-
 .wkmp-upgrade-pro-banner-notice .upgrade-banner-wrap .upgrade-banner-content .upgr-btn:hover {
     background-color: #ffffff;
     border-color: #2271B1;
     color: #2271B1;
 }
-/** Upgrade to pro banner ends **/
+/* Upgrade to pro banner ends */
 
 /* Start Style: Upgrade Pro Toast/Snackbar */
-
-.wkmp-toast-notice .toast {
+.wkmp-toast-notice .toast-section {
     margin: auto;
 }
-
 .wkmp-toast-notice .upgrade-toast-wrap {
     margin: 0 auto;
     padding: 10px;
 }
-
 .wkmp-toast-notice .upgrade-toast-wrap .upgrade-toast-content {
     display: flex;
     gap: 16px;
     max-width: max-content;
     margin: auto;
 }
-
 .wkmp-toast-notice .upgrade-toast-wrap .upgrade-toast-content .upgrade-toast-box {
     display: flex;
     align-items: center;
     gap: 8px;
     flex: 1;
 }
-
 .wkmp-toast-notice .upgrade-toast-wrap .upgrade-toast-content .upgrade-toast-box .upgrade-toast-icon {
     padding: 4px 3px;
 }
-
 .wkmp-toast-notice .upgrade-toast-wrap .upgrade-toast-content .upgrade-toast-box .upgrade-toast-icon:before {
     content: '';
     display: block;
@@ -769,14 +738,12 @@ fieldset.mp-fieldset table {
     background-image: url("../../../images/wkmp-diamong.png");
     background-repeat: no-repeat;
 }
-
 .wkmp-toast-notice .upgrade-toast-wrap .upgrade-toast-content .upgrade-toast-box .upgrade-toast-heading {
     color: #000;
     font-size: 14px;
     font-weight: 400;
     flex: 1;
 }
-
 .wkmp-toast-notice .upgrade-toast-wrap .upgrade-toast-content .upgr-toast-btn {
     display: inline-block;
     padding: 8px 9px;
@@ -790,7 +757,6 @@ fieldset.mp-fieldset table {
     text-decoration: none;
     transition: .3s ease-in;
 }
-
 .wkmp-toast-notice .upgrade-toast-wrap .upgrade-toast-content .upgr-toast-btn:hover {
     background-color: #2271b1;
     border-color: #2271b1;
@@ -811,7 +777,6 @@ fieldset.mp-fieldset table {
     display: flex;
     align-items: center;
 }
-
 .wkmp-addons-tabs-wrap .page-title {
     font-size: 20px;
     line-height: 1.6em;
@@ -843,9 +808,7 @@ fieldset.mp-fieldset table {
 		width: 100%;
 	}
 }
-
 /*End Style: Responsive Upgrade Pro Toast/Snackbar */
-
 
 .mp-seller-data-wrapper .wkmp-seller-detail-email{
   text-decoration: none;

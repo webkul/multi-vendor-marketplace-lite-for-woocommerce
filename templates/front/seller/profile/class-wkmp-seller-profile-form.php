@@ -97,8 +97,24 @@ if ( ! class_exists( 'WKMP_Seller_Profile_Form' ) ) {
 			if ( $no_slug ) {
 				$seller_profile .= $seller_id;
 			}
-			?>
 
+			$profile_data = empty( $posted_data['wkmp_profile_data'] ) ? array() : $posted_data['wkmp_profile_data'];
+
+			$first_name        = empty( $profile_data['first_name'] ) ? $seller_info['wkmp_first_name'] : $profile_data['first_name'];
+			$last_name         = empty( $profile_data['last_name'] ) ? $seller_info['wkmp_last_name'] : $profile_data['last_name'];
+			$email             = empty( $profile_data['user_email'] ) ? $seller_info['wkmp_seller_email'] : $profile_data['user_email'];
+			$shop_name         = empty( $profile_data['shop_name'] ) ? $seller_info['wkmp_shop_name'] : $profile_data['shop_name'];
+			$shop_url          = empty( $profile_data['shop_url'] ) ? $seller_info['wkmp_shop_url'] : $profile_data['shop_url'];
+			$billing_phone     = empty( $profile_data['billing_phone'] ) ? $seller_info['wkmp_shop_phone'] : $profile_data['billing_phone'];
+			$payment_details   = empty( $profile_data['mp_seller_payment_details'] ) ? $seller_info['wkmp_payment_details'] : $profile_data['mp_seller_payment_details'];
+			$billing_country   = empty( $profile_data['billing_country'] ) ? $seller_info['wkmp_shop_country'] : $profile_data['billing_country'];
+			$billing_address_1 = empty( $profile_data['billing_address_1'] ) ? $seller_info['wkmp_shop_address_1'] : $profile_data['billing_address_1'];
+			$billing_address_2 = empty( $profile_data['billing_address_2'] ) ? $seller_info['wkmp_shop_address_2'] : $profile_data['billing_address_2'];
+			$billing_city      = empty( $profile_data['billing_city'] ) ? $seller_info['wkmp_shop_city'] : $profile_data['billing_city'];
+			$billing_state     = empty( $profile_data['billing_state'] ) ? $seller_info['wkmp_shop_state'] : $profile_data['billing_state'];
+			$billing_postcode  = empty( $profile_data['billing_postcode'] ) ? $seller_info['wkmp_shop_postcode'] : $profile_data['billing_postcode'];
+			$about_shop        = empty( $profile_data['about_shop'] ) ? $seller_info['wkmp_about_shop'] : $profile_data['about_shop'];
+			?>
 			<div class="wkmp-table-action-wrap">
 				<div class="wkmp-action-section right wkmp-text-right">
 					<button type="submit" class="button" form="wkmp-seller-profile"><?php esc_html_e( 'Save', 'wk-marketplace' ); ?></button>&nbsp;&nbsp;
@@ -128,13 +144,13 @@ if ( ! class_exists( 'WKMP_Seller_Profile_Form' ) ) {
 
 						<div class="form-group">
 							<label for="first-name"><?php esc_html_e( 'First Name', 'wk-marketplace' ); ?></label>
-							<input class="form-control" type="text" name="wkmp_first_name" id="first-name" value="<?php echo esc_attr( $seller_info['wkmp_first_name'] ); ?>">
+							<input class="form-control" type="text" name="wkmp_first_name" id="first-name" value="<?php echo esc_attr( $first_name ); ?>">
 							<div class="wkmp-text-danger"><?php echo isset( $errors['wkmp_first_name'] ) ? esc_html( $errors['wkmp_first_name'] ) : ''; ?></div>
 						</div>
 
 						<div class="form-group">
 							<label for="last-name"><?php esc_html_e( 'Last Name', 'wk-marketplace' ); ?></label>
-							<input class="form-control" type="text" name="wkmp_last_name" id="last-name" value="<?php echo esc_attr( $seller_info['wkmp_last_name'] ); ?>">
+							<input class="form-control" type="text" name="wkmp_last_name" id="last-name" value="<?php echo esc_attr( $last_name ); ?>">
 							<div class="wkmp-text-danger"><?php echo isset( $errors['wkmp_last_name'] ) ? esc_html( $errors['wkmp_last_name'] ) : ''; ?></div>
 						</div>
 
@@ -142,7 +158,7 @@ if ( ! class_exists( 'WKMP_Seller_Profile_Form' ) ) {
 
 						<div class="form-group">
 							<label for="user_email"><?php esc_html_e( 'E-Mail', 'wk-marketplace' ); ?></label>
-							<input class="form-control" type="text" name="wkmp_seller_email" id="user_email" value="<?php echo esc_attr( $seller_info['wkmp_seller_email'] ); ?>">
+							<input class="form-control" type="text" name="wkmp_seller_email" id="user_email" value="<?php echo esc_attr( $email ); ?>">
 							<div class="wkmp-text-danger"><?php echo isset( $errors['wkmp_seller_email'] ) ? esc_html( $errors['wkmp_seller_email'] ) : ''; ?></div>
 						</div>
 
@@ -152,25 +168,25 @@ if ( ! class_exists( 'WKMP_Seller_Profile_Form' ) ) {
 
 						<div class="form-group">
 							<label for="wkmp-shop-name"><?php esc_html_e( 'Shop Name', 'wk-marketplace' ); ?></label>
-							<input class="form-control" type="text" name="wkmp_shop_name" id="wkmp_shop_name" value="<?php echo esc_attr( $seller_info['wkmp_shop_name'] ); ?>">
+							<input class="form-control" type="text" name="wkmp_shop_name" id="wkmp_shop_name" value="<?php echo esc_attr( $shop_name ); ?>">
 							<div class="wkmp-text-danger"><?php echo isset( $errors['wkmp_shop_name'] ) ? esc_html( $errors['wkmp_shop_name'] ) : ''; ?></div>
 						</div>
 
 						<div class="form-group">
 							<label for="wkmp-shop-address"><?php esc_html_e( 'Shop URL', 'wk-marketplace' ); ?></label>
-							<input class="form-control" type="text" name="wkmp_shop_url" id="wkmp_shop_address" value="<?php echo esc_attr( $seller_info['wkmp_shop_url'] ); ?>" readonly>
+							<input class="form-control" type="text" name="wkmp_shop_url" id="wkmp_shop_address" value="<?php echo esc_attr( $shop_url ); ?>" readonly>
 						</div>
 
 						<div class="form-group">
 							<label for="phone-number"><?php esc_html_e( 'Phone Number', 'wk-marketplace' ); ?></label>
-							<input placeholder="<?php esc_attr_e( 'Enter a valid phone number from 4 to 15 characters.', 'wk-marketplace' ); ?>" class="form-control" type="text" name="wkmp_shop_phone" id="phone-number" value="<?php echo esc_attr( $seller_info['wkmp_shop_phone'] ); ?>">
+							<input placeholder="<?php esc_attr_e( 'Enter a valid phone number from 4 to 15 characters.', 'wk-marketplace' ); ?>" class="form-control" type="text" name="wkmp_shop_phone" id="phone-number" value="<?php echo esc_attr( $billing_phone ); ?>">
 							<div class="wkmp-text-danger"><?php echo isset( $errors['wkmp_shop_phone'] ) ? esc_html( $errors['wkmp_shop_phone'] ) : ''; ?></div>
 						</div>
 
 						<?php if ( apply_filters( 'wkmp_show_add_payment_options', true, $seller_info ) ) { ?>
 							<div class="form-group">
 								<label for="mp_seller_payment_details"><?php esc_html_e( 'Payment Information', 'wk-marketplace' ); ?></label>
-								<textarea placeholder="<?php esc_attr_e( 'Enter payment information like bank details or Paypal URL to receive payment from the admin after deducting commission.', 'wk-marketplace' ); ?>" rows="4" id="mp_seller_payment_details" name="wkmp_payment_details"><?php echo esc_html( $seller_info['wkmp_payment_details'] ); ?></textarea>
+								<textarea placeholder="<?php esc_attr_e( 'Enter payment information like bank details or Paypal URL to receive payment from the admin after deducting commission.', 'wk-marketplace' ); ?>" rows="4" id="mp_seller_payment_details" name="wkmp_payment_details"><?php echo esc_html( $payment_details ); ?></textarea>
 								<?php do_action( 'marketplace_payment_gateway' ); ?>
 							</div>
 						<?php } ?>
@@ -183,49 +199,45 @@ if ( ! class_exists( 'WKMP_Seller_Profile_Form' ) ) {
 								$countries_obj = new \WC_Countries();
 								$countries     = $countries_obj->__get( 'countries' );
 								foreach ( $countries as $key => $country ) {
-									if ( $key === $seller_info['wkmp_shop_country'] ) {
-										?>
-										<option value="<?php echo esc_attr( $key ); ?>" selected><?php echo esc_html( $country ); ?></option>
-									<?php } else { ?>
-										<option value="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $country ); ?></option>
-									<?php } ?>
+									?>
+									<option <?php selected( $key, $billing_country, true ); ?> value="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $country ); ?></option>
 								<?php } ?>
 							</select>
 						</div>
 
 						<div class="form-group">
 							<label for="address-1"><?php esc_html_e( 'Address Line 1', 'wk-marketplace' ); ?></label>
-							<input class="form-control" type="text" name="wkmp_shop_address_1" id="address-1" value="<?php echo esc_attr( $seller_info['wkmp_shop_address_1'] ); ?>">
+							<input class="form-control" type="text" name="wkmp_shop_address_1" id="address-1" value="<?php echo esc_attr( $billing_address_1 ); ?>">
 						</div>
 
 						<div class="form-group">
 							<label for="address-2"><?php esc_html_e( 'Address Line 2', 'wk-marketplace' ); ?></label>
-							<input class="form-control" type="text" name="wkmp_shop_address_2" id="address-2" value="<?php echo esc_attr( $seller_info['wkmp_shop_address_2'] ); ?>">
+							<input class="form-control" type="text" name="wkmp_shop_address_2" id="address-2" value="<?php echo esc_attr( $billing_address_2 ); ?>">
 						</div>
 
 						<div class="form-group">
 							<label for="billing-city"><?php esc_html_e( 'City', 'wk-marketplace' ); ?></label>
-							<input class="form-control" type="text" name="wkmp_shop_city" id="billing-city" value="<?php echo esc_attr( $seller_info['wkmp_shop_city'] ); ?>">
+							<input class="form-control" type="text" name="wkmp_shop_city" id="billing-city" value="<?php echo esc_attr( $billing_city ); ?>">
 						</div>
 
 						<div class="form-group">
 							<label for="billing-state"><?php esc_html_e( 'State', 'wk-marketplace' ); ?></label>
 							<?php
 							$get_states = array();
-							if ( ! empty( $seller_info['wkmp_shop_country'] ) ) {
-								$get_states = $countries_obj->get_states( $seller_info['wkmp_shop_country'] );
+							if ( ! empty( $billing_country ) ) {
+								$get_states = $countries_obj->get_states( $billing_country );
 							}
 
-							if ( ! empty( $get_states ) && ! empty( $seller_info['wkmp_shop_country'] ) ) {
+							if ( ! empty( $get_states ) && ! empty( $billing_country ) ) {
 								?>
 								<select name="wkmp_shop_state" id="wkmp_shop_state" class="form-control">
 									<option value=""><?php esc_html_e( 'Select state', 'wk-marketplace' ); ?></option>
 									<?php foreach ( is_array( $get_states ) ? $get_states : array() as $key => $state ) { ?>
-											<option value="<?php echo esc_attr( $key ); ?>" <?php echo selected( $key, $seller_info['wkmp_shop_state'], false ); ?>><?php echo esc_html( $state ); ?></option>
+										<option value="<?php echo esc_attr( $key ); ?>" <?php echo selected( $key, $billing_state, false ); ?>><?php echo esc_html( $state ); ?></option>
 									<?php } ?>
 								</select>
 							<?php } else { ?>
-								<input id="wkmp_shop_state" type="text" name="wkmp_shop_state" class="form-control" value="<?php echo esc_attr( $seller_info['wkmp_shop_state'] ); ?>">
+								<input id="wkmp_shop_state" type="text" name="wkmp_shop_state" class="form-control" value="<?php echo esc_attr( $billing_state ); ?>">
 								<?php
 							}
 							?>
@@ -233,7 +245,7 @@ if ( ! class_exists( 'WKMP_Seller_Profile_Form' ) ) {
 
 						<div class="form-group">
 							<label for="billing-postal-code"><?php esc_html_e( 'Postal Code', 'wk-marketplace' ); ?></label>
-							<input class="form-control" type="text" name="wkmp_shop_postcode" id="billing-postal-code" value="<?php echo esc_attr( $seller_info['wkmp_shop_postcode'] ); ?>">
+							<input class="form-control" type="text" name="wkmp_shop_postcode" id="billing-postal-code" value="<?php echo esc_attr( $billing_postcode ); ?>">
 							<div class="wkmp-text-danger"><?php echo isset( $errors['wkmp_shop_postcode'] ) ? esc_html( $errors['wkmp_shop_postcode'] ) : ''; ?></div>
 						</div>
 
@@ -255,8 +267,8 @@ if ( ! class_exists( 'WKMP_Seller_Profile_Form' ) ) {
 
 							$content = '';
 
-							if ( ! empty( $seller_info['wkmp_about_shop'] ) ) {
-								$content = html_entity_decode( wp_unslash( $seller_info['wkmp_about_shop'] ) );
+							if ( ! empty( $about_shop ) ) {
+								$content = html_entity_decode( wp_unslash( $about_shop ) );
 							}
 							wp_editor( $content, 'wkmp_about_shop', $settings );
 							?>

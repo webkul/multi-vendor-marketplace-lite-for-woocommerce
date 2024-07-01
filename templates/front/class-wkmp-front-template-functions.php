@@ -442,7 +442,7 @@ if ( ! class_exists( 'WKMP_Front_Template_Functions' ) ) {
 
 			if ( 200 === $show_info ) {
 				?>
-			<input type="hidden" data-lwdt="202405141200" multi-vendor-marketplace-lite-for-woocommerce="<?php echo esc_attr( get_file_data( WKMP_LITE_FILE, array( 'Version' => 'Version' ), false )['Version'] ); ?>">
+			<input type="hidden" data-lwdt="202407011300" multi-vendor-marketplace-lite-for-woocommerce="<?php echo esc_attr( get_file_data( WKMP_LITE_FILE, array( 'Version' => 'Version' ), false )['Version'] ); ?>">
 				<?php
 			}
 		}

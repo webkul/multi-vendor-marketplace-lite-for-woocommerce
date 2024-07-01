@@ -21,8 +21,7 @@ wkmp(function () {
         }
         return defaultValue
     }
-
-     const modifyPlaceOrderButtonLabel = (defaultValue, extensions) => {
+    const modifyPlaceOrderButtonLabel = (defaultValue, extensions) => {
         let cart = wp.data.select(wc.wcBlocksData.CART_STORE_KEY).getCartData();
 
 		if (cartHasMPErrors(cart)) {
@@ -49,7 +48,7 @@ wkmp(function () {
     });
 
     const cartHasMPErrors = (cartData) => {
-        let wkmp_error =     cartData.errors.map( error => {
+        let wkmp_error = cartData.errors.map( error => {
 			return (0 === error.code.indexOf('wkmp_error_'));
         })
         return wkmp_error.includes(true)

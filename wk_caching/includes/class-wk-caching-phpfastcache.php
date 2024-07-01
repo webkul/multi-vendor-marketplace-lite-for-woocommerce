@@ -72,8 +72,6 @@ if ( ! class_exists( 'WK_Caching_PHPFastCache' ) ) {
 				$this->psr_16_adapter = new Psr16Adapter( $driver );
 			}
 
-			WK_Caching::log( "Set PHP FastCache, Driver: $driver, key: $fast_key, cache key: $cache_key, Cache group: $cache_group, Expiry: $expiry" );
-
 			$this->psr_16_adapter->set( $fast_key, $cache_value, $expiry );
 
 			$all_keys = $this->psr_16_adapter->get( $this->cached_key_name );
@@ -82,8 +80,6 @@ if ( ! class_exists( 'WK_Caching_PHPFastCache' ) ) {
 			array_push( $all_keys, $fast_key );
 
 			$all_keys = array_unique( $all_keys );
-
-			WK_Caching::log( 'All existing keys in Fast Cache: ' . print_r( $all_keys, true ) );
 
 			$this->psr_16_adapter->set( $this->cached_key_name, $all_keys ); // Never expires.
 		}
@@ -140,30 +136,30 @@ if ( ! class_exists( 'WK_Caching_PHPFastCache' ) ) {
 		}
 
 		/**
-		 * Get all cached data.
+		 * Get all cached data or keys.
 		 *
-		 * @param string $type Data type. Keys count or Full data.
-		 * @param array  $existing_keys Existing keys.
+		 * @param string $type Return type. Data or keys.
+		 * @param array  $keys Data keys, If $type is 'data' then all keys for which data is to be retrieved.
 		 *
 		 * @return bool|mixed
 		 */
-		public function get_all( $type = 'all_keys', $existing_keys = array() ) {
+		public function get_all( $type = '', $keys = array() ) {
 			if ( is_null( $this->psr_16_adapter ) ) {
 				$this->psr_16_adapter = new Psr16Adapter( $this->get_driver() );
 			}
 
-			if ( empty( $existing_keys ) ) {
-				$existing_keys = $this->psr_16_adapter->get( $this->cached_key_name );
-				$existing_keys = empty( $existing_keys ) ? array() : $existing_keys;
+			if ( empty( $keys ) ) {
+				$keys = $this->psr_16_adapter->get( $this->cached_key_name );
+				$keys = empty( $keys ) ? array() : $keys;
 			}
 
 			if ( 'all_keys' === $type ) {
-				return $existing_keys;
+				return $keys;
 			}
 
 			$data = array();
 
-			foreach ( $existing_keys as $key ) {
+			foreach ( $keys as $key ) {
 				$data[ $key ] = $this->psr_16_adapter->get( $key );
 			}
 
@@ -219,9 +215,6 @@ if ( ! class_exists( 'WK_Caching_PHPFastCache' ) ) {
 					}
 				}
 			}
-
-			WK_Caching::log( "Delete PHP Fast Cache key: $fast_key, cache key: $cache_key, Deleted: $result, Fast keys: " . print_r( $fast_keys, true ) );
-
 			return $result;
 		}
 	}

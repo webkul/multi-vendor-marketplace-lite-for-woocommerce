@@ -6,7 +6,7 @@ Stable tag: 1.0.9
 Requires PHP: 7.4
 Tested up to PHP: 8.3
 WC requires at least: 5.0
-WC tested up to: 8.8
+WC tested up to: 9.0
 WPML Compatible: yes
 Multisite Compatible: yes
 
@@ -31,10 +31,11 @@ For any Query please generate a ticket at https://webkul.com/ticket/
 
 == Changelog ==
 
-= 1.0.9 (24-05-09) =
+= 1.0.9 (24-07-01) =
 Updated: Tags upto 5 as per WordPress standard.
-Updated: Tested upto values for WordPress 6.5 and WooCommerce 8.8
-Removed: unnecessary logging and printing.
+Updated: Tested upto values for WordPress 6.5 and WooCommerce 9.0
+Downgraded: PHPFasteCache library version to v8.1 from v9 to support PHP 7.3 and higher.
+Removed: Unnecessary logging and printing.
 
 = 1.0.8 (23-12-27) =
 Added: Filter and settings to enable Redis cache from the current module.

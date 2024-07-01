@@ -84,6 +84,8 @@ if ( ! class_exists( 'WKMP_Profile_Edit' ) ) {
 
 				$errors = isset( $_POST['wkmp_errors'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['wkmp_errors'] ) ) : array();
 
+				$posted_data['wkmp_profile_data'] = empty( $_POST['wkmp_profile_data'] ) ? array() : wp_unslash( $_POST['wkmp_profile_data'] );
+
 				if ( empty( $errors ) ) {
 					wc_print_notice( esc_html__( 'Profile has been updated.', 'wk-marketplace' ), 'success' );
 				} else {

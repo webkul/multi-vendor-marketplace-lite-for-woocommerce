@@ -830,7 +830,7 @@ if ( ! class_exists( 'WKMP_Admin_Functions' ) ) {
 		 *
 		 * @return array
 		 */
-		public function wkmp_plugin_row_meta( $links, $file ) {
+		public function wkmp_plugin_show_row_meta( $links, $file ) {
 			if ( plugin_basename( WKMP_LITE_FILE ) === $file ) {
 				$row_meta = array(
 					'docs'    => '<a target="_blank" href="' . esc_url( 'https://webkul.com/blog/marketplace-for-woocommerce-lite/' ) . '" aria-label="' . esc_attr__( 'View Marketplace documentation', 'wk-marketplace' ) . '">' . esc_html__( 'Docs', 'wk-marketplace' ) . '</a>',
@@ -841,27 +841,6 @@ if ( ! class_exists( 'WKMP_Admin_Functions' ) ) {
 			}
 
 			return (array) $links;
-		}
-
-		/**
-		 * Allowed settings groups to be allowed by demo admin.
-		 *
-		 * @param array $setting_groups Setting groups.
-		 *
-		 * @hooked 'wk_allow_settings_update_to_demo_admin' filter hook.
-		 *
-		 * @return array
-		 */
-		public function wkmp_add_settings_groups_for_demo_admin( $setting_groups ) {
-			$setting_groups = ( empty( $setting_groups ) || ! is_array( $setting_groups ) ) ? array() : $setting_groups;
-			array_push(
-				$setting_groups,
-				'option_page_capability_wkmp-general-settings-group',
-				'option_page_capability_wkmp-product-settings-group',
-				'option_page_capability_wkmp-assets-settings-group'
-			);
-
-			return $setting_groups;
 		}
 
 		/**
@@ -926,7 +905,6 @@ if ( ! class_exists( 'WKMP_Admin_Functions' ) ) {
 				</div>
 
 				<div class="wkmp-toast-notice upgrade-to-pro notice notice-info is-dismissible wkmp-hide">
-
 					<section class="toast">
 						<div class="upgrade-toast-wrap">
 							<div class="upgrade-toast-content">

@@ -39,7 +39,10 @@ defined( 'ABSPATH' ) || exit; // Exit if access directly.
 					<td><?php echo esc_html( ucfirst( $seller_order['order_status'] ) ); ?></td>
 					<td><?php echo esc_html( $seller_order['order_date'] ); ?></td>
 					<td><?php echo wp_kses_post( $seller_order['order_total'] ); ?></td>
-					<td><a href="<?php echo esc_url( $seller_order['view'] ); ?>" class="button" style="padding:12px;"><span class="dashicons dashicons-visibility"></span></a></td>
+					<td>
+						<a href="<?php echo esc_url( $seller_order['view'] ); ?>" class="button" style="padding:12px;"><span class="dashicons dashicons-visibility"></span></a>
+						<?php do_action( 'wkmp_seller_order_table_actions', $seller_order ); ?>
+					</td>
 				</tr>
 			<?php } ?>
 		<?php } else { ?>

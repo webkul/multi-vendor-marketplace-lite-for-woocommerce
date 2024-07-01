@@ -127,9 +127,8 @@ if ( ! empty( $order_data ) ) {
 									<?php
 									$product        = new \WC_Product( $product_id );
 									$attribute      = $product->get_attributes();
-									$attribute_name = '';
 									$variation      = new \WC_Product_Variation( $details['variable_id'] );
-									$aaa            = $variation->get_variation_attributes();
+									$var_attributes = $variation->get_variation_attributes();
 									?>
 									<tr class="order_item alt-table-row">
 										<td class="product-name toptable">
@@ -143,8 +142,11 @@ if ( ! empty( $order_data ) ) {
 											<dl class="variation">
 												<?php
 												foreach ( $attribute as $key => $value ) {
-													$attribute_name = $value['name'];
-													$attribute_prop = strtoupper( $aaa[ 'attribute_' . strtolower( $attribute_name ) ] );
+													$attribute_name = empty( $value['name'] ) ? '' : $value['name'];
+													$attribute_prop = ( ! empty( $attribute_name ) && ! empty( $var_attributes[ 'attribute_' . strtolower( $attribute_name ) ] ) ) ? strtoupper( $var_attributes[ 'attribute_' . strtolower( $attribute_name ) ] ) : '';
+													if ( empty( $attribute_prop ) ) {
+														continue;
+													}
 													?>
 													<dt class="variation-size"><?php echo esc_html( $attribute_name . ' : ' . $attribute_prop ); ?></dt>
 												<?php } ?>

@@ -241,7 +241,7 @@ wkJQ( document ).ready(
 			} else {
 				setTimeout(
 					() => {
-                    if (time < 10000) {
+                    if (time < 9000) {
                         time = time + interval;
                         wkmp_trigger_mp_addon_click( time );
                     }

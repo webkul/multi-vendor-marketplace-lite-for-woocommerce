@@ -1,15 +1,17 @@
-=== Multi-Vendor Marketplace Lite for WooCommerce - Create Your Amazing B2C Multi-Vendor Marketplace Intuitively ===
+=== Multi-Vendor Marketplace Lite for WooCommerce - Create Your Amazing B2C Multi-Vendor Stores Intuitively ===
 Contributors: webkul
 Tags: marketplace, vendors, sellers, multi stores, b2c marketplace
 Requires at least: 5.0
 Tested up to: 6.5
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 Requires PHP: 7.4
 Tested up to PHP: 8.3
 WC requires at least: 5.0
-WC tested up to: 8.8
+WC tested up to: 9.0
+
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
+
 WPML Compatible: no
 Multisite Compatible: yes
 
@@ -196,7 +198,7 @@ Kindly have a look at our complete [Portfolio](https://codecanyon.net/user/webku
 - **Become a seller** - A customer can register himself/herself as a seller.
 
 
-- **WPML Compatible** - Adds compatibility with WPML to allow multilingual sites.
+- **WPML Compatible** - Adds compatibility with [WPML](https://wpml.org/plugin/marketplace-for-woocommerce/) to allow multilingual sites.
 
 
 - **Seller Widgets** - Provides Widgets for seller listing and seller panel.
@@ -241,7 +243,7 @@ For showing Google Maps on Seller Dashboard we have used ([Google Map Loader JS 
 = Minimum Requirements =
 
 * WordPress 5.0 or greater
-* WooCommerce 5.0 or greater
+* WooCommerce 6.0 or greater
 * PHP version 7.4 or greater
 * MySQL version 5.0 or greater
 * WordPress Memory limit of 64 MB or greater (128 MB or higher is preferred)
@@ -286,6 +288,11 @@ For any Query please generate a ticket at https://webkul.com/ticket/
 8. **Seller Dashboard:** - Seller Frontend dashboard showing different statistics.
 
 == Changelog ==
+
+= 1.1.2 - 2024-07-01 =
+Fixed: Seller profile page form validation.
+Fixed: Commission calculations issues with explicit typecasting.
+Fixed: Appsero tracking for local servers.
 
 = 1.1.1 - 2024-05-14 =
 Added: Appsero services for collecting deactivation reasons on deactivation after admin's consent.

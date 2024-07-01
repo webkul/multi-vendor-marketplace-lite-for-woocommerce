@@ -59,7 +59,9 @@ if ( ! class_exists( 'WKMP_Admin_Ajax_Functions' ) ) {
 		public function wkmp_admin_replied_to_seller() {
 			$json = array();
 
-			if ( ! check_ajax_referer( 'wkmp-admin-nonce', 'wkmp_nonce', false ) || ! current_user_can( 'manage_options' ) ) {
+			$capability = apply_filters( 'wkmp_dashboard_menu_capability', 'manage_marketplace' );
+
+			if ( ! check_ajax_referer( 'wkmp-admin-nonce', 'wkmp_nonce', false ) || ! current_user_can( $capability ) ) {
 				$json['error']   = true;
 				$json['message'] = esc_html__( 'Security check failed!', 'wk-marketplace' );
 				wp_send_json( $json );
