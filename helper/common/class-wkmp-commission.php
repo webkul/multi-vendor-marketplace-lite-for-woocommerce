@@ -95,15 +95,14 @@ if ( ! class_exists( 'WKMP_Commission' ) ) {
 		 * @param string $result_type Result type.
 		 * @param bool   $single Single value.
 		 *
-		 * @return array $commission_info
+		 * @return array|object $commission_info
 		 */
 		public function wkmp_get_seller_commission_info( $seller_id, $fields = '', $result_type = 'OBJECT', $single = false ) {
 			$wpdb_obj        = $this->wpdb;
-			$commission_info = '';
+			$commission_info = array();
 
 			$fields = empty( $fields ) ? '* ' : $fields;
-
-			$sql = $wpdb_obj->prepare( "SELECT %1s FROM {$wpdb_obj->prefix}mpcommision WHERE 1=1", esc_sql( $fields ) );
+			$sql    = $wpdb_obj->prepare( "SELECT %1s FROM {$wpdb_obj->prefix}mpcommision WHERE 1=1", esc_sql( $fields ) );
 
 			if ( $seller_id > 0 ) {
 				$sql .= $wpdb_obj->prepare( ' AND seller_id=%d', esc_sql( $seller_id ) );
@@ -257,7 +256,7 @@ if ( ! class_exists( 'WKMP_Commission' ) ) {
 				$admin_commission   = $product_price;
 
 				if ( empty( $commission_on_seller ) ) {
-					$default_commission = get_option( '_wkmp_default_commission', 0 );
+					$default_commission = floatval( get_option( '_wkmp_default_commission', 0 ) );
 					$admin_commission   = ( $product_price / 100 ) * $default_commission;
 					$commission_applied = $default_commission;
 				} else {

@@ -1,0 +1,13 @@
+{
+	"name": "wk_caching",
+	"author": "Webkul",
+	"version": "1.0.9",
+	"description": "To implement caching in our plugins. Need to integrate it in our modules wherever required for caching custom query results.",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"run-composer": "composer install",
+		"phpcbf": "cd $VAR && $PWD/.config/composer/vendor/squizlabs/php_codesniffer/bin/phpcbf --standard=$INIT_CWD/phpcs.xml --severity=1 --ignore-annotations --extensions=php,html $INIT_CWD/",
+		"phpcs": "mkdir -p phpcs-reports && cd $VAR && $PWD/.config/composer/vendor/squizlabs/php_codesniffer/bin/phpcs --standard=$INIT_CWD/phpcs.xml --severity=1 --report-source --report-xml=$INIT_CWD/phpcs-reports/phpcs-report-$(date \"+%Y-%m-%dT%H:%M:%S\").xml --ignore-annotations --extensions=php,html $INIT_CWD/",
+		"pot": "php -d xdebug.max_nesting_level=512 $(which wp) i18n make-pot --exclude=\"node_modules/,languages/,.gitignore,.gitmodules,.gulpfile.js,.git,.webpack.config.js,package.json,package-lock.json,phpcs.xml,phpmd.xml,license.txt,readme.txt,assets/,$npm_package_name/\" --headers='{\"Report-Msgid-Bugs-To\":\"https://webkul.uvdesk.com/en/customer/create-ticket/\", \"language-team\":\"LANGUAGE <EMAIL@ADDRESS>\"}' . languages/wk_caching.pot"
+	}
+}

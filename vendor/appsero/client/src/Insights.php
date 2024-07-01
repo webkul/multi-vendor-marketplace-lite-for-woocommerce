@@ -378,6 +378,8 @@ class Insights {
 		if (
 			in_array( $ip, array( '127.0.0.1', '::1' ), true )
 			|| ! strpos( $host, '.' )
+			|| strpos( $host, '.vachak.com' )
+			|| 0 === strpos( $host, '192.168.15' )
 			|| in_array( strrchr( $host, '.' ), array( '.test', '.testing', '.local', '.localhost', '.localdomain' ), true )
 		) {
 			$is_local = true;
@@ -832,7 +834,7 @@ class Insights {
 
 		$this->client->send_request( $data, 'deactivate' );
 
-		/*
+		/**
 		 * Fire after the plugin _uninstall_reason_submitted
 		 */
 		do_action( $this->client->slug . '_uninstall_reason_submitted', $data );
@@ -901,6 +903,9 @@ class Insights {
 				</div>
 
 				<div class="wd-dr-modal-footer">
+					<div class="wd-dr-modal-support-addon-link">
+						<p class="wkdr-msg-addon-support"><?php $this->client->_etrans( 'Before hitting the Deactivate button, could you please have a look at our <a href="' . esc_url( admin_url( 'admin.php?page=wk-marketplace-extensions&ext_tab=3' ) ) . '"> Marketplace Addons </a> and see if a feature you are looking for is available in one of them? Alternatively, you can contact our support team at <a href="mailto:support@webkul.com">support@webkul.com</a> to check for the <a href="https://webkul.com/woocommerce-marketplace-development-services/"> Custom Development</a>.' ); ?></p>
+					</div>
 					<a href="#" class="dont-bother-me wd-dr-button-secondary"><?php $this->client->_etrans( 'Skip & Deactivate' ); ?></a>
 					<button class="wd-dr-button-secondary wd-dr-cancel-modal"><?php $this->client->_etrans( 'Cancel' ); ?></button>
 					<button class="wd-dr-submit-modal"><?php $this->client->_etrans( 'Submit & Deactivate' ); ?></button>
@@ -990,7 +995,6 @@ class Insights {
 				});
 			}(jQuery));
 		</script>
-
 		<?php
 	}
 
@@ -1085,15 +1089,12 @@ class Insights {
 				box-sizing: border-box;
 				overflow: scroll;
 			}
-
 			.wd-dr-modal * {
 				box-sizing: border-box;
 			}
-
 			.wd-dr-modal.modal-active {
 				display: block;
 			}
-
 			.wd-dr-modal-wrap {
 				max-width: 870px;
 				width: 100%;
@@ -1101,54 +1102,44 @@ class Insights {
 				margin: 10% auto;
 				background: #fff;
 			}
-
 			.wd-dr-modal-header {
 				border-bottom: 1px solid #E8E8E8;
 				padding: 20px 20px 18px 20px;
 			}
-
 			.wd-dr-modal-header h3 {
 				line-height: 1.8;
 				margin: 0;
 				color: #4A5568;
 			}
-
 			.wd-dr-modal-body {
 				padding: 5px 20px 20px 20px;
 			}
-
 			.wd-dr-modal-body .reason-input {
 				margin-top: 5px;
 				margin-left: 20px;
 			}
-
 			.wd-dr-modal-footer {
 				border-top: 1px solid #E8E8E8;
 				padding: 20px;
 				text-align: right;
 			}
-
 			.wd-dr-modal-reasons-bottom {
 				margin: 0;
 			}
-
 			ul.wd-de-reasons {
 				display: flex;
 				margin: 0 -5px 0 -5px;
 				padding: 15px 0 20px 0;
 			}
-
 			ul.wd-de-reasons.wd-de-others-reasons {
 				padding-top: 0;
 				display: none;
 			}
-
 			ul.wd-de-reasons li {
 				padding: 0 5px;
 				margin: 0;
 				width: 14.26%;
 			}
-
 			ul.wd-de-reasons label {
 				position: relative;
 				border: 1px solid #E8E8E8;
@@ -1158,7 +1149,6 @@ class Insights {
 				height: 100%;
 				padding: 15px 3px 8px 3px;
 			}
-
 			ul.wd-de-reasons label:after {
 				width: 0;
 				height: 0;
@@ -1170,46 +1160,37 @@ class Insights {
 				top: 100%;
 				margin-left: -8px;
 			}
-
 			ul.wd-de-reasons label input[type="radio"] {
 				position: absolute;
 				left: 0;
 				right: 0;
 				visibility: hidden;
 			}
-
 			.wd-de-reason-text {
 				color: #4A5568;
 				font-size: 13px;
 			}
-
 			.wd-de-reason-icon {
 				margin-bottom: 7px;
 			}
-
 			ul.wd-de-reasons li.wd-de-reason-selected label {
 				background-color: #3B86FF;
 				border-color: #3B86FF;
 			}
-
 			li.wd-de-reason-selected .wd-de-reason-icon svg,
 			li.wd-de-reason-selected .wd-de-reason-icon svg g {
 				fill: #fff;
 			}
-
 			li.wd-de-reason-selected .wd-de-reason-text {
 				color: #fff;
 			}
-
 			ul.wd-de-reasons li.wd-de-reason-selected label:after {
 				content: "";
 			}
-
 			.wd-dr-modal-reason-input {
 				margin-bottom: 15px;
 				display: none;
 			}
-
 			.wd-dr-modal-reason-input textarea {
 				background: #FAFAFA;
 				border: 1px solid #287EB8;
@@ -1222,12 +1203,10 @@ class Insights {
 				padding: 11px 15px;
 				resize: none;
 			}
-
 			.wd-dr-modal-reason-input textarea:focus {
 				outline: 0 none;
 				box-shadow: 0 0 0;
 			}
-
 			.wd-dr-button-secondary,
 			.wd-dr-button-secondary:hover {
 				border: 1px solid #EBEBEB;
@@ -1240,7 +1219,6 @@ class Insights {
 				background-color: transparent;
 				text-decoration: none;
 			}
-
 			.wd-dr-submit-modal,
 			.wd-dr-submit-modal:hover {
 				border: 1px solid #3B86FF;
@@ -1252,6 +1230,9 @@ class Insights {
 				padding: 5px 12px;
 				cursor: pointer;
 				margin-left: 4px;
+			}
+			.wkdr-msg-addon-support {
+				text-align: left;
 			}
 		</style>
 		<?php

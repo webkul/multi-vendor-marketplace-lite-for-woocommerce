@@ -143,13 +143,15 @@ if ( ! class_exists( 'WK_Caching_Transient' ) ) {
 		}
 
 		/**
-		 * Get all cached data.
+		 * Get all cached data or keys.
 		 *
-		 * @param string $type Return type.
+		 * @param string     $type Return type. Data or keys.
+		 * @param array      $keys Data keys, If $type is 'data' then all keys for which data is to be retrieved.
+		 * @param string|int $data_group The data group.
 		 *
 		 * @return bool|mixed
 		 */
-		public function get_all( $type = '' ) {
+		public function get_all( $type = '', $keys = array(), $data_group = '' ) {
 			$phpfast_caching_enabled   = $this->is_phpfast_caching_enabled();
 			$file_writing_enabled      = $this->is_file_writing_enabled();
 			$transient_caching_enabled = $this->is_transient_caching_enabled();
@@ -158,7 +160,7 @@ if ( ! class_exists( 'WK_Caching_Transient' ) ) {
 
 			if ( $phpfast_caching_enabled ) {
 				$phpfast = WK_Caching_PHPFastCache::get_instance();
-				$data    = $phpfast->get_all( $type );
+				$data    = $phpfast->get_all( $type, $keys );
 
 				$data = maybe_unserialize( $data );
 
@@ -166,6 +168,14 @@ if ( ! class_exists( 'WK_Caching_Transient' ) ) {
 					WK_Caching::log( 'All data found from PHP Fast cache' );
 					return $data;
 				}
+			}
+
+			$file_writing_enabled = $this->is_file_writing_enabled();
+
+			if ( $file_writing_enabled && 'all_keys' === $type ) {
+				$file_api = new WK_Caching_File( $data_group );
+
+				return $file_api->get_all( $data_group, false, true );
 			}
 
 			return array();
@@ -221,12 +231,16 @@ if ( ! class_exists( 'WK_Caching_Transient' ) ) {
 			}
 
 			if ( $file_writing_enabled ) {
-				$file_api = new WK_Caching_File( $transient_group . '-transient' );
+				$file_api  = new WK_Caching_File( $transient_group . '-transient' );
+				$all_files = $file_api->get_all( 'all_keys' );
 
-				if ( $file_api->exists( $option_key ) ) {
-					$file_api->delete_file( $option_key );
-					$deleted = true;
-					WK_Caching::log( "Deleting file: $option_key, Deleted: $deleted" );
+				foreach ( $all_files as $file_name ) {
+					if ( ! $file_api->is_dir( $file_name ) && strpos( $file_name, $option_key ) > -1 ) {
+						if ( $file_api->exists( $file_name ) ) {
+							$deleted = $file_api->delete_file( $file_name );
+							WK_Caching::log( "Deleting file: $file_name, Deleted $deleted" );
+						}
+					}
 				}
 			}
 

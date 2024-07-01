@@ -69,8 +69,7 @@ if ( ! class_exists( 'WKMP_Admin_Hooks' ) ) {
 			add_filter( 'get_terms_args', array( $handler, 'wkmp_remove_sellers_shipping_classes' ), 10, 2 );
 			add_filter( 'woocommerce_products_admin_list_table_filters', array( $handler, 'wkmp_remove_restricted_cats' ) );
 			add_filter( 'plugin_action_links_' . WKMP_LITE_PLUGIN_BASENAME, array( $handler, 'wkmp_add_plugin_setting_links' ) );
-			add_filter( 'plugin_row_meta', array( $handler, 'wkmp_plugin_row_meta' ), 10, 2 );
-			add_filter( 'wk_allow_settings_update_to_demo_admin', array( $handler, 'wkmp_add_settings_groups_for_demo_admin' ) );
+			add_filter( 'plugin_row_meta', array( $handler, 'wkmp_plugin_show_row_meta' ), 10, 2 );
 			add_filter( 'comments_list_table_query_args', array( $handler, 'wkmp_hide_other_comments_on_seller_dashboard' ) );
 			add_filter( 'editable_roles', array( $handler, 'wkmp_remove_seller_from_change_role_to' ) );
 		}

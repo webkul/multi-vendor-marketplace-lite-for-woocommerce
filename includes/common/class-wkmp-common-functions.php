@@ -358,12 +358,9 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 			$wk_page = \WK_Caching::wk_get_request_data( 'page' );
 
 			if ( is_admin() && ! empty( $wk_page ) && 'order-history' !== $wk_page && ! empty( $refund_id ) ) {
-				$refund_line_items       = $refund_args['line_items'];
 				$refund_total_tax_amount = 0;
-
-				$refund_args['amount'] -= $refund_total_tax_amount;
-
-				$order_refund = Common\WKMP_Order_Refund::get_instance();
+				$refund_args['amount']  -= $refund_total_tax_amount;
+				$order_refund            = Common\WKMP_Order_Refund::get_instance();
 
 				$order_refund->wkmp_set_refund_args( $refund_args );
 				$order_refund->wkmp_set_seller_order_refund_data();
@@ -617,8 +614,7 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 		 */
 		public function wkmp_process_seller_profile_data( $data, $seller_id ) {
 			$errors = array();
-
-			$nonce = \WK_Caching::wk_get_request_data( 'wkmp-user-nonce', array( 'method' => 'post' ) );
+			$nonce  = \WK_Caching::wk_get_request_data( 'wkmp-user-nonce', array( 'method' => 'post' ) );
 
 			if ( ! empty( $nonce ) && wp_verify_nonce( $nonce, 'wkmp-user-nonce-action' ) ) {
 				include_once ABSPATH . 'wp-admin/includes/image.php';
@@ -636,7 +632,7 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 				$data['_thumbnail_id_company_logo'] = empty( $_POST['wkmp_logo_id'] ) ? '' : wc_clean( wp_unslash( $_POST['wkmp_logo_id'] ) );
 				$data['_thumbnail_id_shop_banner']  = empty( $_POST['wkmp_banner_id'] ) ? '' : wc_clean( wp_unslash( $_POST['wkmp_banner_id'] ) );
 
-				if ( empty( $data['user_email'] ) ) {
+				if ( empty( $data['user_email'] ) || ! is_email( $data['user_email'] ) ) {
 					$errors['wkmp_seller_email'] = esc_html__( 'Enter the valid E-Mail', 'wk-marketplace' );
 				} else {
 					$seller_info = get_user_by( 'email', $data['user_email'] );
@@ -739,6 +735,7 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 				} else {
 					$_POST['wkmp_errors'] = $errors;
 				}
+				$_POST['wkmp_profile_data'] = $data;
 			}
 		}
 

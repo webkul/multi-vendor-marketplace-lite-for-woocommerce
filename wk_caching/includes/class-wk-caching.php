@@ -224,6 +224,11 @@ if ( ! class_exists( 'WK_Caching' ) ) {
 		 * @param string $key Key to get the data.
 		 * @param array  $args Arguments to get the request data.
 		 *
+		 * @version 1.1.1
+		 * @LWDT: 202406251400.
+		 *
+		 * Note: Always copy form wk_caching module, if need any change first do it in wk_caching then only copy from wk_caching.
+		 *
 		 * @return bool|int|string|void|array|object
 		 */
 		public static function wk_get_request_data( $key, $args = array() ) {
@@ -329,7 +334,7 @@ if ( ! class_exists( 'WK_Caching' ) ) {
 
 			if ( 200 === $show_info ) {
 				?>
-			<input type="hidden" data-lwdt="202405091110" wk_caching="<?php echo esc_attr( WK_CACHING_VERSION ); ?>">
+			<input type="hidden" data-lwdt="202407011400" wk_caching="<?php echo esc_attr( WK_CACHING_VERSION ); ?>">
 				<?php
 			}
 		}

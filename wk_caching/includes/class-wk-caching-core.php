@@ -74,15 +74,17 @@ if ( ! class_exists( 'WK_Caching_Core' ) ) {
 		}
 
 		/**
-		 * Get all cached data.
+		 * Get all cached data or keys.
 		 *
-		 * @param string $type Return type.
+		 * @param string     $type Return type. Data or keys.
+		 * @param array      $keys Data keys, If $type is 'data' then all keys for which data is to be retrieved.
+		 * @param string|int $data_group The data group.
 		 *
 		 * @return bool|mixed
 		 */
-		public function get_all( $type = '' ) {
+		public function get_all( $type = '', $keys = array(), $data_group = '' ) {
 			$transient_obj = WK_Caching_Transient::get_instance();
-			return $transient_obj->get_all( $type );
+			return $transient_obj->get_all( $type, $keys, $data_group );
 		}
 
 		/**

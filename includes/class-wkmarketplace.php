@@ -980,7 +980,7 @@ if ( ! class_exists( 'WKMarketplace' ) ) {
 		}
 
 		/**
-		 * Decide whether display seller registration fields are allowed are not.
+		 * Decide whether display seller registration fields are allowed or not.
 		 *
 		 * @return bool
 		 */
