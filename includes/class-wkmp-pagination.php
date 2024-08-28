@@ -105,19 +105,10 @@ if ( ! class_exists( 'WKMP_Pagination' ) ) {
 		public function wkmp_render() {
 			$total = $this->total;
 
-			if ( $this->page < 1 ) {
-				$page = 1;
-			} else {
-				$page = $this->page;
-			}
+			$page  = ( $this->page < 1 ) ? 1 : intval( $this->page );
+			$limit = empty( $this->limit ) ? 10 : intval( $this->limit );
 
-			if ( ! (int) $this->limit ) {
-				$limit = 10;
-			} else {
-				$limit = $this->limit;
-			}
-
-			$num_links = $this->num_links;
+			$num_links = intval( $this->num_links );
 			$num_pages = ceil( $total / $limit );
 
 			$this->url = str_replace( '%7Bpage%7D', '{page}', $this->url );
@@ -128,7 +119,7 @@ if ( ! class_exists( 'WKMP_Pagination' ) ) {
 			if ( $page > 1 ) {
 				$output .= '<li><a class="page-numbers" href="' . str_replace( array( '/page/{page}', 'page/{page}' ), '', $this->url ) . '">' . $this->text_first . '</a></li>';
 
-				if ( 1 === intval( $page - 1 ) ) {
+				if ( 1 === ( $page - 1 ) ) {
 					$output .= '<li><a class="prev page-numbers" href="' . str_replace( array( '/page/{page}', 'page/{page}' ), '', $this->url ) . '">' . $this->text_prev . '</a></li>';
 				} else {
 					$output .= '<li><a class="prev page-numbers" href="' . str_replace( '{page}', $page - 1, $this->url ) . '">' . $this->text_prev . '</a></li>';
@@ -155,10 +146,10 @@ if ( ! class_exists( 'WKMP_Pagination' ) ) {
 				}
 
 				for ( $i = $start; $i <= $end; $i++ ) {
-					if ( $page === $i ) {
+					if ( absint( $i ) === absint( $page ) ) {
 						$output .= '<li><span aria-current="page" class="page-numbers current">' . $i . '</span></li>';
 					} elseif ( 1 === $i ) {
-							$output .= '<li><a class="page-numbers" href="' . str_replace( array( '/page/{page}', 'page/{page}' ), '', $this->url ) . '">' . $i . '</a></li>';
+						$output .= '<li><a class="page-numbers" href="' . str_replace( array( '/page/{page}', 'page/{page}' ), '', $this->url ) . '">' . $i . '</a></li>';
 					} else {
 						$output .= '<li><a class="page-numbers" href="' . str_replace( '{page}', $i, $this->url ) . '">' . $i . '</a></li>';
 					}
@@ -173,11 +164,7 @@ if ( ! class_exists( 'WKMP_Pagination' ) ) {
 			$output .= '</ul>';
 			$output .= '</nav>';
 
-			if ( $num_pages > 1 ) {
-				return $output;
-			}
-
-			return '';
+			return ( $num_pages > 1 ) ? $output : '';
 		}
 	}
 }

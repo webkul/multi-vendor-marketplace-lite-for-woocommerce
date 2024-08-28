@@ -91,12 +91,13 @@ if ( ! class_exists( 'WKMP_Admin_Functions' ) ) {
 			register_setting( 'wkmp-product-settings-group', '_wkmp_enable_product_qty_limit' );
 			register_setting( 'wkmp-product-settings-group', '_wkmp_max_product_qty_limit' );
 
-			register_setting( 'wkmp-assets-settings-group', '_wkmp_is_seller_email_visible' );
-			register_setting( 'wkmp-assets-settings-group', '_wkmp_is_seller_contact_visible' );
-			register_setting( 'wkmp-assets-settings-group', '_wkmp_is_seller_address_visible' );
-			register_setting( 'wkmp-assets-settings-group', '_wkmp_is_seller_social_links_visible' );
-
 			register_setting( 'wkmp-google-analytics-settings-group', '_wkmp_google_map_api_key' );
+
+			$assets_settings = apply_filters( 'wkmp_admin_assets_settings_fields', array( '_wkmp_is_seller_email_visible', '_wkmp_is_seller_contact_visible', '_wkmp_is_seller_address_visible', '_wkmp_is_seller_social_links_visible' ) );
+
+			foreach ( $assets_settings as $field ) {
+				register_setting( 'wkmp-assets-settings-group', $field );
+			}
 
 			$template_functions = AdminTemplate\WKMP_Admin_Template_Functions::get_instance();
 
@@ -149,6 +150,14 @@ if ( ! class_exists( 'WKMP_Admin_Functions' ) ) {
 
 				// Update the post into the database.
 				wp_update_post( $new_content );
+
+				// Remove marketplace shortcode from previous seller assigned page.
+				$old_content = array(
+					'ID'           => $seller_page_id,
+					'post_content' => '',
+				);
+				wp_update_post( $old_content );
+
 				flush_rewrite_rules( false );
 			}
 
@@ -742,6 +751,7 @@ if ( ! class_exists( 'WKMP_Admin_Functions' ) ) {
 		 */
 		public function wkmp_update_seller_order_mapping( $order_id ) {
 			wkmp_wc_log( "WKMP admin created new order: $order_id" );
+
 			if ( $order_id > 0 ) {
 				$wc_order = wc_get_order( $order_id );
 
@@ -751,10 +761,10 @@ if ( ! class_exists( 'WKMP_Admin_Functions' ) ) {
 
 					foreach ( $items as $item ) {
 						$assigned_seller = wc_get_order_item_meta( $item->get_id(), 'assigned_seller', true );
-						if ( ! empty( $assigned_seller ) ) {
+						$assigned_seller = empty( $assigned_seller ) ? get_post_field( 'post_author', $item->get_product_id() ) : $assigned_seller;
+
+						if ( ! in_array( $assigned_seller, $author_array, true ) ) {
 							$author_array[] = $assigned_seller;
-						} else {
-							$author_array[] = get_post_field( 'post_author', $item->get_product_id() );
 						}
 					}
 
@@ -867,7 +877,7 @@ if ( ! class_exists( 'WKMP_Admin_Functions' ) ) {
 
 				if ( absint( $total_count ) >= absint( $lite_count ) ) {
 					$message = wp_sprintf( /* translators: %s Pro module link. */ esc_html__( 'Your have reached the limit to register sellers. To allow further registration kindly consider Upgrade to Pro version of %s', 'wk-marketplace' ), '<b><a target="_blank" href="' . esc_url( WKMP_PRO_MODULE_URL ) . '">' . esc_html__( 'Marketplace for WooCommerce', 'wk-marketplace' ) . '</a></b>' );
-					WK_Caching::wk_show_notice_on_admin( $message, 'error' );
+					\WK_Caching::wk_show_notice_on_admin( $message, 'error' );
 				}
 				$wk_page = \WK_Caching::wk_get_request_data( 'page' );
 

@@ -10,6 +10,7 @@ namespace WkMarketplace\Templates\Admin\Queries;
 
 defined( 'ABSPATH' ) || exit; // Exit if access directly.
 
+use WK_Caching;
 use WkMarketplace\Helper\Common;
 use WkMarketplace\Templates\Admin as AdminTemplates;
 
@@ -268,9 +269,14 @@ if ( ! class_exists( 'WKMP_Admin_Queries' ) ) {
 					}
 					$success = 1;
 				}
+				$transient = get_transient( 'wkmp_deleted_queries_transient' );
+
+				if ( empty( $transient ) ) {
+					set_transient( 'wkmp_deleted_queries_transient', array( 'success' => $success ), 8 );
+				}
 
 				$page_name = \WK_Caching::wk_get_request_data( 'page' );
-				$url       = 'admin.php?page=' . $page_name . '&success=' . $success;
+				$url       = 'admin.php?page=' . $page_name;
 
 				wp_safe_redirect( admin_url( $url ) );
 				exit( 0 );

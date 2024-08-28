@@ -189,7 +189,10 @@ if ( ! class_exists( 'WKMP_Seller_Profile_Form' ) ) {
 								<textarea placeholder="<?php esc_attr_e( 'Enter payment information like bank details or Paypal URL to receive payment from the admin after deducting commission.', 'wk-marketplace' ); ?>" rows="4" id="mp_seller_payment_details" name="wkmp_payment_details"><?php echo esc_html( $payment_details ); ?></textarea>
 								<?php do_action( 'marketplace_payment_gateway' ); ?>
 							</div>
-						<?php } ?>
+							<?php
+						}
+						do_action( 'wkmp_after_payment_information_field', $seller_info );
+						?>
 
 						<div class="form-group">
 							<label for="billing-country"><?php esc_html_e( 'Country', 'wk-marketplace' ); ?></label>
@@ -273,6 +276,7 @@ if ( ! class_exists( 'WKMP_Seller_Profile_Form' ) ) {
 							wp_editor( $content, 'wkmp_about_shop', $settings );
 							?>
 						</div>
+						<?php do_action( 'wkmp_after_shop_tab_content', $seller_info, $profile_data ); ?>
 
 					</div><!-- wkmp-shop-tab end here -->
 

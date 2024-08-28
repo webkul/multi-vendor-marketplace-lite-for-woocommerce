@@ -2,16 +2,16 @@
 
 /**
  *
- * This file is part of Phpfastcache.
+ * This file is part of phpFastCache.
  *
  * @license MIT License (MIT)
  *
- * For full copyright and license information, please see the docs/CREDITS.txt and LICENCE files.
+ * For full copyright and license information, please see the docs/CREDITS.txt file.
  *
+ * @author Khoa Bui (khoaofgod)  <khoaofgod@gmail.com> https://www.phpfastcache.com
  * @author Georges.L (Geolim4)  <contact@geolim4.com>
- * @author Contributors  https://github.com/PHPSocialNetwork/phpfastcache/graphs/contributors
+ *
  */
-
 declare(strict_types=1);
 
 namespace Phpfastcache\Drivers\Files;
@@ -19,29 +19,41 @@ namespace Phpfastcache\Drivers\Files;
 use Exception;
 use FilesystemIterator;
 use Phpfastcache\Cluster\AggregatablePoolInterface;
-use Phpfastcache\Core\Pool\ExtendedCacheItemPoolInterface;
-use Phpfastcache\Core\Pool\IO\IOHelperTrait;
-use Phpfastcache\Core\Item\ExtendedCacheItemInterface;
-use Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException;
-use Phpfastcache\Exceptions\PhpfastcacheIOException;
-use Phpfastcache\Exceptions\PhpfastcacheLogicException;
+use Phpfastcache\Core\Pool\{DriverBaseTrait, ExtendedCacheItemPoolInterface, IO\IOHelperTrait};
+use Phpfastcache\Exceptions\{PhpfastcacheInvalidArgumentException, PhpfastcacheIOException};
 use Phpfastcache\Util\Directory;
+use Psr\Cache\CacheItemInterface;
+
 
 /**
- * @method Config getConfig()
+ * Class Driver
+ * @package phpFastCache\Drivers
+ * @property Config $config Config object
+ * @method Config getConfig() Return the config object
  *
  * Important NOTE:
  * We are using getKey instead of getEncodedKey since this backend create filename that are
  * managed by defaultFileNameHashFunction and not defaultKeyHashFunction
  */
-class Driver implements AggregatablePoolInterface
+class Driver implements ExtendedCacheItemPoolInterface, AggregatablePoolInterface
 {
     use IOHelperTrait;
+    use DriverBaseTrait {
+        DriverBaseTrait::__construct as private __parentConstruct;
+    }
+
+    /**
+     * Driver constructor.
+     * @param Config $config
+     * @param string $instanceId
+     */
+    public function __construct(Config $config, string $instanceId)
+    {
+        $this->__parentConstruct($config, $instanceId);
+    }
 
     /**
      * @return bool
-     * @throws PhpfastcacheIOException
-     * @throws PhpfastcacheInvalidArgumentException
      */
     public function driverCheck(): bool
     {
@@ -57,17 +69,16 @@ class Driver implements AggregatablePoolInterface
     }
 
     /**
-     * @param ExtendedCacheItemInterface $item
-     * @return ?array<string, mixed>
-     * @throws PhpfastcacheIOException
+     * @param CacheItemInterface $item
+     * @return null|array
      */
-    protected function driverRead(ExtendedCacheItemInterface $item): ?array
+    protected function driverRead(CacheItemInterface $item)
     {
-        $filePath = $this->getFilePath($item->getKey(), true);
+        $file_path = $this->getFilePath($item->getKey(), true);
 
-        try {
-            $content = $this->readFile($filePath);
-        } catch (PhpfastcacheIOException) {
+        try{
+            $content = $this->readFile($file_path);
+        }catch (PhpfastcacheIOException $e){
             return null;
         }
 
@@ -75,53 +86,62 @@ class Driver implements AggregatablePoolInterface
     }
 
     /**
-     * @param ExtendedCacheItemInterface $item
+     * @param CacheItemInterface $item
      * @return bool
-     * @throws PhpfastcacheIOException
      * @throws PhpfastcacheInvalidArgumentException
-     * @throws PhpfastcacheLogicException
      */
-    protected function driverWrite(ExtendedCacheItemInterface $item): bool
+    protected function driverWrite(CacheItemInterface $item): bool
     {
-        $this->assertCacheItemType($item, Item::class);
+        /**
+         * Check for Cross-Driver type confusion
+         */
+        if ($item instanceof Item) {
+            $file_path = $this->getFilePath($item->getKey());
+            $data = $this->encode($this->driverPreWrap($item));
 
-        $filePath = $this->getFilePath($item->getKey());
-        $data = $this->encode($this->driverPreWrap($item));
-
-        try {
-            return $this->writeFile($filePath, $data, $this->getConfig()->isSecureFileManipulation());
-        } catch (Exception) {
-            return false;
+            /**
+             * Force write
+             */
+            try {
+                return $this->writefile($file_path, $data, $this->getConfig()->isSecureFileManipulation());
+            } catch (Exception $e) {
+                return false;
+            }
         }
+
+        throw new PhpfastcacheInvalidArgumentException('Cross-Driver type confusion detected');
     }
 
     /**
-     * @param ExtendedCacheItemInterface $item
+     * @param CacheItemInterface $item
      * @return bool
-     * @throws PhpfastcacheIOException
      * @throws PhpfastcacheInvalidArgumentException
      */
-    protected function driverDelete(ExtendedCacheItemInterface $item): bool
+    protected function driverDelete(CacheItemInterface $item): bool
     {
-        $this->assertCacheItemType($item, Item::class);
-
-        $filePath = $this->getFilePath($item->getKey(), true);
-        if (\file_exists($filePath) && @\unlink($filePath)) {
-            \clearstatcache(true, $filePath);
-            $dir = \dirname($filePath);
-            if (!(new FilesystemIterator($dir))->valid()) {
-                \rmdir($dir);
+        /**
+         * Check for Cross-Driver type confusion
+         */
+        if ($item instanceof Item) {
+            $file_path = $this->getFilePath($item->getKey(), true);
+            if (\file_exists($file_path) && @\unlink($file_path)) {
+                \clearstatcache(true, $file_path);
+                $dir = \dirname($file_path);
+                if (!(new FilesystemIterator($dir))->valid()) {
+                    \rmdir($dir);
+                }
+                return true;
             }
-            return true;
+
+            return false;
         }
 
-        return false;
+        throw new PhpfastcacheInvalidArgumentException('Cross-Driver type confusion detected');
     }
 
     /**
      * @return bool
      * @throws \Phpfastcache\Exceptions\PhpfastcacheIOException
-     * @throws PhpfastcacheInvalidArgumentException
      */
     protected function driverClear(): bool
     {

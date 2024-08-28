@@ -9,10 +9,10 @@
 
 namespace WkMarketplace\Templates\Admin\Settings;
 
+defined( 'ABSPATH' ) || exit; // Exit if access directly.
+
 use WkMarketplace\Helper as Form;
 use WkMarketplace\Templates\Admin as AdminTemplates;
-
-defined( 'ABSPATH' ) || exit; // Exit if access directly.
 
 if ( ! class_exists( 'WKMP_Setting_Templates_Handler' ) ) {
 
@@ -31,14 +31,13 @@ if ( ! class_exists( 'WKMP_Setting_Templates_Handler' ) ) {
 		 * Constructor of the class
 		 */
 		public function __construct() {
-
 			$this->form_helper = Form\WKMP_Form_Field_Builder::get_instance();
 
 			add_action( 'wkmp_general_settings_content', array( $this, 'wkmp_general_settings_content' ) );
 			add_action( 'wkmp_product_settings_content', array( $this, 'wkmp_product_settings_content' ) );
 			add_action( 'wkmp_assets_settings_content', array( $this, 'wkmp_assets_settings_content' ) );
 			add_action( 'wkmp_endpoint_settings_content', array( $this, 'wkmp_endpoint_settings_content' ) );
-			add_action( 'wkmp_google_analytics_settings_content', array( $this, 'wkmp_google_analytics_settings_content' ) );
+			add_action( 'wkmp_google_analytics_settings_content', array( $this, 'wkmp_google_analytics_tab_content' ) );
 
 			$this->wkmp_display_settings_tab();
 		}
@@ -122,7 +121,7 @@ if ( ! class_exists( 'WKMP_Setting_Templates_Handler' ) ) {
 		 *
 		 * @return void
 		 */
-		public function wkmp_google_analytics_settings_content() {
+		public function wkmp_google_analytics_tab_content() {
 			global $wkmarketplace;
 			$template_functions = AdminTemplates\WKMP_Admin_Template_Functions::get_instance();
 			require __DIR__ . '/wkmp-google-analytics-settings-content.php';

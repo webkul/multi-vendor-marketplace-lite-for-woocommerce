@@ -29,6 +29,7 @@ if ( $post_row_data && intval( $product_auth ) === get_current_user_id() ) {
 	}
 
 	$product_attributes = get_post_meta( $wk_pro_id, '_product_attributes', true );
+	$product_attributes = empty( $product_attributes ) ? array() : $product_attributes;
 	$display_variation  = 'no';
 
 	if ( ! empty( $product_attributes ) ) {
@@ -52,21 +53,21 @@ if ( $post_row_data && intval( $product_auth ) === get_current_user_id() ) {
 	<div class="wkmp-add-product-form">
 		<div class="wkmp-product-navigation">
 			<a href="<?php echo esc_url( wc_get_endpoint_url( get_option( '_wkmp_product_list_endpoint', 'seller-products' ) ) ); ?>" class="wkmp-back-to-products-list" title="<?php esc_attr_e( 'Back to Product List', 'wk-marketplace' ); ?>"><span class="dashicons dashicons-arrow-left-alt"></span></a>
-			<a href="<?php echo esc_url( get_permalink( $wk_pro_id ) ); ?>" class="wkmp-pro-product-view-link" target="_blank"  title="<?php esc_attr_e( 'View Product', 'wk-marketplace' ); ?>"><?php esc_html_e( 'View', 'wk-marketplace' ); ?></a>
+			<a href="<?php echo esc_url( get_permalink( $wk_pro_id ) ); ?>" class="wkmp-pro-product-view-link" target="_blank"  title="<?php esc_attr_e( 'View Product as Customer', 'wk-marketplace' ); ?>"><?php esc_html_e( 'View', 'wk-marketplace' ); ?></a>
 		</div>
 		<input type="hidden" name="var_variation_display" id="var_variation_display" value="<?php echo esc_attr( $display_variation ); ?>"/>
 
 		<ul id='edit_product_tab'>
 			<li><a id='edit_tab'><?php esc_html_e( 'Edit', 'wk-marketplace' ); ?></a></li>
 			<?php
-			$show       = '';
-			$is_virtual = false;
+			$show          = '';
+			$hide_ship_tab = false;
 			if ( in_array( $product->get_type(), array( 'grouped', 'external' ), true ) ) {
 				$show = "style='display:none;'";
 			}
 
-			if ( 'yes' === $meta_arr['_virtual'] ) {
-				$is_virtual = true;
+			if ( 'yes' === $meta_arr['_virtual'] || 'external' === $product->get_type() ) {
+				$hide_ship_tab = true;
 			}
 
 			/**
@@ -102,7 +103,7 @@ if ( $post_row_data && intval( $product_auth ) === get_current_user_id() ) {
 			}
 			?>
 			<li <?php echo esc_attr( $show ); ?>><a id='inventorytab'><?php esc_html_e( 'Inventory', 'wk-marketplace' ); ?></a></li>
-			<li class="<?php echo ( $is_virtual ) ? 'wkmp_hide' : ''; ?>"><a id='shippingtab'><?php esc_html_e( 'Shipping', 'wk-marketplace' ); ?></a></li>
+			<li class="<?php echo ( $hide_ship_tab ) ? 'wkmp_hide' : ''; ?>"><a id='shippingtab'><?php esc_html_e( 'Shipping', 'wk-marketplace' ); ?></a></li>
 			<li><a id='linkedtab'><?php esc_html_e( 'Linked Products', 'wk-marketplace' ); ?></a></li>
 			<li><a id='attributestab'><?php esc_html_e( 'Attributes', 'wk-marketplace' ); ?></a></li>
 			<li class="wkmp_hide"><a id='external_affiliate_tab'><?php esc_html_e( 'External/Affiliate', 'wk-marketplace' ); ?></a></li>

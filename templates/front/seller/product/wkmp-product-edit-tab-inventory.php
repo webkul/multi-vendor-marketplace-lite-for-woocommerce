@@ -10,22 +10,25 @@ defined( 'ABSPATH' ) || exit; // Exit if access directly.
 
 ?>
 <div class="wkmp_container" id="inventorytabwk">
+	<?php
+	if ( 'external' !== $product->get_type() ) {
+		?>
 	<div class="wkmp_profile_input">
 		<label for="wk-mp-stock"><?php esc_html_e( 'Manage Stock', 'wk-marketplace' ); ?></label>
 		<p>
 			<input type="checkbox" class="wkmp_stock_management" id="wk_stock_management" name="wk_stock_management" value="yes" <?php echo ( 'yes' === $meta_arr['_manage_stock'] ) ? 'checked' : ''; ?>/>
-			<label for="wk_stock_management"><?php esc_html_e( 'Enable stock management at product level', 'wk-marketplace' ); ?></label></p>
+			<label for="wk_stock_management"><?php esc_html_e( 'Enable stock management at product level', 'wk-marketplace' ); ?></label>
+		</p>
 	</div>
+		<?php
+		$show_stock_fields = 'display:none;';
+		$hide_stock_status = 'display:block;';
 
-	<?php
-	$show_stock_fields = 'display:none;';
-	$hide_stock_status = 'display:block;';
-
-	if ( 'yes' === $meta_arr['_manage_stock'] ) {
-		$show_stock_fields = 'display:block;';
-		$hide_stock_status = 'display:none;';
-	}
-	?>
+		if ( 'yes' === $meta_arr['_manage_stock'] ) {
+			$show_stock_fields = 'display:block;';
+			$hide_stock_status = 'display:none;';
+		}
+		?>
 	<div class="wkmp_profile_input" style="<?php echo esc_attr( $show_stock_fields ); ?>">
 		<label for="wk-mp-stock"><?php esc_html_e( 'Stock Qty', 'wk-marketplace' ); ?></label>
 		<input type="text" class="wkmp_product_input" placeholder="0" name="wk-mp-stock-qty" id="wk-mp-stock-qty" value="<?php echo isset( $meta_arr['_stock'] ) ? esc_attr( $meta_arr['_stock'] ) : ''; ?>"/>
@@ -60,7 +63,9 @@ defined( 'ABSPATH' ) || exit; // Exit if access directly.
 			<label for="wk_sold_individual"><?php esc_html_e( 'Enable this to only allow one of this item to be bought in a single order', 'wk-marketplace' ); ?></label>
 		</p>
 	</div>
-	<?php
+		<?php
+	}
+
 	if ( 'grouped' !== $product->get_type() ) {
 		$qty_limit         = get_user_meta( $product_auth, '_wkmp_max_product_qty_limit', true );
 		$qty_limit         = empty( $qty_limit ) ? get_option( '_wkmp_max_product_qty_limit', 0 ) : $qty_limit;

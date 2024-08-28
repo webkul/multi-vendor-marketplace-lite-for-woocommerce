@@ -1,15 +1,15 @@
 <?php
-
 /**
  *
- * This file is part of Phpfastcache.
+ * This file is part of phpFastCache.
  *
  * @license MIT License (MIT)
  *
- * For full copyright and license information, please see the docs/CREDITS.txt and LICENCE files.
+ * For full copyright and license information, please see the docs/CREDITS.txt file.
  *
+ * @author Khoa Bui (khoaofgod)  <khoaofgod@gmail.com> https://www.phpfastcache.com
  * @author Georges.L (Geolim4)  <contact@geolim4.com>
- * @author Contributors  https://github.com/PHPSocialNetwork/phpfastcache/graphs/contributors
+ *
  */
 
 declare(strict_types=1);
@@ -18,7 +18,7 @@ namespace Phpfastcache\Drivers\Memcached;
 
 use Phpfastcache\Config\ConfigurationOption;
 use Phpfastcache\Exceptions\PhpfastcacheInvalidConfigurationException;
-use Phpfastcache\Exceptions\PhpfastcacheLogicException;
+
 
 class Config extends ConfigurationOption
 {
@@ -37,15 +37,34 @@ class Config extends ConfigurationOption
      *         ]
      *      ]);
      */
+    protected $servers = [];
 
-    /** @var array<array<string, mixed>> */
-    protected array $servers = [];
-    protected string $host = '127.0.0.1';
-    protected int $port = 11211;
-    protected string $saslUser = '';
-    protected string $saslPassword = '';
-    protected string $optPrefix = '';
-/**
+    /**
+     * @var string
+     */
+    protected $host = '127.0.0.1';
+
+    /**
+     * @var int
+     */
+    protected $port = 11211;
+
+    /**
+     * @var string
+     */
+    protected $saslUser = '';
+
+    /**
+     * @var string
+     */
+    protected $saslPassword = '';
+
+    /**
+     * @var string
+     */
+    protected $optPrefix = '';
+
+    /**
      * @return string
      */
     public function getSaslUser(): string
@@ -56,11 +75,9 @@ class Config extends ConfigurationOption
     /**
      * @param string $saslUser
      * @return self
-     * @throws PhpfastcacheLogicException
      */
-    public function setSaslUser(string $saslUser): static
+    public function setSaslUser(string $saslUser): self
     {
-        $this->enforceLockedProperty(__FUNCTION__);
         $this->saslUser = $saslUser;
         return $this;
     }
@@ -76,47 +93,28 @@ class Config extends ConfigurationOption
     /**
      * @param string $saslPassword
      * @return self
-     * @throws PhpfastcacheLogicException
      */
-    public function setSaslPassword(string $saslPassword): static
+    public function setSaslPassword(string $saslPassword): self
     {
-        $this->enforceLockedProperty(__FUNCTION__);
         $this->saslPassword = $saslPassword;
         return $this;
     }
 
     /**
-     * @return array<array<string, mixed>>
+     * @return array
      */
     public function getServers(): array
     {
-        if (!count($this->servers)) {
-            return [
-                [
-                    'host' => $this->getHost(),
-                    'path' => $this->getPath(),
-                    'port' => $this->getPort(),
-                    'saslUser' => $this->getSaslUser() ?: null,
-                    'saslPassword' => $this->getSaslPassword() ?: null,
-                ],
-            ];
-        }
-
         return $this->servers;
     }
 
     /**
-     * @param array<array<string, mixed>> $servers
+     * @param array $servers
      * @return self
      * @throws PhpfastcacheInvalidConfigurationException
-     * @throws PhpfastcacheLogicException
-     *
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
-    public function setServers(array $servers): static
+    public function setServers(array $servers): self
     {
-        $this->enforceLockedProperty(__FUNCTION__);
         foreach ($servers as $server) {
             if ($diff = array_diff(array_keys($server), ['host', 'port', 'saslUser', 'saslPassword', 'path'])) {
                 throw new PhpfastcacheInvalidConfigurationException('Unknown keys for memcached server: ' . implode(', ', $diff));
@@ -134,7 +132,7 @@ class Config extends ConfigurationOption
                 throw new PhpfastcacheInvalidConfigurationException('Path must be a valid string in "$server" configuration array if host is not defined');
             }
 
-            if (!empty($server['host']) && (empty($server['port']) || !is_int($server['port']) || $server['port'] < 1)) {
+            if (!empty($server['host']) && (empty($server['port']) || !is_int($server['port'])|| $server['port'] < 1)) {
                 throw new PhpfastcacheInvalidConfigurationException('Port must be a valid integer in "$server" configuration array');
             }
 
@@ -161,11 +159,9 @@ class Config extends ConfigurationOption
     /**
      * @param string $host
      * @return self
-     * @throws PhpfastcacheLogicException
      */
-    public function setHost(string $host): static
+    public function setHost(string $host): self
     {
-        $this->enforceLockedProperty(__FUNCTION__);
         $this->host = $host;
         return $this;
     }
@@ -181,11 +177,9 @@ class Config extends ConfigurationOption
     /**
      * @param int $port
      * @return Config
-     * @throws PhpfastcacheLogicException
      */
-    public function setPort(int $port): static
+    public function setPort(int $port): self
     {
-        $this->enforceLockedProperty(__FUNCTION__);
         $this->port = $port;
         return $this;
     }
@@ -202,12 +196,10 @@ class Config extends ConfigurationOption
     /**
      * @param string $optPrefix
      * @return Config
-     * @throws PhpfastcacheLogicException
      * @since 8.0.2
      */
     public function setOptPrefix(string $optPrefix): Config
     {
-        $this->enforceLockedProperty(__FUNCTION__);
         $this->optPrefix = trim($optPrefix);
         return $this;
     }

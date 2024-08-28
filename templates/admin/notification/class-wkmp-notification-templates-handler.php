@@ -44,6 +44,7 @@ if ( ! class_exists( 'WKMP_Notification_Templates_Handler' ) ) {
 
 			add_action( 'wkmp_notification_orders_content', array( $this, 'wkmp_notification_orders_content' ) );
 			add_action( 'wkmp_notification_product_content', array( $this, 'wkmp_notification_product_content' ) );
+			add_action( 'wkmp_notification_seller_content', array( $this, 'wkmp_notification_seller_content' ) );
 
 			$this->wkmp_notification_templates();
 		}
@@ -67,6 +68,7 @@ if ( ! class_exists( 'WKMP_Notification_Templates_Handler' ) ) {
 			$config_tabs = array(
 				'orders'  => esc_html__( 'Orders', 'wk-marketplace' ),
 				'product' => esc_html__( 'Product', 'wk-marketplace' ),
+				'seller'  => esc_html__( 'Seller', 'wk-marketplace' ),
 			);
 
 			$config_tabs = apply_filters( 'wkmp_admin_notification_tabs', $config_tabs );
@@ -106,6 +108,16 @@ if ( ! class_exists( 'WKMP_Notification_Templates_Handler' ) ) {
 		 */
 		public function wkmp_notification_product_content() {
 			$product_notification = WKMP_Notification_Product::get_instance();
+			$product_notification->display_notification_content( $this->db_obj );
+		}
+
+		/**
+		 *  Call back methods for seller content
+		 *
+		 * @throws \Exception Throwing exception.
+		 */
+		public function wkmp_notification_seller_content() {
+			$product_notification = WKMP_Notification_Seller::get_instance();
 			$product_notification->display_notification_content( $this->db_obj );
 		}
 	}

@@ -203,7 +203,7 @@ if ( ! class_exists( 'WKMarketplace' ) ) {
 		/**
 		 * Load plugin.
 		 *
-		 * @return void
+		 * @return void|bool
 		 */
 		public function wkmp_load_plugin() {
 			/**
@@ -256,7 +256,7 @@ if ( ! class_exists( 'WKMarketplace' ) ) {
 				$message = wp_sprintf( /* Translators: %1$s Marketplace Lite Plugin Name, %2$s: Woocommerce Install link, %3$s: Closing anchor. */ esc_html__( '%1$s plugin depends on the latest version of WooCommerce. %2$s Click Here to Install it Now %3$s', 'wk-marketplace' ), '<b>Marketplace Lite for WooCommerce</b>', '<a href=' . esc_url( $install_wc_url ) . '>', '<a>' );
 			}
 
-			self::wkmp_show_notice_on_admin( $message, 'error' );
+			\WK_Caching::wk_show_notice_on_admin( $message, 'error' );
 		}
 
 		/**
@@ -265,32 +265,8 @@ if ( ! class_exists( 'WKMarketplace' ) ) {
 		 * @return void
 		 */
 		public function wkmp_show_min_pro_not_installed_notice() {
-			$message = wp_sprintf( /* Translators: %s Marketplace Pro module link. */ esc_html__( 'This version of Marketplace Lite for WooCommerce plugin requires %1$s or later version of %2$s to work! Please consider upgrading it.', 'wk-marketplace' ), esc_html( WKMP_PRO_MIN_VERSION ), '<a href="' . esc_url( WKMP_PRO_MODULE_URL ) . '" target="_blank">' . esc_html__( 'Marketplace for WooCommerce', 'wk-marketplace' ) . '</a>' );
-			self::wkmp_show_notice_on_admin( $message, 'error' );
-		}
-
-		/**
-		 * Wrapper for admin notice.
-		 *
-		 * @param  string $message The notice message.
-		 * @param  string $type Notice type like info, error, success.
-		 * @param  array  $args Additional arguments for wp-6.4.
-		 *
-		 * @return void
-		 */
-		public static function wkmp_show_notice_on_admin( $message = '', $type = 'error', $args = array() ) {
-			if ( ! empty( $message ) ) {
-				if ( function_exists( 'wp_admin_notice' ) ) {
-					$args         = is_array( $args ) ? $args : array();
-					$args['type'] = empty( $args['type'] ) ? $type : $args['type'];
-
-					wp_admin_notice( $message, $args );
-				} else {
-					?>
-				<div class="<?php echo esc_attr( $type ); ?>"><p><?php echo wp_kses_post( $message ); ?></p></div>
-					<?php
-				}
-			}
+			$message = wp_sprintf( /* Translators: %s Marketplace Pro module link. */ esc_html__( 'The %1$sMarketplace Lite for WooCommerce (v%2$s) %3$s plugin requires %4$s or later version of %5$s to work! Please consider upgrading it.', 'wk-marketplace' ), '<strong>', esc_html( WKMP_LITE_VERSION ), '</strong>', '<strong>v' . esc_html( WKMP_PRO_MIN_VERSION ) . '</strong>', '<a href="' . esc_url( WKMP_PRO_MODULE_URL ) . '" target="_blank">' . esc_html__( 'Marketplace for WooCommerce', 'wk-marketplace' ) . '</a>' );
+			\WK_Caching::wk_show_notice_on_admin( $message, 'error' );
 		}
 
 		/**
@@ -708,37 +684,40 @@ if ( ! class_exists( 'WKMarketplace' ) ) {
 		public function wkmp_get_parsed_seller_info( $seller_id, $posted_data = array() ) {
 			$seller_info = array();
 
-			$field_keys = array(
-				'wkmp_username',
-				'wkmp_seller_email',
-				'wkmp_first_name',
-				'wkmp_last_name',
-				'wkmp_shop_name',
-				'wkmp_shop_url',
-				'wkmp_about_shop',
-				'wkmp_shop_address_1',
-				'wkmp_shop_address_2',
-				'wkmp_shop_city',
-				'wkmp_shop_postcode',
-				'wkmp_shop_phone',
-				'wkmp_shop_country',
-				'wkmp_shop_state',
-				'wkmp_payment_details',
-				'wkmp_display_banner',
-				'wkmp_avatar_id',
-				'wkmp_logo_id',
-				'wkmp_banner_id',
-				'wkmp_avatar_file',
-				'wkmp_logo_file',
-				'wkmp_banner_file',
-				'wkmp_generic_avatar',
-				'wkmp_generic_logo',
-				'wkmp_generic_banner',
-				'wkmp_facebook',
-				'wkmp_instagram',
-				'wkmp_twitter',
-				'wkmp_linkedin',
-				'wkmp_youtube',
+			$field_keys = apply_filters(
+				'wkmp_seller_default_meta_fields',
+				array(
+					'wkmp_username',
+					'wkmp_seller_email',
+					'wkmp_first_name',
+					'wkmp_last_name',
+					'wkmp_shop_name',
+					'wkmp_shop_url',
+					'wkmp_about_shop',
+					'wkmp_shop_address_1',
+					'wkmp_shop_address_2',
+					'wkmp_shop_city',
+					'wkmp_shop_postcode',
+					'wkmp_shop_phone',
+					'wkmp_shop_country',
+					'wkmp_shop_state',
+					'wkmp_payment_details',
+					'wkmp_display_banner',
+					'wkmp_avatar_id',
+					'wkmp_logo_id',
+					'wkmp_banner_id',
+					'wkmp_avatar_file',
+					'wkmp_logo_file',
+					'wkmp_banner_file',
+					'wkmp_generic_avatar',
+					'wkmp_generic_logo',
+					'wkmp_generic_banner',
+					'wkmp_facebook',
+					'wkmp_instagram',
+					'wkmp_twitter',
+					'wkmp_linkedin',
+					'wkmp_youtube',
+				)
 			);
 
 			foreach ( $field_keys as $field_key ) {

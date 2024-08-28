@@ -1,13 +1,13 @@
 === Multi-Vendor Marketplace Lite for WooCommerce - Create Your Amazing B2C Multi-Vendor Stores Intuitively ===
 Contributors: webkul
 Tags: marketplace, vendors, sellers, multi stores, b2c marketplace
-Requires at least: 5.0
-Tested up to: 6.5
-Stable tag: 1.1.2
+Requires at least: 6.5
+Tested up to: 6.6
+Stable tag: 1.2.0
 Requires PHP: 7.4
 Tested up to PHP: 8.3
-WC requires at least: 5.0
-WC tested up to: 9.0
+WC requires at least: 8.0
+WC tested up to: 9.2
 
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -288,6 +288,21 @@ For any Query please generate a ticket at https://webkul.com/ticket/
 8. **Seller Dashboard:** - Seller Frontend dashboard showing different statistics.
 
 == Changelog ==
+
+= 1.2.0 - 2024-08-28 =
+Added: Action and filter hooks to manage seller google analytics features.
+Added: Dynamic color filter for favorite seller heart icons to support pro settings for the same.
+Added: Settings for products per page on seller frontend dashboard product listing page.
+Added: Validation for view invoice for the seller to add security.
+Fixed: New review notifications were not sent to the seller.
+Fixed: Layout issue on attribute section.
+Fixed: Stock status settings show/hide based on manage stock checkbox on seller frontend dashboard for variable products.
+Fixed: Issue with showing marketplace shortcode on the previously selected seller page.
+Fixed: Search in shop followers lists not working on seller backend dashboard.
+Fixed: Showing notices on the view transactions page for deleted orders.
+Removed: Manage stock and quantity-related settings on seller frontend dashboard for External products.
+Removed: About shop heading from seller profile if the description is empty.
+Optimized: Product listing page queries to add filters via pro modules.
 
 = 1.1.2 - 2024-07-01 =
 Fixed: Seller profile page form validation.

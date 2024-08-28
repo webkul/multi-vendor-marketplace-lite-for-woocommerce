@@ -11,7 +11,6 @@ defined( 'ABSPATH' ) || exit; // Exit if access directly.
 settings_errors();
 $pro_disabled = $wkmarketplace->wkmp_is_pro_module_disabled();
 ?>
-
 <form method="POST" action="options.php">
 	<?php settings_fields( 'wkmp-general-settings-group' ); ?>
 	<table class="form-table">
@@ -172,8 +171,12 @@ $pro_disabled = $wkmarketplace->wkmp_is_pro_module_disabled();
 					}
 					?>
 				</select>
-				<?php ( $pro_disabled ) ? $template_functions->wkmp_show_upgrade_lock_icon() : ''; ?>
+				<?php
+				( $pro_disabled ) ? $template_functions->wkmp_show_upgrade_lock_icon() : '';
+				if ( 'disabled' === get_option( 'woocommerce_ship_to_countries', false ) ) {
+					?>
 				<p class="description"><?php printf( wp_kses( 'Shipping must be enabled from %s woocommerce settings %s in order to work this functionality.', 'wk-marketplace' ), '<a href="' . esc_url( admin_url( 'admin.php?page=wc-settings' ) ) . '">', '</a>' ); ?></p>
+				<?php } ?>
 			</td>
 		</tr>
 
@@ -188,7 +191,6 @@ $pro_disabled = $wkmarketplace->wkmp_is_pro_module_disabled();
 			</th>
 			<td>
 				<?php
-
 				$args = apply_filters(
 					'wkmp_get_pages_for_seller_dashboard_args',
 					array(

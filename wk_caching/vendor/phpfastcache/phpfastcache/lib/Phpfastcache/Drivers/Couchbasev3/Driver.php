@@ -2,78 +2,60 @@
 
 /**
  *
- * This file is part of Phpfastcache.
+ * This file is part of phpFastCache.
  *
  * @license MIT License (MIT)
  *
- * For full copyright and license information, please see the docs/CREDITS.txt and LICENCE files.
+ * For full copyright and license information, please see the docs/CREDITS.txt file.
  *
+ * @author Khoa Bui (khoaofgod)  <khoaofgod@gmail.com> https://www.phpfastcache.com
  * @author Georges.L (Geolim4)  <contact@geolim4.com>
- * @author Contributors  https://github.com/PHPSocialNetwork/phpfastcache/graphs/contributors
+ *
  */
-
 declare(strict_types=1);
 
 namespace Phpfastcache\Drivers\Couchbasev3;
 
-use Couchbase\BaseException as CouchbaseException;
-use Couchbase\Bucket as CouchbaseBucket;
-use Couchbase\Cluster;
-use Couchbase\ClusterOptions;
-use Couchbase\Collection;
-use Couchbase\DocumentNotFoundException;
-use Couchbase\Scope;
-use Couchbase\UpsertOptions;
-use DateTimeInterface;
-use Phpfastcache\Cluster\AggregatablePoolInterface;
+use Couchbase\{BaseException as CouchbaseException, Cluster, ClusterOptions, Collection, DocumentNotFoundException, Scope, UpsertOptions};
 use Phpfastcache\Config\ConfigurationOption;
-use Phpfastcache\Core\Item\ExtendedCacheItemInterface;
-use Phpfastcache\Core\Pool\ExtendedCacheItemPoolInterface;
-use Phpfastcache\Core\Pool\TaggableCacheItemPoolTrait;
+use Phpfastcache\Drivers\Couchbase\Driver as CoubaseV2Driver;
+use Phpfastcache\Drivers\Couchbase\Item;
 use Phpfastcache\Entities\DriverStatistic;
-use Phpfastcache\Event\EventManagerInterface;
-use Phpfastcache\Exceptions\PhpfastcacheDriverCheckException;
-use Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException;
-use Phpfastcache\Exceptions\PhpfastcacheLogicException;
+use Phpfastcache\Exceptions\{PhpfastcacheDriverCheckException, PhpfastcacheInvalidArgumentException, PhpfastcacheLogicException};
+use Psr\Cache\CacheItemInterface;
 
 /**
+ * Class Driver
+ * @package phpFastCache\Drivers
  * @property Cluster $instance Instance of driver service
- * @method Config getConfig()
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @property Config $config Config object
+ * @method Config getConfig() Return the config object
  */
-class Driver implements AggregatablePoolInterface
+class Driver extends CoubaseV2Driver
 {
-    use TaggableCacheItemPoolTrait {
-        __construct as __baseConstruct;
-    }
-
-    protected Scope $scope;
-
-    protected Collection $collection;
-
-    protected CouchbaseBucket $bucketInstance;
-
-    public function __construct(ConfigurationOption $config, string $instanceId, EventManagerInterface $em)
-    {
-        $this->__baseConstruct($config, $instanceId, $em);
-    }
-
     /**
-     * @return bool
+     * @var Scope
      */
-    public function driverCheck(): bool
+    protected $scope;
+
+    /**
+     * @var Collection
+     */
+    protected $collection;
+
+    public function __construct(ConfigurationOption $config, $instanceId)
     {
-        return extension_loaded('couchbase');
+        $this->__baseConstruct($config, $instanceId);
     }
 
     /**
      * @return bool
-     * @throws PhpfastcacheDriverCheckException
+     * @throws PhpfastcacheLogicException
      */
     protected function driverConnect(): bool
     {
         if (!\class_exists(ClusterOptions::class)) {
-            throw new PhpfastcacheDriverCheckException('You are using the Couchbase PHP SDK 2.x which is no longer supported in Phpfastcache v9');
+            throw new PhpfastcacheDriverCheckException('You are using the Couchbase PHP SDK 2.x so please use driver Couchbasev3');
         }
 
         $connectionString = "couchbase://{$this->getConfig()->getHost()}:{$this->getConfig()->getPort()}";
@@ -90,60 +72,69 @@ class Driver implements AggregatablePoolInterface
     }
 
     /**
-     * @param ExtendedCacheItemInterface $item
-     * @return ?array<string, mixed>
+     * @param CacheItemInterface $item
+     * @return null|array
      */
-    protected function driverRead(ExtendedCacheItemInterface $item): ?array
+    protected function driverRead(CacheItemInterface $item)
     {
         try {
             /**
              * CouchbaseBucket::get() returns a GetResult interface
              */
             return $this->decodeDocument((array)$this->getCollection()->get($item->getEncodedKey())->content());
-        } catch (DocumentNotFoundException) {
+        } catch (DocumentNotFoundException $e) {
             return null;
         }
     }
 
     /**
-     * @param ExtendedCacheItemInterface $item
+     * @param CacheItemInterface $item
      * @return bool
      * @throws PhpfastcacheInvalidArgumentException
-     * @throws PhpfastcacheLogicException
      */
-    protected function driverWrite(ExtendedCacheItemInterface $item): bool
+    protected function driverWrite(CacheItemInterface $item): bool
     {
-        $this->assertCacheItemType($item, Item::class);
-
-        try {
-            $this->getCollection()->upsert(
-                $item->getEncodedKey(),
-                $this->encodeDocument($this->driverPreWrap($item)),
-                (new UpsertOptions())->expiry($item->getTtl())
-            );
-            return true;
-        } catch (CouchbaseException) {
-            return false;
+        /**
+         * Check for Cross-Driver type confusion
+         */
+        if ($item instanceof Item) {
+            try {
+                $this->getCollection()->upsert(
+                    $item->getEncodedKey(),
+                    $this->encodeDocument($this->driverPreWrap($item)),
+                    (new UpsertOptions())->expiry($item->getTtl())
+                );
+                return true;
+            } catch (CouchbaseException $e) {
+                return false;
+            }
         }
+
+        throw new PhpfastcacheInvalidArgumentException('Cross-Driver type confusion detected');
     }
 
     /**
-     * @param ExtendedCacheItemInterface $item
+     * @param CacheItemInterface $item
      * @return bool
      * @throws PhpfastcacheInvalidArgumentException
      */
-    protected function driverDelete(ExtendedCacheItemInterface $item): bool
+    protected function driverDelete(CacheItemInterface $item): bool
     {
-        $this->assertCacheItemType($item, Item::class);
-
-        try {
-            $this->getCollection()->remove($item->getEncodedKey());
-            return true;
-        } catch (DocumentNotFoundException) {
-            return true;
-        } catch (CouchbaseException) {
-            return false;
+        /**
+         * Check for Cross-Driver type confusion
+         */
+        if ($item instanceof Item) {
+            try {
+                $this->getCollection()->remove($item->getEncodedKey());
+                return true;
+            } catch (DocumentNotFoundException $e) {
+                return true;
+            } catch (CouchbaseException $e) {
+                return false;
+            }
         }
+
+        throw new PhpfastcacheInvalidArgumentException('Cross-Driver type confusion detected');
     }
 
     /**
@@ -157,7 +148,6 @@ class Driver implements AggregatablePoolInterface
 
     /**
      * @return DriverStatistic
-     * @throws \Exception
      */
     public function getStats(): DriverStatistic
     {
@@ -171,7 +161,7 @@ class Driver implements AggregatablePoolInterface
             ->setSize(0)
             ->setRawData($info)
             ->setData(implode(', ', array_keys($this->itemInstances)))
-            ->setInfo($info['sdk'] . "\n For more information see RawData.");
+            ->setInfo( $info['sdk'] . "\n For more information see RawData.");
     }
 
     /**
@@ -208,70 +198,5 @@ class Driver implements AggregatablePoolInterface
     {
         $this->scope = $scope;
         return $this;
-    }
-
-    /**
-     * @return CouchbaseBucket
-     */
-    protected function getBucket(): CouchbaseBucket
-    {
-        return $this->bucketInstance;
-    }
-
-    /**
-     * @param CouchbaseBucket $couchbaseBucket
-     */
-    protected function setBucket(CouchbaseBucket $couchbaseBucket): void
-    {
-        $this->bucketInstance = $couchbaseBucket;
-    }
-
-
-    /**
-     * @param array<string, mixed> $data
-     * @return array<string, mixed>
-     */
-    protected function encodeDocument(array $data): array
-    {
-        $data[ExtendedCacheItemPoolInterface::DRIVER_DATA_WRAPPER_INDEX] = $this->encode($data[ExtendedCacheItemPoolInterface::DRIVER_DATA_WRAPPER_INDEX]);
-        $data[ExtendedCacheItemPoolInterface::DRIVER_EDATE_WRAPPER_INDEX] = $data[ExtendedCacheItemPoolInterface::DRIVER_EDATE_WRAPPER_INDEX]
-            ->format(DateTimeInterface::ATOM);
-
-        if ($this->getConfig()->isItemDetailedDate()) {
-            $data[ExtendedCacheItemPoolInterface::DRIVER_CDATE_WRAPPER_INDEX] = $data[ExtendedCacheItemPoolInterface::DRIVER_CDATE_WRAPPER_INDEX]
-                ->format(\DateTimeInterface::ATOM);
-
-            $data[ExtendedCacheItemPoolInterface::DRIVER_MDATE_WRAPPER_INDEX] = $data[ExtendedCacheItemPoolInterface::DRIVER_MDATE_WRAPPER_INDEX]
-                ->format(\DateTimeInterface::ATOM);
-        }
-
-        return $data;
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     * @return array<string, mixed>
-     */
-    protected function decodeDocument(array $data): array
-    {
-        $data[ExtendedCacheItemPoolInterface::DRIVER_DATA_WRAPPER_INDEX] = $this->decode($data[ExtendedCacheItemPoolInterface::DRIVER_DATA_WRAPPER_INDEX]);
-        $data[ExtendedCacheItemPoolInterface::DRIVER_EDATE_WRAPPER_INDEX] = \DateTime::createFromFormat(
-            \DateTimeInterface::ATOM,
-            $data[ExtendedCacheItemPoolInterface::DRIVER_EDATE_WRAPPER_INDEX]
-        );
-
-        if ($this->getConfig()->isItemDetailedDate()) {
-            $data[ExtendedCacheItemPoolInterface::DRIVER_CDATE_WRAPPER_INDEX] = \DateTime::createFromFormat(
-                \DateTimeInterface::ATOM,
-                $data[ExtendedCacheItemPoolInterface::DRIVER_CDATE_WRAPPER_INDEX]
-            );
-
-            $data[ExtendedCacheItemPoolInterface::DRIVER_MDATE_WRAPPER_INDEX] = \DateTime::createFromFormat(
-                \DateTimeInterface::ATOM,
-                $data[ExtendedCacheItemPoolInterface::DRIVER_MDATE_WRAPPER_INDEX]
-            );
-        }
-
-        return $data;
     }
 }

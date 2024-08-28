@@ -878,10 +878,11 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 		 *
 		 * @param string $value Meta value.
 		 * @param object $meta Meta.
+		 * @param string $return_type Return type.
 		 *
 		 * @return string
 		 */
-		public function wkmp_validate_sold_by_order_item_meta( $value, $meta ) {
+		public function wkmp_validate_sold_by_order_item_meta( $value, $meta, $return_type = '' ) {
 			global $wkmarketplace;
 
 			$sold_by = $this->wkmp_check_if_sold_by_item_meta( $value, $meta, $wkmarketplace );
@@ -913,6 +914,10 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 				}
 
 				if ( $seller_id > 0 ) {
+					if ( 'product_seller_id' === $return_type ) {
+						return $seller_id;
+					}
+
 					$shop_name = '';
 					$shop_url  = '';
 
@@ -1022,6 +1027,25 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 			}
 
 			return empty( $product_sku ) ? $sell_product_id : $product_sku;
+		}
+
+		/**
+		 * Adding dynamic style on seller dashboard.
+		 *
+		 * @return void
+		 */
+		public function wkmp_add_seller_dashboard_dynamic_style() {
+			if ( get_current_user_id() ) {
+				$primary_color = apply_filters( 'wkmp_active_color_code', '#96588a' );
+				?>
+				<style>
+					/** Admin dashboard typography. */
+					.wkmp-product-author-shop .wkmp_active_heart, .mp-dashboard-wrapper h2,.mp-dashboard-wrapper .summary-icon,.mp-dashboard-wrapper .mp-store-top-billing-country h4, .mp-dashboard-wrapper .mp-store-sale-order-history-section .header p {
+						color:<?php echo esc_attr( $primary_color ); ?>;
+					}
+				</style>
+				<?php
+			}
 		}
 	}
 }

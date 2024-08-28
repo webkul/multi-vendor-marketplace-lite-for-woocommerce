@@ -344,13 +344,13 @@ if ( ! class_exists( 'WKMP_Orders' ) ) {
 					}
 
 					$order_item_id = $order_item->get_product_id();
+					$product_name  = $order_item->get_name();
 
 					if ( intval( $order_product_id ) === $order_item_id ) {
-						$product_name = $order_item->get_name();
-						$variable_id  = $order_item->get_variation_id();
-						$item_key     = $order_item_key;
-						$meta_data    = $order_item->get_formatted_meta_data();
-						$tax_total    = $order_item->get_taxes()['total'];
+						$variable_id = $order_item->get_variation_id();
+						$item_key    = $order_item_key;
+						$meta_data   = $order_item->get_formatted_meta_data();
+						$tax_total   = $order_item->get_taxes()['total'];
 						break;
 					}
 				}
@@ -503,7 +503,6 @@ if ( ! class_exists( 'WKMP_Orders' ) ) {
 
 			$order_id = get_query_var( 'order_id' );
 			$wpdb_obj = $this->wpdb;
-			$data     = array();
 			$order_id = base64_decode( $order_id );
 
 			$this->seller_id   = empty( $seller_id ) ? ( empty( $this->seller_id ) ? get_current_user_id() : $this->seller_id ) : $seller_id;
@@ -511,26 +510,38 @@ if ( ! class_exists( 'WKMP_Orders' ) ) {
 			$refund_data       = $commission_helper->wkmp_get_seller_order_refund_data( $order_id, $this->seller_id );
 			$seller_order      = new \WC_Order( $order_id );
 
+			if ( ! $seller_order instanceof \WC_Order || ( $seller_order instanceof \WC_Order && $seller_order->get_id() < 1 ) ) {
+				wp_die( __( 'Invalid order request for invoice.', 'wk-marketplace' ) );
+			}
+
 			$obj_commission = Common\WKMP_Commission::get_instance();
 			$mp_order_data  = $obj_commission->wkmp_get_seller_final_order_info( $order_id, $this->seller_id );
 
-			$data['seller_info'] = $wkmarketplace->wkmp_get_seller_info( $this->seller_id );
-			$data['store_url']   = $wkmarketplace->wkmp_get_seller_store_url( $this->seller_id );
+			if ( empty( $mp_order_data['product'] ) ) {
+				wp_die( __( 'You don\'t have sufficient permission to view the invoice of this order.', 'wk-marketplace' ) );
+			}
 
-			$data['customer_details'] = array(
-				'name'      => $seller_order->get_billing_first_name() . ' ' . $seller_order->get_billing_last_name(),
-				'email'     => $seller_order->get_billing_email(),
-				'telephone' => $seller_order->get_billing_phone(),
+			$total_commission = empty( $mp_order_data['total_commission'] ) ? 0 : $mp_order_data['total_commission'];
+
+			$data = array(
+				'date_created'     => $seller_order->get_date_created()->format( 'Y F j, g:i a' ),
+				'currency_symbol'  => get_woocommerce_currency_symbol( $seller_order->get_currency() ),
+				'shipping_method'  => $seller_order->get_shipping_method(),
+				'payment_method'   => $seller_order->get_payment_method_title(),
+				'seller_info'      => $wkmarketplace->wkmp_get_seller_info( $this->seller_id ),
+				'store_url'        => $wkmarketplace->wkmp_get_seller_store_url( $this->seller_id ),
+				'billing_address'  => wp_kses_post( $seller_order->get_formatted_billing_address( esc_html__( 'N/A', 'wk-marketplace' ) ) ),
+				'shipping_address' => wp_kses_post( $seller_order->get_formatted_shipping_address( esc_html__( 'N/A', 'wk-marketplace' ) ) ),
+				'total_discount'   => empty( $mp_order_data['discount'] ) ? 0 : array_sum( $mp_order_data['discount'] ),
+				'total_commission' => $total_commission,
+				'customer_details' => array(
+					'name'      => $seller_order->get_billing_first_name() . ' ' . $seller_order->get_billing_last_name(),
+					'email'     => $seller_order->get_billing_email(),
+					'telephone' => $seller_order->get_billing_phone(),
+				),
 			);
 
-			$data['currency_symbol'] = get_woocommerce_currency_symbol( $seller_order->get_currency() );
-			$data['shipping_method'] = $seller_order->get_shipping_method();
-			$data['payment_method']  = $seller_order->get_payment_method_title();
-
-			$data['billing_address']  = wp_kses_post( $seller_order->get_formatted_billing_address( esc_html__( 'N/A', 'wk-marketplace' ) ) );
-			$data['shipping_address'] = wp_kses_post( $seller_order->get_formatted_shipping_address( esc_html__( 'N/A', 'wk-marketplace' ) ) );
-			$data['date_created']     = $seller_order->get_date_created()->format( 'Y F j, g:i a' );
-			$shipping_cost            = 0;
+			$shipping_cost = 0;
 
 			if ( 'null' !== $seller_order->get_total_shipping() ) {
 				$ship_data = $wpdb_obj->get_results( $wpdb_obj->prepare( "SELECT meta_value FROM {$wpdb_obj->prefix}mporders_meta WHERE seller_id = %d AND order_id = %d AND meta_key = 'shipping_cost' ", $this->seller_id, $order_id ) );
@@ -558,13 +569,20 @@ if ( ! class_exists( 'WKMP_Orders' ) ) {
 				$product_post = get_post( $product_id );
 				$meta_data    = $product->get_meta_data();
 
+				$prod_seller_id = ( $product_post instanceof \WC_Post ) ? $product_post->post_author : 0;
+
 				if ( ! empty( $meta_data ) ) {
 					foreach ( $meta_data as $value1 ) {
 						$item_data[] = $this->wkmp_validate_order_invoice_item_meta( $value1->get_data() );
+
+						if ( empty( $prod_seller_id ) ) {
+							$prod_meta      = $this->wkmp_validate_order_invoice_item_meta( $value1->get_data(), 'product_seller_id' );
+							$prod_seller_id = ( ! empty( $prod_meta ) && ! empty( $prod_meta['value'] ) && is_numeric( $prod_meta['value'] ) ) ? intval( $prod_meta['value'] ) : $prod_seller_id;
+						}
 					}
 				}
 
-				$is_seller_product = apply_filters( 'wkmp_is_seller_product_invoice_data', intval( $product_post->post_author ) === intval( $this->seller_id ), $product, $this->seller_id );
+				$is_seller_product = apply_filters( 'wkmp_is_seller_product_invoice_data', intval( $prod_seller_id ) === intval( $this->seller_id ), $product, $this->seller_id );
 
 				if ( $is_seller_product ) {
 					$subtotal += $value_data['total'];
@@ -580,14 +598,13 @@ if ( ! class_exists( 'WKMP_Orders' ) ) {
 				}
 			}
 
-			$data['sub_total']      = number_format( $subtotal, 2 );
-			$data['total_discount'] = empty( $mp_order_data['discount'] ) ? 0 : array_sum( $mp_order_data['discount'] );
+			$data['sub_total'] = number_format( $subtotal, 2 );
 
 			if ( ! empty( $refund_data['refunded_amount'] ) ) {
-				$data['total']             = number_format( $seller_order_tax + $subtotal + $shipping_cost - $refund_data['refunded_amount'], 2 );
+				$data['total']             = number_format( $seller_order_tax + $subtotal + $shipping_cost - $refund_data['refunded_amount'] - $total_commission, 2 );
 				$data['subtotal_refunded'] = number_format( $seller_order_tax + $subtotal + $shipping_cost, 2 );
 			} else {
-				$data['total'] = number_format( $seller_order_tax + $subtotal + $shipping_cost, 2 );
+				$data['total'] = number_format( $seller_order_tax + $subtotal + $shipping_cost - $total_commission, 2 );
 			}
 			require_once __DIR__ . '/wkmp-order-invoice.php';
 			die;
@@ -596,16 +613,17 @@ if ( ! class_exists( 'WKMP_Orders' ) ) {
 		/**
 		 * Validate metadata and replace seller id with seller shop link.
 		 *
-		 * @param array $meta_data Meta data.
+		 * @param array  $meta_data Meta data.
+		 * @param string $return_type Return type.
 		 *
 		 * @return array
 		 */
-		public function wkmp_validate_order_invoice_item_meta( $meta_data ) {
+		public function wkmp_validate_order_invoice_item_meta( $meta_data, $return_type = '' ) {
 			$common_functions = IncludeCommon\WKMP_Common_Functions::get_instance();
 			$meta_value       = empty( $meta_data['value'] ) ? '' : $meta_data['value'];
 
 			if ( ! empty( $meta_value ) ) {
-				$meta_data['value'] = $common_functions->wkmp_validate_sold_by_order_item_meta( $meta_value, (object) $meta_data );
+				$meta_data['value'] = $common_functions->wkmp_validate_sold_by_order_item_meta( $meta_value, (object) $meta_data, $return_type );
 			}
 
 			return apply_filters( 'wkmp_formatted_order_meta_data', $meta_data );

@@ -46,10 +46,12 @@ if ( ! class_exists( 'WKMP_Dashboard_Top_Billing_Country' ) ) {
 				<h4><?php esc_html_e( 'Top Billing Countries', 'wk-marketplace' ); ?></h4>
 				<div id="regions_div"></div>
 			<?php
-			$array_data  = $this->wkmp_get_data( $seller_id );
-			$map_api_key = get_option( '_wkmp_google_map_api_key', false );
+			$array_data = $this->wkmp_get_data( $seller_id );
 
 			if ( count( $array_data ) > 1 ) {
+				$map_api_key     = get_option( '_wkmp_google_map_api_key', false );
+				$primary_color   = apply_filters( 'wkmp_active_color_code', '#96588a' );
+				$secondary_color = apply_filters( 'wkmp_graph_dataset_color_code', '#673AB7' );
 				?>
 				<script>
 					var data_array = <?php echo wp_json_encode( $array_data ); ?>;
@@ -65,7 +67,7 @@ if ( ! class_exists( 'WKMP_Dashboard_Top_Billing_Country' ) ) {
 						var data = google.visualization.arrayToDataTable(data_array);
 						var options = {
 							dataMode: 'regions',
-							colorAxis: {colors: ['green', 'blue']}
+							colorAxis: {colors: [<?php echo "'" . esc_attr( $secondary_color ) . "'" . ',' . "'" . esc_attr( $primary_color ) . "'"; ?>]}
 						};
 
 						var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));

@@ -2,32 +2,35 @@
 
 /**
  *
- * This file is part of Phpfastcache.
+ * This file is part of phpFastCache.
  *
  * @license MIT License (MIT)
  *
- * For full copyright and license information, please see the docs/CREDITS.txt and LICENCE files.
+ * For full copyright and license information, please see the docs/CREDITS.txt file.
  *
+ * @author Khoa Bui (khoaofgod)  <khoaofgod@gmail.com> https://www.phpfastcache.com
  * @author Georges.L (Geolim4)  <contact@geolim4.com>
- * @author Contributors  https://github.com/PHPSocialNetwork/phpfastcache/graphs/contributors
+ *
  */
-
 declare(strict_types=1);
 
 namespace Phpfastcache\Util;
 
-use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
 
+/**
+ * Class Directory
+ * @package phpFastCache\Util
+ */
 class Directory
 {
     /**
      * Get the directory size
      * @param string $directory
      * @param bool $includeDirAllocSize
-     * @return int
+     * @return integer
      */
     public static function dirSize(string $directory, bool $includeDirAllocSize = false): int
     {
@@ -38,8 +41,10 @@ class Directory
              */
             if ($file->isFile()) {
                 $size += filesize($file->getRealPath());
-            } elseif ($includeDirAllocSize) {
-                $size += $file->getSize();
+            } else {
+                if ($includeDirAllocSize) {
+                    $size += $file->getSize();
+                }
             }
         }
 
@@ -67,7 +72,7 @@ class Directory
     }
 
     /**
-     * Recursively delete a directory and all of its contents - e.g.the equivalent of `rm -r` on the command-line.
+     * Recursively delete a directory and all of it's contents - e.g.the equivalent of `rm -r` on the command-line.
      * Consistent with `rmdir()` and `unlink()`, an E_WARNING level error will be generated on failure.
      *
      * @param string $source absolute path to directory or file to delete.
@@ -86,25 +91,27 @@ class Directory
             return unlink($source);
         }
 
-        $files = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($source, FilesystemIterator::SKIP_DOTS),
+        $files = new RecursiveIteratorIterator
+        (
+            new RecursiveDirectoryIterator($source, RecursiveDirectoryIterator::SKIP_DOTS),
             RecursiveIteratorIterator::CHILD_FIRST
         );
 
-        foreach ($files as $fileInfo) {
+        foreach ($files as $fileinfo) {
             /**
-             * @var SplFileInfo $fileInfo
+             * @var SplFileInfo $fileinfo
              */
-            $realpath = $fileInfo->getRealPath();
-            if ($realpath) {
-                if ($fileInfo->isDir()) {
-                    if (self::rrmdir($fileInfo->getRealPath()) === false) {
+            $realpath = $fileinfo->getRealPath();
+            if($realpath){
+                if ($fileinfo->isDir()) {
+                    if (self::rrmdir($fileinfo->getRealPath()) === false) {
                         return false;
                     }
                 } elseif (unlink($realpath) === false) {
                     return false;
                 }
-            } else {
+            }
+            else{
                 return false;
             }
         }
@@ -139,10 +146,10 @@ class Directory
         }
 
         /**
-         * Allows dereferencing char
+         * Allows to dereference char
          */
-        $file = preg_replace('~^(([a-z0-9\-]+)://)~', '', __FILE__);// remove file protocols such as "phar://" etc.
-        $prefix = $file[0] === DIRECTORY_SEPARATOR ? DIRECTORY_SEPARATOR : '';
+        $__FILE__ = preg_replace('~^(([a-z0-9\-]+)://)~', '', __FILE__);// remove file protocols such as "phar://" etc.
+        $prefix = $__FILE__[0] === DIRECTORY_SEPARATOR ? DIRECTORY_SEPARATOR : '';
         return $prefix . implode(DIRECTORY_SEPARATOR, $absolutes);
     }
 }

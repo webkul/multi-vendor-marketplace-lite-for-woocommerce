@@ -132,9 +132,20 @@ require_once WKMP_LITE_PLUGIN_FILE . '/templates/common/wkmp-order-invoice-heade
 				<td class="text-right" colspan="3"><b><?php esc_html_e( 'Shipping', 'wk-marketplace' ); ?></b></td>
 				<td class="text-right"><?php echo esc_html( $currency_symbol . $data['shipping_cost'] ); ?></td>
 			</tr>
-		<?php } ?>
+			<?php
+		}
 
-		<?php if ( ! empty( $seller_order_tax ) ) { ?>
+		if ( ! empty( $data['total_commission'] ) ) {
+			?>
+			<tr>
+				<td class="text-right" colspan="3"><b><?php esc_html_e( 'Commission', 'wk-marketplace' ); ?></b></td>
+				<td class="text-right"><?php echo esc_html( '- ' . $currency_symbol . $data['total_commission'] ); ?></td>
+			</tr>
+			<?php
+		}
+
+		if ( ! empty( $seller_order_tax ) ) {
+			?>
 			<tr>
 				<td class="text-right" colspan="3"><b><?php esc_html_e( 'Tax', 'wk-marketplace' ); ?></b></td>
 				<td class="text-right"><?php echo wp_kses_data( wc_price( $seller_order_tax, $cur_symbol ) ); ?></td>
@@ -155,7 +166,7 @@ require_once WKMP_LITE_PLUGIN_FILE . '/templates/common/wkmp-order-invoice-heade
 			if ( ! empty( $refund_data['refunded_amount'] ) ) {
 				?>
 				<td class="text-right"><strong>
-						<del><?php echo esc_html( $currency_symbol . $data['subtotal_refunded'] ); ?></del>
+					<del><?php echo esc_html( $currency_symbol . $data['subtotal_refunded'] ); ?></del>
 					</strong><?php echo esc_html( $currency_symbol . apply_filters( 'wkmp_add_order_fee_to_total', round( floatval( $data['total'] ), 2 ), $order_id ) ); ?></td>
 			<?php } else { ?>
 				<td class="text-right"><?php echo esc_html( $currency_symbol . apply_filters( 'wkmp_add_order_fee_to_total', $data['total'], $order_id ) ); ?></td>

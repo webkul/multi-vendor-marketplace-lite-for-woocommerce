@@ -1,5 +1,4 @@
 <?php
-
 /**
  * MP Pro Dependency checker class.
  *

@@ -369,20 +369,6 @@ if ( ! class_exists( 'WKMP_Seller_Order_List' ) ) {
 		 * @return string
 		 */
 		private function wkmp_get_total_seller_amount( $item, $order ) {
-			$reward_point_weightage = ! empty( $GLOBALS['reward'] ) ? $GLOBALS['reward']->get_woocommerce_reward_point_weightage() : 0;
-			$rwd_note               = '';
-			if ( ! empty( $item['reward_data'] ) ) {
-				if ( ! empty( $item['reward_data']['seller'] ) ) {
-					$rwd_note = ' - ' . wc_price( $item['reward_data']['seller'] * $reward_point_weightage, array( 'currency' => $order->get_currency() ) ) . '( ' . __( 'Reward', 'wk-marketplace' ) . ' )';
-				}
-			}
-
-			if ( ! empty( $item['wallet_data'] ) ) {
-				if ( ! empty( $item['wallet_data']['seller'] ) ) {
-					$rwd_note .= ' - ' . wc_price( $item['wallet_data']['seller'], array( 'currency' => $order->get_currency() ) ) . '( ' . __( 'Wallet', 'wk-marketplace' ) . ' )';
-				}
-			}
-
 			if ( ! empty( $item['refunded_amount'] ) ) {
 				$total_seller_amount = '<span style="display:inline-block"><del>' . wc_price( apply_filters( 'wkmp_add_order_fee_to_total', $item['total_seller_amount'], $order->get_id() ), array( 'currency' => $order->get_currency() ) ) . '</del>' . wc_price( apply_filters( 'wkmp_add_order_fee_to_total', $item['total_seller_amount'] - $item['refunded_amount'], $order->get_id() ), array( 'currency' => $order->get_currency() ) ) . '</span>';
 			} else {
@@ -410,9 +396,6 @@ if ( ! class_exists( 'WKMP_Seller_Order_List' ) ) {
 					$tip .= wc_price( $item['shipping'], array( 'currency' => $order->get_currency() ) ) . ' ( ' . __( 'Shipping', 'wk-marketplace' ) . ' ) ';
 				}
 
-				if ( ! empty( $rwd_note ) ) {
-					$tip .= $rwd_note;
-				}
 				$tip .= ' ';
 				$tip .= '</p>';
 

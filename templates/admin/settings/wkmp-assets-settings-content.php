@@ -10,8 +10,7 @@ defined( 'ABSPATH' ) || exit; // Exit if access directly.
 
 settings_errors();
 ?>
-
-<p><?php esc_html_e( 'Configure sellers asset visibility on profile page.', 'wk-marketplace' ); ?></p>
+<p><?php esc_html_e( 'Configure the seller\'s assets, and enable them to make them visible on the seller profile page.', 'wk-marketplace' ); ?></p>
 
 <form method="post" action="options.php">
 	<?php settings_fields( 'wkmp-assets-settings-group' ); ?>
@@ -56,6 +55,7 @@ settings_errors();
 					<input type="checkbox" name="_wkmp_is_seller_social_links_visible" value="yes" <?php echo checked( get_option( '_wkmp_is_seller_social_links_visible' ), 'yes', false ); ?>>
 				</td>
 			</tr>
+			<?php do_action( 'wkmp_admin_after_assets_options' ); ?>
 		</tbody>
 	</table>
 	<?php submit_button( esc_html__( 'Save Changes', 'wk-marketplace' ), 'primary' ); ?>

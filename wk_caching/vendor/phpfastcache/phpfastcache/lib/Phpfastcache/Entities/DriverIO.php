@@ -2,29 +2,44 @@
 
 /**
  *
- * This file is part of Phpfastcache.
+ * This file is part of phpFastCache.
  *
  * @license MIT License (MIT)
  *
- * For full copyright and license information, please see the docs/CREDITS.txt and LICENCE files.
+ * For full copyright and license information, please see the docs/CREDITS.txt file.
  *
+ * @author Khoa Bui (khoaofgod)  <khoaofgod@gmail.com> https://www.phpfastcache.com
  * @author Georges.L (Geolim4)  <contact@geolim4.com>
- * @author Contributors  https://github.com/PHPSocialNetwork/phpfastcache/graphs/contributors
+ *
  */
-
 declare(strict_types=1);
 
 namespace Phpfastcache\Entities;
 
+/**
+ * Class DriverStatistic
+ * @package phpFastCache\Entities
+ */
 class DriverIO
 {
-    protected int $writeHit = 0;
+    /**
+     * @var int
+     */
+    protected $writeHit = 0;
 
-    protected int $readHit = 0;
+    /**
+     * @var int
+     */
+    protected $readHit = 0;
 
-    protected int $readMiss = 0;
+    /**
+     * @var int
+     */
+    protected $readMiss = 0;
 
-
+    /**
+     * @return int
+     */
     public function getWriteHit(): int
     {
         return $this->writeHit;
@@ -40,40 +55,63 @@ class DriverIO
         return $this;
     }
 
+    /**
+     * @return DriverIO
+     */
     public function incWriteHit(): DriverIO
     {
         $this->writeHit++;
         return $this;
     }
 
+    /**
+     * @return int
+     */
     public function getReadHit(): int
     {
         return $this->readHit;
     }
 
+    /**
+     * @param int $readHit
+     * @return DriverIO
+     */
     public function setReadHit(int $readHit): DriverIO
     {
         $this->readHit = $readHit;
         return $this;
     }
 
+    /**
+     * @return DriverIO
+     */
     public function incReadHit(): DriverIO
     {
         $this->readHit++;
         return $this;
     }
 
+    /**
+     * @return int
+     */
     public function getReadMiss(): int
     {
         return $this->readMiss;
     }
 
+    /**
+     * @param int $readMiss
+     * @return DriverIO
+     */
     public function setReadMiss(int $readMiss): DriverIO
     {
         $this->readMiss = $readMiss;
         return $this;
     }
 
+    /**
+     * @return DriverIO
+     */
     public function incReadMiss(): DriverIO
     {
         $this->readMiss++;

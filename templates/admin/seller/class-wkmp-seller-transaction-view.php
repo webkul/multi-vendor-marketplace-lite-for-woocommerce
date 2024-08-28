@@ -68,9 +68,19 @@ if ( ! class_exists( 'WKMP_Seller_Transaction_View' ) ) {
 			$commission_db_obj  = Common\WKMP_Commission::get_instance();
 			$transaction_info   = $transaction_db_obj->wkmp_get_transaction_details_by_id( $id );
 			$this->seller_id    = empty( $this->seller_id ) ? $transaction_info->seller_id : $this->seller_id;
-			$ord_id             = $transaction_info->order_id;
-			$order              = wc_get_order( $ord_id );
-			$sel_info           = $commission_db_obj->wkmp_get_seller_final_order_info( $ord_id, $this->seller_id );
+			$order_id           = $transaction_info->order_id;
+			$sel_info           = $commission_db_obj->wkmp_get_seller_final_order_info( $order_id, $this->seller_id );
+
+			$order        = wc_get_order( $order_id );
+			$order_number = $order_id;
+
+			if ( $order instanceof \WC_Order ) {
+				$currency     = $order->get_currency();
+				$order_number = $order->get_order_number();
+			} else {
+				$currency = get_woocommerce_currency();
+				\WK_Caching::wk_show_notice_on_admin( esc_html__( 'Associated order has been deleted.', 'wk-marketplace' ), 'warning' );
+			}
 
 			$columns = apply_filters(
 				'wkmp_account_transactions_columns',
@@ -84,7 +94,6 @@ if ( ! class_exists( 'WKMP_Seller_Transaction_View' ) ) {
 				)
 			);
 
-			$currency = ( $order->get_currency() ) ? $order->get_currency() : get_woocommerce_currency();
 			?>
 			<div class="woocommerce-account woocommerce">
 				<?php do_action( 'mp_get_wc_account_menu', 'wk-marketplace' ); ?>
@@ -106,7 +115,7 @@ if ( ! class_exists( 'WKMP_Seller_Transaction_View' ) ) {
 										</div>
 										<div class="wk_row">
 											<span class="label"><?php esc_html_e( 'Amount', 'wk-marketplace' ); ?> : </span>
-											<span class="value"><span class="price"><?php echo wp_kses_data( wc_price( apply_filters( 'wkmp_add_order_fee_to_total', $transaction_info->amount - $sel_info['refunded_amount'], $ord_id ), array( 'currency' => $currency ) ) ); ?></span></span>
+											<span class="value"><span class="price"><?php echo wp_kses_data( wc_price( apply_filters( 'wkmp_add_order_fee_to_total', $transaction_info->amount - $sel_info['refunded_amount'], $order_id ), array( 'currency' => $currency ) ) ); ?></span></span>
 										</div>
 
 										<?php if ( isset( $sel_info['refunded_amount'] ) && $sel_info['refunded_amount'] ) { ?>
@@ -146,13 +155,6 @@ if ( ! class_exists( 'WKMP_Seller_Transaction_View' ) ) {
 
 								<tbody>
 								<?php
-								$current_user = wp_get_current_user();
-								$role_name    = $current_user->roles;
-								$seller_id    = get_current_user_id();
-								if ( ! in_array( 'wk_marketplace_seller', $role_name, true ) ) {
-									$seller_id = $this->seller_id;
-								}
-								$item_count   = $order->get_items();
 								$product_name = '';
 
 								if ( isset( $sel_info['product'] ) && is_iterable( $sel_info['product'] ) ) {
@@ -164,36 +166,15 @@ if ( ! class_exists( 'WKMP_Seller_Transaction_View' ) ) {
 									}
 								}
 
-								$sel_rwd_note = '';
-								if ( ! empty( $sel_info['reward_data'] ) ) {
-									if ( ! empty( $sel_info['reward_data']['seller'] ) ) {
-										$sel_rwd_note = ' ' . wc_price( $sel_info['reward_data']['seller'], array( 'currency' => $currency ) ) . '( ' . __( 'Reward', 'wk-marketplace' ) . ' )';
-									}
-								}
-
-								$admin_rwd_note = '';
-								if ( ! empty( $sel_info['reward_data'] ) ) {
-									if ( ! empty( $sel_info['reward_data']['admin'] ) ) {
-										$admin_rwd_note = ' + ' . wc_price( $sel_info['reward_data']['admin'], array( 'currency' => $currency ) ) . '( ' . __( 'Reward', 'wk-marketplace' ) . ' )';
-									}
-								}
-
-								$sel_walt_note = '';
-								if ( ! empty( $sel_info['wallet_data'] ) ) {
-									if ( ! empty( $sel_info['wallet_data']['seller'] ) ) {
-										$sel_walt_note = ' ' . wc_price( $sel_info['wallet_data']['seller'], array( 'currency' => $currency ) ) . '( ' . __( 'Wallet', 'wk-marketplace' ) . ' )';
-									}
-								}
-
 								$quantity          = $sel_info['quantity'];
 								$line_total        = ( $sel_info['product_total'] + $sel_info['shipping'] );
 								$line_total        = $line_total - $sel_info['refunded_amount'];
 								$commission_amount = $sel_info['total_commission'];
-								$subtotal          = apply_filters( 'wkmp_add_order_fee_to_total', $sel_info['total_seller_amount'] - $sel_info['refunded_amount'], $order->get_id() );
+								$subtotal          = apply_filters( 'wkmp_add_order_fee_to_total', $sel_info['total_seller_amount'] - $sel_info['refunded_amount'], $order_id );
 								?>
 								<tr>
 									<td>
-										<?php echo esc_html_x( '#', 'hash before order number', 'wk-marketplace' ) . intval( $order->get_order_number() ); ?>
+										<?php echo esc_html_x( '#', 'hash before order number', 'wk-marketplace' ) . $order_number; ?>
 									</td>
 									<td>
 										<?php echo esc_html( $product_name ); ?>
@@ -205,10 +186,10 @@ if ( ! class_exists( 'WKMP_Seller_Transaction_View' ) ) {
 										<?php echo wp_kses_data( wc_price( $line_total, array( 'currency' => $currency ) ) ); ?>
 									</td>
 									<td>
-										<?php echo wp_kses_data( wc_price( $commission_amount, array( 'currency' => $currency ) ) . ' ' . esc_html( $admin_rwd_note ) ); ?>
+										<?php echo wp_kses_data( wc_price( $commission_amount, array( 'currency' => $currency ) ) ); ?>
 									</td>
 									<?php
-										do_action( 'wkmp_account_transactions_columns_data', $ord_id );
+										do_action( 'wkmp_account_transactions_columns_data', $order_id );
 									?>
 									<td>
 										<?php
@@ -221,14 +202,6 @@ if ( ! class_exists( 'WKMP_Seller_Transaction_View' ) ) {
 											if ( ! empty( $commission_amount ) ) {
 												$tip .= ' - ';
 												$tip .= wc_price( $commission_amount, array( 'currency' => $currency ) ) . ' ( ' . __( 'Commission', 'wk-marketplace' ) . ' ) ';
-											}
-											if ( ! empty( $sel_rwd_note ) ) {
-												$tip .= ' - ';
-												$tip .= $sel_rwd_note;
-											}
-											if ( ! empty( $sel_walt_note ) ) {
-												$tip .= ' - ';
-												$tip .= $sel_walt_note;
 											}
 											$tip .= ' ';
 											$tip .= '</p>';

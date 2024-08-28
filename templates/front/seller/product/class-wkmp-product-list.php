@@ -49,7 +49,7 @@ if ( ! class_exists( 'WKMP_Product_List' ) ) {
 		 * WKMP_Product_List constructor.
 		 */
 		public function __construct() {
-			$this->db_product_obj = new Front\WKMP_Product_Queries();
+			$this->db_product_obj = Front\WKMP_Product_Queries::get_instance();
 
 			$nonce = \WK_Caching::wk_get_request_data( 'wkmp-delete-product-nonce', array( 'method' => 'post' ) );
 
@@ -61,6 +61,7 @@ if ( ! class_exists( 'WKMP_Product_List' ) ) {
 			}
 
 			$this->update_minimum_order_amount();
+			$this->update_per_product_settings();
 		}
 
 		/**
@@ -78,12 +79,13 @@ if ( ! class_exists( 'WKMP_Product_List' ) ) {
 		/**
 		 * Product list.
 		 *
-		 * @param int $seller_id Seller id.
-		 * @param int $page_no Page no.
+		 * @param int    $seller_id Seller id.
+		 * @param int    $page_no Page no.
+		 * @param string $filter Filter to apply.
 		 *
 		 * @return void
 		 */
-		public function wkmp_product_list( $seller_id, $page_no = 1 ) {
+		public function wkmp_product_list( $seller_id, $page_no = 1, $filter = '' ) {
 			global $wkmarketplace;
 
 			$this->seller_id = empty( $seller_id ) ? ( empty( $this->seller_id ) ? get_current_user_id() : $this->seller_id ) : $seller_id;
@@ -124,55 +126,62 @@ if ( ! class_exists( 'WKMP_Product_List' ) ) {
 				wc_print_notice( esc_html__( 'Sorry!! security check failed. Please try again to add product!!', 'wk-marketplace' ), 'error' );
 			}
 
-			$filter_name = '';
-			$nonce       = \WK_Caching::wk_get_request_data( 'wkmp_product_search_nonce' );
+			$search = '';
+			$nonce  = \WK_Caching::wk_get_request_data( 'wkmp_product_search_nonce' );
 
 			// Filter product.
 			if ( ! empty( $nonce ) && wp_verify_nonce( $nonce, 'wkmp_product_search_nonce_action' ) ) {
-				$filter_name = \WK_Caching::wk_get_request_data( 'wkmp_search' );
+				$search = \WK_Caching::wk_get_request_data( 'wkmp_search' );
 			}
 
-			$limit = apply_filters( 'wkmp_front_per_page_products', 20 );
+			$limit = get_user_meta( $this->seller_id, '_wkmp_products_per_page', true );
+			$limit = apply_filters( 'wkmp_front_per_page_products', empty( $limit ) ? 10 : intval( $limit ) );
 
 			$filter_data = array(
-				'start'       => ( $page_no - 1 ) * $limit,
-				'limit'       => $limit,
-				'filter_name' => $filter_name,
+				'page_no' => $page_no,
+				'limit'   => $limit,
+				'search'  => $search,
+				'filter'  => $filter,
 			);
 
-			$product_data = $this->db_product_obj->wkmp_get_seller_products( $this->seller_id, $filter_data );
-			$total        = $this->db_product_obj->wkmp_get_seller_total_products( $this->seller_id, $filter_data );
+			$product_ids = $this->db_product_obj->wkmp_get_seller_products( $this->seller_id, $filter_data );
+
+			$filter_data['get_count'] = true;
+
+			$total_count = $this->db_product_obj->wkmp_get_seller_products( $this->seller_id, $filter_data );
 
 			$products             = array();
 			$stock_status_options = wc_get_product_stock_status_options();
 
-			foreach ( $product_data as $product ) {
-				$img   = wp_get_attachment_image_src( get_post_meta( $product->ID, '_thumbnail_id', true ) );
+			foreach ( $product_ids as $product_id ) {
+				$product_obj = wc_get_product( $product_id );
+
+				$img   = wp_get_attachment_image_src( get_post_meta( $product_id, '_thumbnail_id', true ) );
 				$image = wc_placeholder_img_src();
 
 				if ( $img ) {
 					$image = $img[0];
 				}
 
-				$product_obj          = wc_get_product( $product->ID );
 				$price                = $product_obj->get_price_html() ? wp_kses_post( $product_obj->get_price_html() ) : '<span class="na">&ndash;</span>';
 				$product_stock_status = $product_obj->get_stock_status();
 
 				$products[] = array(
-					'product_id'     => $product->ID,
-					'name'           => $product->post_title,
-					'product_href'   => get_permalink( $product->ID ),
-					'status'         => ucfirst( $product->post_status ),
+					'product_id'     => $product_id,
+					'name'           => $product_obj->get_title(),
+					'product_href'   => get_permalink( $product_id ),
+					'status'         => ucfirst( $product_obj->get_status() ),
 					'image'          => $image,
 					'stock'          => ! empty( $stock_status_options[ $product_stock_status ] ) ? $stock_status_options[ $product_stock_status ] : ucfirst( $product_stock_status ),
 					'stock_quantity' => 'outofstock' === $product_stock_status ? 0 : $product_obj->get_stock_quantity(),
 					'price'          => $price,
-					'edit'           => get_permalink( get_option( 'woocommerce_myaccount_page_id' ) ) . get_option( '_wkmp_edit_product_endpoint', 'seller-edit-product' ) . '/' . intval( $product->ID ),
+					'edit'           => get_permalink( get_option( 'woocommerce_myaccount_page_id' ) ) . get_option( '_wkmp_edit_product_endpoint', 'seller-edit-product' ) . '/' . intval( $product_id ),
 				);
 			}
 
-			$url        = get_permalink() . get_option( '_wkmp_product_list_endpoint', 'seller-products' );
-			$pagination = $wkmarketplace->wkmp_get_pagination( $total, $page_no, $limit, $url );
+			$url        = wc_get_endpoint_url( get_option( '_wkmp_product_list_endpoint', 'seller-products' ) );
+			$url       .= empty( $filter ) ? '' : '/filter/' . $filter;
+			$pagination = $wkmarketplace->wkmp_get_pagination( $total_count, $page_no, $limit, $url );
 
 			$wkmp_min_order_enabled         = get_option( '_wkmp_enable_minimum_order_amount', false );
 			$wkmp_min_order_amount          = get_user_meta( $this->seller_id, '_wkmp_minimum_order_amount', true );
@@ -370,6 +379,22 @@ if ( ! class_exists( 'WKMP_Product_List' ) ) {
 				$cat_ids = empty( $term_ids ) ? $cat_ids : $term_ids;
 
 				wp_set_object_terms( $post_id, $cat_ids, 'product_cat' );
+			}
+		}
+
+		/**
+		 * Updating per product settings.
+		 */
+		public function update_per_product_settings() {
+			$nonce_per_page_update = \WK_Caching::wk_get_request_data( 'wkmp-product-per-page-nonce', array( 'method' => 'post' ) );
+
+			if ( ! empty( $nonce_per_page_update ) && wp_verify_nonce( $nonce_per_page_update, 'wkmp-per_page_product-nonce-action' ) ) {
+				$per_page  = empty( $_POST['_wkmp_products_per_page'] ) ? 0 : intval( wp_unslash( $_POST['_wkmp_products_per_page'] ) );
+				$seller_id = $this->seller_id > 0 ? $this->seller_id : get_current_user_id();
+
+				if ( ! empty( $per_page ) && ! empty( $seller_id ) ) {
+					update_user_meta( $seller_id, '_wkmp_products_per_page', $per_page );
+				}
 			}
 		}
 	}

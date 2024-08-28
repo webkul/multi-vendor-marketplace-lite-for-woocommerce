@@ -2,40 +2,38 @@
 
 /**
  *
- * This file is part of Phpfastcache.
+ * This file is part of phpFastCache.
  *
  * @license MIT License (MIT)
  *
- * For full copyright and license information, please see the docs/CREDITS.txt and LICENCE files.
+ * For full copyright and license information, please see the docs/CREDITS.txt file.
  *
+ * @author Khoa Bui (khoaofgod)  <khoaofgod@gmail.com> https://www.phpfastcache.com
  * @author Georges.L (Geolim4)  <contact@geolim4.com>
- * @author Contributors  https://github.com/PHPSocialNetwork/phpfastcache/graphs/contributors
+ *
  */
-
 declare(strict_types=1);
 
 namespace Phpfastcache\Drivers\Ssdb;
 
 use Phpfastcache\Cluster\AggregatablePoolInterface;
-use Phpfastcache\Core\Pool\ExtendedCacheItemPoolInterface;
-use Phpfastcache\Core\Pool\TaggableCacheItemPoolTrait;
-use Phpfastcache\Core\Item\ExtendedCacheItemInterface;
+use Phpfastcache\Core\Pool\{DriverBaseTrait, ExtendedCacheItemPoolInterface};
 use Phpfastcache\Entities\DriverStatistic;
-use Phpfastcache\Exceptions\PhpfastcacheDriverCheckException;
-use Phpfastcache\Exceptions\PhpfastcacheDriverException;
-use Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException;
-use Phpfastcache\Exceptions\PhpfastcacheLogicException;
-use phpssdb\Core\SimpleSSDB;
-use phpssdb\Core\SSDBException;
-use phpssdb\Core\SSDB;
+use Phpfastcache\Exceptions\{PhpfastcacheDriverCheckException, PhpfastcacheDriverException, PhpfastcacheInvalidArgumentException};
+use phpssdb\Core\{SimpleSSDB, SSDBException};
+use Psr\Cache\CacheItemInterface;
+
 
 /**
+ * Class Driver
+ * @package phpFastCache\Drivers
  * @property SimpleSSDB $instance Instance of driver service
- * @method Config getConfig()
+ * @property Config $config Config object
+ * @method Config getConfig() Return the config object
  */
-class Driver implements AggregatablePoolInterface
+class Driver implements ExtendedCacheItemPoolInterface, AggregatablePoolInterface
 {
-    use TaggableCacheItemPoolTrait;
+    use DriverBaseTrait;
 
     /**
      * @return bool
@@ -43,8 +41,11 @@ class Driver implements AggregatablePoolInterface
     public function driverCheck(): bool
     {
         static $driverCheck;
+        if ($driverCheck === null) {
+            return ($driverCheck = class_exists('phpssdb\Core\SSDB'));
+        }
 
-        return $driverCheck ?? ($driverCheck = class_exists(SSDB::class));
+        return $driverCheck;
     }
 
     /**
@@ -81,6 +82,10 @@ class Driver implements AggregatablePoolInterface
                 $this->instance->auth($clientConfig->getPassword());
             }
 
+            if (!$this->instance) {
+                return false;
+            }
+
             return true;
         } catch (SSDBException $e) {
             throw new PhpfastcacheDriverCheckException('Ssdb failed to connect with error: ' . $e->getMessage(), 0, $e);
@@ -88,14 +93,13 @@ class Driver implements AggregatablePoolInterface
     }
 
     /**
-     * @param ExtendedCacheItemInterface $item
-     * @return ?array<string, mixed>
+     * @param CacheItemInterface $item
+     * @return null|array
      */
-    protected function driverRead(ExtendedCacheItemInterface $item): ?array
+    protected function driverRead(CacheItemInterface $item)
     {
         $val = $this->instance->get($item->getEncodedKey());
-
-        if (empty($val)) {
+        if ($val == false) {
             return null;
         }
 
@@ -103,38 +107,50 @@ class Driver implements AggregatablePoolInterface
     }
 
     /**
-     * @param ExtendedCacheItemInterface $item
+     * @param CacheItemInterface $item
      * @return mixed
      * @throws PhpfastcacheInvalidArgumentException
-     * @throws PhpfastcacheLogicException
      */
-    protected function driverWrite(ExtendedCacheItemInterface $item): bool
+    protected function driverWrite(CacheItemInterface $item): bool
     {
-        $this->assertCacheItemType($item, Item::class);
+        /**
+         * Check for Cross-Driver type confusion
+         */
+        if ($item instanceof Item) {
+            return (bool)$this->instance->setx($item->getEncodedKey(), $this->encode($this->driverPreWrap($item)), $item->getTtl());
+        }
 
-        return (bool)$this->instance->setx($item->getEncodedKey(), $this->encode($this->driverPreWrap($item)), $item->getTtl());
+        throw new PhpfastcacheInvalidArgumentException('Cross-Driver type confusion detected');
     }
 
     /**
-     * @param ExtendedCacheItemInterface $item
+     * @param CacheItemInterface $item
      * @return bool
      * @throws PhpfastcacheInvalidArgumentException
      */
-    protected function driverDelete(ExtendedCacheItemInterface $item): bool
+    protected function driverDelete(CacheItemInterface $item): bool
     {
-        $this->assertCacheItemType($item, Item::class);
+        /**
+         * Check for Cross-Driver type confusion
+         */
+        if ($item instanceof Item) {
+            return (bool)$this->instance->del($item->getEncodedKey());
+        }
 
-        return (bool)$this->instance->del($item->getEncodedKey());
+        throw new PhpfastcacheInvalidArgumentException('Cross-Driver type confusion detected');
     }
+
+    /********************
+     *
+     * PSR-6 Extended Methods
+     *
+     *******************/
 
     /**
      * @return bool
      */
     protected function driverClear(): bool
     {
-        $this->instance->flushdb('kv');
-
-        // Status not returned, then we assume its true
-        return true;
+        return (bool)$this->instance->flushdb('kv');
     }
 }

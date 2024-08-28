@@ -2,47 +2,46 @@
 
 /**
  *
- * This file is part of Phpfastcache.
+ * This file is part of phpFastCache.
  *
  * @license MIT License (MIT)
  *
  * For full copyright and license information, please see the docs/CREDITS.txt file.
  *
- * @author Georges.L (Geolim4) <contact@geolim4.com>
+ * @author  Georges.L (Geolim4)  <contact@geolim4.com>
  *
  */
-
 declare(strict_types=1);
 
 namespace Phpfastcache\Cluster;
 
-use Phpfastcache\Cluster\Drivers\FullReplication\Driver as FullReplicationCluster;
-use Phpfastcache\Cluster\Drivers\MasterSlaveReplication\Driver as MasterSlaveReplicationCluster;
-use Phpfastcache\Cluster\Drivers\RandomReplication\Driver as RandomReplicationCluster;
-use Phpfastcache\Cluster\Drivers\SemiReplication\Driver as SemiReplicationCluster;
+use Phpfastcache\Cluster\Drivers\{FullReplication\FullReplicationCluster,
+    MasterSlaveReplication\MasterSlaveReplicationCluster,
+    RandomReplication\RandomReplicationCluster,
+    SemiReplication\SemiReplicationCluster
+};
 use Phpfastcache\Config\ConfigurationOption;
-use Phpfastcache\Core\Item\ExtendedCacheItemInterface;
-use Phpfastcache\Core\Pool\ExtendedCacheItemPoolInterface;
-use Phpfastcache\Core\Pool\TaggableCacheItemPoolTrait;
+use Phpfastcache\Core\{Item\ExtendedCacheItemInterface, Pool\DriverBaseTrait, Pool\ExtendedCacheItemPoolInterface};
 use Phpfastcache\Entities\DriverIO;
 use Phpfastcache\Entities\DriverStatistic;
-use Phpfastcache\Event\EventManagerInterface;
 use Phpfastcache\EventManager;
-use Phpfastcache\Exceptions\PhpfastcacheCoreException;
 use Phpfastcache\Exceptions\PhpfastcacheDriverCheckException;
 use Phpfastcache\Exceptions\PhpfastcacheDriverConnectException;
-use Phpfastcache\Exceptions\PhpfastcacheDriverException;
 use Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException;
-use Phpfastcache\Exceptions\PhpfastcacheIOException;
-use Phpfastcache\Exceptions\PhpfastcacheLogicException;
-use Psr\Cache\CacheItemInterface;
-use Psr\Cache\InvalidArgumentException;
+use Phpfastcache\Exceptions\PhpfastcacheInvalidConfigurationException;
+use Psr\Cache\{CacheItemInterface, InvalidArgumentException};
+use ReflectionException;
 
+/**
+ * Class ClusterAbstract
+ *
+ * @package Phpfastcache\Cluster
+ */
 abstract class ClusterPoolAbstract implements ClusterPoolInterface
 {
-    use TaggableCacheItemPoolTrait;
+    use DriverBaseTrait;
     use ClusterPoolTrait {
-        TaggableCacheItemPoolTrait::__construct as private __parentConstruct;
+        DriverBaseTrait::__construct as private __parentConstruct;
     }
 
     public const STRATEGY = [
@@ -53,38 +52,28 @@ abstract class ClusterPoolAbstract implements ClusterPoolInterface
     ];
 
     /**
-     * @var AggregatablePoolInterface[]
+     * @var ExtendedCacheItemPoolInterface[]
      */
-    protected array $clusterPools;
+    protected $clusterPools;
 
     /**
      * ClusterPoolAbstract constructor.
      * @param string $clusterName
-     * @param EventManagerInterface $em
      * @param ExtendedCacheItemPoolInterface ...$driverPools
+     * @throws PhpfastcacheInvalidArgumentException
      * @throws PhpfastcacheDriverCheckException
      * @throws PhpfastcacheDriverConnectException
-     * @throws PhpfastcacheInvalidArgumentException
-     * @throws PhpfastcacheCoreException
-     * @throws PhpfastcacheDriverException
-     * @throws PhpfastcacheIOException
+     * @throws PhpfastcacheInvalidConfigurationException
+     * @throws ReflectionException
      */
-    public function __construct(string $clusterName, EventManagerInterface $em, AggregatablePoolInterface ...$driverPools)
+    public function __construct(string $clusterName, ExtendedCacheItemPoolInterface ...$driverPools)
     {
         if (count($driverPools) < 2) {
             throw new PhpfastcacheInvalidArgumentException('A cluster requires at least two pools to be working.');
         }
         $this->clusterPools = $driverPools;
-        $this->__parentConstruct(new ConfigurationOption(), $clusterName, $em);
+        $this->__parentConstruct(new ConfigurationOption(), $clusterName);
         $this->setEventManager(EventManager::getInstance());
-        $this->setClusterPoolsAggregator();
-    }
-
-    protected function setClusterPoolsAggregator(): void
-    {
-        foreach ($this->clusterPools as $clusterPool) {
-            $clusterPool->setAggregatedBy($this);
-        }
     }
 
     /**
@@ -92,13 +81,13 @@ abstract class ClusterPoolAbstract implements ClusterPoolInterface
      */
     public function getIO(): DriverIO
     {
-        $io = new DriverIO();
+        $IO = new DriverIO();
         foreach ($this->clusterPools as $clusterPool) {
-            $io->setReadHit($io->getReadHit() + $clusterPool->getIO()->getReadHit())
-                ->setReadMiss($io->getReadMiss() + $clusterPool->getIO()->getReadMiss())
-                ->setWriteHit($io->getWriteHit() + $clusterPool->getIO()->getWriteHit());
+            $IO->setReadHit($IO->getReadHit() + $clusterPool->getIO()->getReadHit())
+                ->setReadMiss($IO->getReadMiss() + $clusterPool->getIO()->getReadMiss())
+                ->setWriteHit($IO->getWriteHit() + $clusterPool->getIO()->getWriteHit());
         }
-        return $io;
+        return $IO;
     }
 
     /**
@@ -112,21 +101,7 @@ abstract class ClusterPoolAbstract implements ClusterPoolInterface
     /**
      * @inheritDoc
      */
-    public function getConfigs(): array
-    {
-        $configs = [];
-
-        foreach ($this->getClusterPools() as $clusterPool) {
-            $configs[$clusterPool->getDriverName()] = $clusterPool->getConfig();
-        }
-
-        return $configs;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getItems(array $keys = []): iterable
+    public function getItems(array $keys = [])
     {
         $items = [];
 
@@ -143,7 +118,7 @@ abstract class ClusterPoolAbstract implements ClusterPoolInterface
     /**
      * @inheritDoc
      */
-    public function deleteItems(array $keys): bool
+    public function deleteItems(array $keys)
     {
         $hasDeletedOnce = false;
         foreach ($this->clusterPools as $driverPool) {
@@ -156,12 +131,9 @@ abstract class ClusterPoolAbstract implements ClusterPoolInterface
     }
 
     /**
-     * @param CacheItemInterface $item
-     * @return bool
-     * @throws InvalidArgumentException
-     * @throws PhpfastcacheLogicException
+     * @inheritDoc
      */
-    public function saveDeferred(CacheItemInterface $item): bool
+    public function saveDeferred(CacheItemInterface $item)
     {
         /** @var ExtendedCacheItemInterface $item */
         $hasSavedOnce = false;
@@ -178,11 +150,10 @@ abstract class ClusterPoolAbstract implements ClusterPoolInterface
     /**
      * @param ExtendedCacheItemInterface $item
      * @param ExtendedCacheItemPoolInterface $driverPool
-     * @return ExtendedCacheItemInterface
+     * @return CacheItemInterface
      * @throws InvalidArgumentException
-     * @throws PhpfastcacheLogicException
      */
-    protected function getStandardizedItem(ExtendedCacheItemInterface $item, ExtendedCacheItemPoolInterface $driverPool): ExtendedCacheItemInterface
+    protected function getStandardizedItem(ExtendedCacheItemInterface $item, ExtendedCacheItemPoolInterface $driverPool): CacheItemInterface
     {
         if (!$item->doesItemBelongToThatDriverBackend($driverPool)) {
             /**
@@ -190,21 +161,30 @@ abstract class ClusterPoolAbstract implements ClusterPoolInterface
              */
             if ($driverPool === $this) {
                 /** @var ExtendedCacheItemInterface $itemPool */
-                $itemClass = $driverPool::getItemClass();
+                $itemClass = $driverPool->getClassNamespace() . '\\' . 'Item';
                 $itemPool = new $itemClass($this, $item->getKey(), $this->getEventManager());
-                $item->cloneInto($itemPool, $driverPool);
-
+                $itemPool->set($item->get())
+                    ->setHit($item->isHit())
+                    ->setTags($item->getTags())
+                    ->expiresAt($item->getExpirationDate())
+                    ->setDriver($driverPool);
                 return $itemPool;
             }
-
-            $itemPool = $driverPool->getItem($item->getKey());
-            $item->cloneInto($itemPool, $driverPool);
-
-            return $itemPool;
+            return $driverPool->getItem($item->getKey())
+                ->setEventManager($this->getEventManager())
+                ->set($item->get())
+                ->setHit($item->isHit())
+                ->setTags($item->getTags())
+                ->expiresAt($item->getExpirationDate())
+                ->setDriver($driverPool);
         }
 
         return $item->setEventManager($this->getEventManager());
     }
+
+    /**
+     * Interfaced methods that needs to be faked
+     */
 
     /**
      * @return DriverStatistic
@@ -219,7 +199,9 @@ abstract class ClusterPoolAbstract implements ClusterPoolInterface
                 \implode(
                     ', ',
                     \array_map(
-                        static fn (ExtendedCacheItemPoolInterface $pool) => \get_class($pool),
+                        static function (ExtendedCacheItemPoolInterface $pool) {
+                            return \get_class($pool);
+                        },
                         $this->clusterPools
                     )
                 )
@@ -229,19 +211,20 @@ abstract class ClusterPoolAbstract implements ClusterPoolInterface
         $stats->setSize(
             (int)\array_sum(
                 \array_map(
-                    static fn (ExtendedCacheItemPoolInterface $pool) => $pool->getStats()->getSize(),
+                    static function (ExtendedCacheItemPoolInterface $pool) {
+                        return $pool->getStats()->getSize();
+                    },
                     $this->clusterPools
                 )
             )
         );
 
         $stats->setData(
-            \implode(
-                ', ',
-                \array_map(
-                    static fn (ExtendedCacheItemPoolInterface $pool) => $pool->getStats()->getData(),
-                    $this->clusterPools
-                )
+            (int)\array_map(
+                static function (ExtendedCacheItemPoolInterface $pool) {
+                    return $pool->getStats()->getData();
+                },
+                $this->clusterPools
             )
         );
 

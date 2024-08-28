@@ -1,6 +1,6 @@
 {
 	"name": "multi-vendor-marketplace-lite-for-woocommerce",
-	"version": "1.1.1",
+	"version": "1.2.0",
 	"author": "webkul",
 	"description": "This plugin converts the WooCommerce store into multi-vendor store. Using this plugin, the seller can manage the inventory, shipment, seller profile page, seller collection page and much more.",
 	"main": "assets/front/build/js/front.js",

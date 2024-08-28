@@ -2,39 +2,40 @@
 
 /**
  *
- * This file is part of Phpfastcache.
+ * This file is part of phpFastCache.
  *
  * @license MIT License (MIT)
  *
- * For full copyright and license information, please see the docs/CREDITS.txt and LICENCE files.
+ * For full copyright and license information, please see the docs/CREDITS.txt file.
  *
+ * @author Khoa Bui (khoaofgod)  <khoaofgod@gmail.com> https://www.phpfastcache.com
  * @author Georges.L (Geolim4)  <contact@geolim4.com>
- * @author Contributors  https://github.com/PHPSocialNetwork/phpfastcache/graphs/contributors
+ *
  */
-
 declare(strict_types=1);
 
 namespace Phpfastcache\Drivers\Predis;
 
 use DateTime;
 use Phpfastcache\Cluster\AggregatablePoolInterface;
-use Phpfastcache\Core\Pool\ExtendedCacheItemPoolInterface;
-use Phpfastcache\Core\Pool\TaggableCacheItemPoolTrait;
-use Phpfastcache\Core\Item\ExtendedCacheItemInterface;
+use Phpfastcache\Core\Pool\{DriverBaseTrait, ExtendedCacheItemPoolInterface};
 use Phpfastcache\Entities\DriverStatistic;
-use Phpfastcache\Exceptions\PhpfastcacheDriverException;
-use Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException;
-use Phpfastcache\Exceptions\PhpfastcacheLogicException;
+use Phpfastcache\Exceptions\{PhpfastcacheDriverException, PhpfastcacheInvalidArgumentException, PhpfastcacheLogicException};
 use Predis\Client as PredisClient;
 use Predis\Connection\ConnectionException as PredisConnectionException;
+use Psr\Cache\CacheItemInterface;
+
 
 /**
+ * Class Driver
+ * @package phpFastCache\Drivers
  * @property PredisClient $instance Instance of driver service
- * @method Config getConfig()
+ * @property Config $config Config object
+ * @method Config getConfig() Return the config object
  */
-class Driver implements AggregatablePoolInterface
+class Driver implements ExtendedCacheItemPoolInterface, AggregatablePoolInterface
 {
-    use TaggableCacheItemPoolTrait;
+    use DriverBaseTrait;
 
     /**
      * @return bool
@@ -45,7 +46,7 @@ class Driver implements AggregatablePoolInterface
             trigger_error('The native Redis extension is installed, you should use Redis instead of Predis to increase performances', E_USER_NOTICE);
         }
 
-        return class_exists(\Predis\Client::class);
+        return class_exists('Predis\Client');
     }
 
     /**
@@ -91,6 +92,10 @@ HELP;
      */
     protected function driverConnect(): bool
     {
+        if ($this->instance instanceof PredisClient) {
+            throw new PhpfastcacheLogicException('Already connected to Predis server');
+        }
+
         /**
          * In case of an user-provided
          * Predis client just return here
@@ -116,8 +121,7 @@ HELP;
                     'persistent' => $this->getConfig()->isPersistent(),
                     'timeout' => $this->getConfig()->getTimeout(),
                     'path' => $this->getConfig()->getPath(),
-                ],
-                $options
+                ], $options
             );
         } else {
             $this->instance = new PredisClient($this->getConfig()->getPredisConfigArray(), $options);
@@ -137,14 +141,13 @@ HELP;
     }
 
     /**
-     * @param ExtendedCacheItemInterface $item
-     * @return ?array<string, mixed>
+     * @param CacheItemInterface $item
+     * @return null|array
      */
-    protected function driverRead(ExtendedCacheItemInterface $item): ?array
+    protected function driverRead(CacheItemInterface $item)
     {
         $val = $this->instance->get($item->getKey());
-
-        if ($val === null) {
+        if ($val == false) {
             return null;
         }
 
@@ -152,38 +155,53 @@ HELP;
     }
 
     /**
-     * @param ExtendedCacheItemInterface $item
+     * @param CacheItemInterface $item
      * @return mixed
      * @throws PhpfastcacheInvalidArgumentException
-     * @throws PhpfastcacheLogicException
      */
-    protected function driverWrite(ExtendedCacheItemInterface $item): bool
+    protected function driverWrite(CacheItemInterface $item): bool
     {
-        $this->assertCacheItemType($item, Item::class);
-
-        $ttl = $item->getExpirationDate()->getTimestamp() - time();
-
         /**
-         * @see https://redis.io/commands/setex
-         * @see https://redis.io/commands/expire
+         * Check for Cross-Driver type confusion
          */
-        if ($ttl <= 0) {
-            return (bool)$this->instance->expire($item->getKey(), 0);
+        if ($item instanceof Item) {
+            $ttl = $item->getExpirationDate()->getTimestamp() - time();
+
+            /**
+             * @see https://redis.io/commands/setex
+             * @see https://redis.io/commands/expire
+             */
+            if ($ttl <= 0) {
+                return (bool)$this->instance->expire($item->getKey(), 0);
+            }
+
+            return $this->instance->setex($item->getKey(), $ttl, $this->encode($this->driverPreWrap($item)))->getPayload() === 'OK';
         }
 
-        return $this->instance->setex($item->getKey(), $ttl, $this->encode($this->driverPreWrap($item)))->getPayload() === 'OK';
+        throw new PhpfastcacheInvalidArgumentException('Cross-Driver type confusion detected');
     }
 
+    /********************
+     *
+     * PSR-6 Extended Methods
+     *
+     *******************/
+
     /**
-     * @param ExtendedCacheItemInterface $item
+     * @param CacheItemInterface $item
      * @return bool
      * @throws PhpfastcacheInvalidArgumentException
      */
-    protected function driverDelete(ExtendedCacheItemInterface $item): bool
+    protected function driverDelete(CacheItemInterface $item): bool
     {
-        $this->assertCacheItemType($item, Item::class);
+        /**
+         * Check for Cross-Driver type confusion
+         */
+        if ($item instanceof Item) {
+            return (bool)$this->instance->del([$item->getKey()]);
+        }
 
-        return (bool)$this->instance->del([$item->getKey()]);
+        throw new PhpfastcacheInvalidArgumentException('Cross-Driver type confusion detected');
     }
 
     /**

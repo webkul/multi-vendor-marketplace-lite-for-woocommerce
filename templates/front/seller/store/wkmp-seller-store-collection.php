@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit; // Exit if access directly.
 <div class="mp-profile-wrapper woocommerce">
 	<?php $this->wkmp_seller_profile_details_section( 'store-collection' ); ?>
 	<div class="mp-seller-recent-product">
-		<h3><?php esc_html_e( 'Product from Seller', 'wk-marketplace' ); ?></h3>
+		<h3><?php echo esc_html( get_option( '_wkmp_seller_product_endpoint_name', esc_html__( 'All Products', 'wk-marketplace' ) ) ); ?></h3>
 		<?php
 		$query_args = array(
 			'author'         => $this->seller_id,

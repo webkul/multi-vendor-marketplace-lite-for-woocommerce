@@ -79,11 +79,12 @@ if ( ! class_exists( 'WKMP_Shop_Follower' ) ) {
 		/**
 		 * Get Seller follower by seller id
 		 *
-		 * @param int $seller_id seller id.
+		 * @param int    $seller_id seller id.
+		 * @param string $search Search term.
 		 *
 		 * @return array $user_ids
 		 */
-		public function wkmp_get_seller_followers_data( $seller_id ) {
+		public function wkmp_get_seller_followers_data( $seller_id, $search = '' ) {
 			global $wkmarketplace;
 			$shop_followers = array();
 			$seller_id      = empty( $seller_id ) ? 0 : intval( $seller_id );
@@ -93,6 +94,18 @@ if ( ! class_exists( 'WKMP_Shop_Follower' ) ) {
 			}
 
 			$shop_follower_ids = $this->db_obj->wkmp_get_seller_follower_ids( $seller_id );
+
+			if ( ! empty( $search ) ) {
+				$shop_follower_ids = get_users(
+					array(
+						'include'        => $shop_follower_ids,
+						'number'         => -1,
+						'search'         => "*{$search}*",
+						'search_columns' => array( 'user_login', 'user_email', 'display_name' ),
+						'fields'         => 'ID',
+					)
+				);
+			}
 
 			foreach ( $shop_follower_ids as $follower_id ) {
 				$follower = get_user_by( 'ID', $follower_id );

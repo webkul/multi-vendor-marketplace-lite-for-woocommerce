@@ -83,7 +83,7 @@ if ( ! class_exists( 'WKMP_Notification_Orders' ) ) {
 		 * @throws \Exception Throwing exception.
 		 */
 		public function wkmp_orders_all_content() {
-			$notifications = $this->db_obj->wkmp_get_notification_data( 'order', 'all' );
+			$notifications = $this->db_obj->wkmp_get_notification_data( 'order' );
 			$this->wkmp_display_notification( $notifications );
 		}
 
@@ -128,17 +128,17 @@ if ( ! class_exists( 'WKMP_Notification_Orders' ) ) {
 				$formatted_content = $this->db_obj->wkmp_get_formatted_notification_content( $db_content );
 
 				if ( $value['context'] ) {
+					$url = admin_url( 'post.php?post=' . $value['context'] . '&action=edit' );
+
 					if ( $wkmarketplace->wkmp_user_is_seller( get_current_user_id() ) ) {
 						$url = admin_url( 'admin.php?page=order-history&action=view&oid=' . $value['context'] );
-					} else {
-						$url = admin_url( 'post.php?post=' . $value['context'] . '&action=edit' );
 					}
 
 					$link = '<a href="' . $url . '" target="_blank"> #' . $value['context'] . ' </a>';
 
-					$content = wp_sprintf( /* translators: %1$s: URL, %2%s: Content, %3$s: Days. */ esc_html__( ' %1$s  %2$s %3$d  <strong> day(s) ago </strong>', 'wk-marketplace' ), $link, $formatted_content, $interval->days );
+					$content = wp_sprintf( /* translators: %1$s: URL, %2%s: Content, %3$s: Days. */ _n( ' %1$s %2$s %3$d  <strong> day ago.</strong>', ' %1$s %2$s %3$d  <strong> days ago.</strong>', $interval->days, 'wk-marketplace' ), $link, $formatted_content, $interval->days );
 				} else {
-					$content = wp_sprintf( /* translators: %1$s: Content, %2%s: Days.  */ esc_html__( ' %1$s %2$d  <strong> day(s) ago </strong>', 'wk-marketplace' ), $formatted_content, $interval->days );
+					$content = wp_sprintf( /* translators: %1$s: Content, %2%s: Days.  */ _n( ' %1$s %2$d <strong> day ago.</strong>', ' %1$s %2$d <strong> days ago.</strong>', $interval->days, 'wk-marketplace' ), $formatted_content, $interval->days );
 				}
 
 				$display[] = array(

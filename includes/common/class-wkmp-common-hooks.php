@@ -59,6 +59,8 @@ if ( ! class_exists( 'WKMP_Common_Hooks' ) ) {
 			add_action( 'woocommerce_init', array( $function_handler, 'wkmp_add_manage_shipping' ) );
 			add_action( 'wkmp_validate_update_seller_profile', array( $function_handler, 'wkmp_process_seller_profile_data' ), 10, 2 );
 			add_action( 'woocommerce_order_status_completed', array( $function_handler, 'wkmp_reset_seller_order_count_cache' ) );
+			add_action( 'admin_footer', array( $function_handler, 'wkmp_add_seller_dashboard_dynamic_style' ) );
+			add_action( 'wp_footer', array( $function_handler, 'wkmp_add_seller_dashboard_dynamic_style' ) );
 
 			add_filter( 'woocommerce_order_item_display_meta_value', array( $function_handler, 'wkmp_validate_sold_by_order_item_meta' ), 10, 2 );
 		}

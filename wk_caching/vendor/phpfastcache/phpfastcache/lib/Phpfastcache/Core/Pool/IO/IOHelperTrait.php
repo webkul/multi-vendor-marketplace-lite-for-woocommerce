@@ -2,47 +2,51 @@
 
 /**
  *
- * This file is part of Phpfastcache.
+ * This file is part of phpFastCache.
  *
  * @license MIT License (MIT)
  *
- * For full copyright and license information, please see the docs/CREDITS.txt and LICENCE files.
+ * For full copyright and license information, please see the docs/CREDITS.txt file.
  *
+ * @author Khoa Bui (khoaofgod)  <khoaofgod@gmail.com> https://www.phpfastcache.com
  * @author Georges.L (Geolim4)  <contact@geolim4.com>
- * @author Contributors  https://github.com/PHPSocialNetwork/phpfastcache/graphs/contributors
+ *
  */
-
 declare(strict_types=1);
 
 namespace Phpfastcache\Core\Pool\IO;
 
-use Phpfastcache\Config\IOConfigurationOptionInterface;
-use Phpfastcache\Core\Pool\TaggableCacheItemPoolTrait;
+use Phpfastcache\Core\Item\ExtendedCacheItemInterface;
+use Phpfastcache\Core\Pool\ExtendedCacheItemPoolInterface;
+use Phpfastcache\Drivers\Files\Config;
 use Phpfastcache\Entities\DriverStatistic;
-use Phpfastcache\Event\Event;
-use Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException;
+use Phpfastcache\Event\EventManagerInterface;
 use Phpfastcache\Exceptions\PhpfastcacheIOException;
 use Phpfastcache\Util\Directory;
-use Phpfastcache\Util\SapiDetector;
+
 
 /**
- * @method IOConfigurationOptionInterface getConfig()
+ * Trait IOHelperTrait
+ * @package phpFastCache\Core\Pool\IO
+ * @property array $config The configuration array passed via DriverBaseTrait
+ * @property ExtendedCacheItemInterface[] $itemInstances The item instance passed via CacheItemPoolTrait
+ * @property EventManagerInterface $eventManager The event manager passed via CacheItemPoolTrait
+ * @method Config getConfig() Return the config object
+ * @method bool isPHPModule() Return true if is a php module
+ * @method string getDriverName() Get the driver name
  */
 trait IOHelperTrait
 {
-    use TaggableCacheItemPoolTrait;
-
     /**
-     * @var array<string, string>
+     * @var array
      */
-    public array $tmp = [];
+    public $tmp = [];
 
     /**
      * Provide a generic getStats() method
      * for files-based drivers
      * @return DriverStatistic
      * @throws PhpfastcacheIOException
-     * @throws PhpfastcacheInvalidArgumentException
      */
     public function getStats(): DriverStatistic
     {
@@ -52,17 +56,17 @@ trait IOHelperTrait
         if (!is_dir($path)) {
             throw new PhpfastcacheIOException("Can't read PATH:" . $path);
         }
-        $stat->setSize(Directory::dirSize($path))
-            ->setInfo('Number of files used to build the cache: ' . Directory::getFileCount($path))
-            ->setRawData(
+        $stat->setRawData(
                 [
                     'tmp' => $this->tmp,
                 ]
-            );
+            )
+            ->setSize(Directory::dirSize($path))
+            ->setInfo('Number of files used to build the cache: ' . Directory::getFileCount($path));
 
-        if ($this->getConfig()->isUseStaticItemCaching()) {
+        if($this->getConfig()->isUseStaticItemCaching()){
             $stat->setData(implode(', ', \array_keys($this->itemInstances)));
-        } else {
+        }else{
             $stat->setData('No data available since static item caching option (useStaticItemCaching) is disabled.');
         }
 
@@ -70,13 +74,12 @@ trait IOHelperTrait
     }
 
     /**
-     * @param string|bool $keyword
+     * @param $keyword
      * @param bool $skip
      * @return string
      * @throws PhpfastcacheIOException
-     * @throws PhpfastcacheInvalidArgumentException
      */
-    protected function getFilePath(string|bool $keyword, bool $skip = false): string
+    protected function getFilePath($keyword, $skip = false): string
     {
         $path = $this->getPath();
 
@@ -104,31 +107,50 @@ trait IOHelperTrait
      * @param bool $readonly
      * @return string
      * @throws PhpfastcacheIOException
-     * @throws PhpfastcacheInvalidArgumentException
      */
-    public function getPath(bool $readonly = false): string
+    public function getPath($readonly = false): string
     {
-        $tmpDir = \rtrim(\ini_get('upload_tmp_dir') ?: \sys_get_temp_dir(), '\\/') . DIRECTORY_SEPARATOR . 'phpfastcache';
-        $httpHost = $this->getConfig()->getSuperGlobalAccessor()('SERVER', 'HTTP_HOST');
-        $securityKey = $this->buildSecurityKey($httpHost);
+        /**
+         * Get the base system temporary directory
+         */
+        $tmp_dir = \rtrim(\ini_get('upload_tmp_dir') ?: \sys_get_temp_dir(), '\\/') . DIRECTORY_SEPARATOR . 'phpfastcache';
+
+        /**
+         * Calculate the security key
+         */
+        {
+            $securityKey = $this->getConfig()->getSecurityKey();
+            if (!$securityKey || \mb_strtolower($securityKey) === 'auto') {
+                if (isset($_SERVER['HTTP_HOST'])) {
+                    $securityKey = \preg_replace('/^www./', '', \strtolower(\str_replace(':', '_', $_SERVER['HTTP_HOST'])));
+                } else {
+                    $securityKey = ($this->isPHPModule() ? 'web' : 'cli');
+                }
+            }
+
+            if ($securityKey !== '') {
+                $securityKey .= '/';
+            }
+
+            $securityKey = static::cleanFileName($securityKey);
+        }
 
         /**
          * Extends the temporary directory
          * with the security key and the driver name
          */
-        $tmpDir = \rtrim($tmpDir, '/') . DIRECTORY_SEPARATOR;
+        $tmp_dir = \rtrim($tmp_dir, '/') . DIRECTORY_SEPARATOR;
 
         if (empty($this->getConfig()->getPath())) {
-            $path = $tmpDir;
+            $path = $tmp_dir;
         } else {
             $path = \rtrim($this->getConfig()->getPath(), '/') . DIRECTORY_SEPARATOR;
         }
 
-        $pathSuffix = $securityKey . DIRECTORY_SEPARATOR . $this->getDriverName();
-        $fullPath = Directory::getAbsolutePath($path . $pathSuffix);
-        $fullPathTmp = Directory::getAbsolutePath($tmpDir . $pathSuffix);
-
-        $this->mkdir($fullPath, $fullPathTmp);
+        $path_suffix = $securityKey . DIRECTORY_SEPARATOR . $this->getDriverName();
+        $full_path = Directory::getAbsolutePath($path . $path_suffix);
+        $full_path_tmp = Directory::getAbsolutePath($tmp_dir . $path_suffix);
+        $full_path_hash = $this->getConfig()->getDefaultFileNameHashFunction()($full_path);
 
         /**
          * In readonly mode we only attempt
@@ -136,54 +158,32 @@ trait IOHelperTrait
          * or not, if it does not then we
          * return the temp dir
          */
-        if ($readonly) {
-            if ($this->getConfig()->isAutoTmpFallback() && (!@\file_exists($fullPath) || !@\is_writable($fullPath))) {
-                return $fullPathTmp;
+        if ($readonly === true) {
+            if ($this->getConfig()->isAutoTmpFallback() && (!@\file_exists($full_path) || !@\is_writable($full_path))) {
+                return $full_path_tmp;
             }
-            return $fullPath;
+            return $full_path;
         }
 
-        return realpath($fullPath);
-    }
-
-    protected function buildSecurityKey(?string $httpHost): string
-    {
-        $securityKey = $this->getConfig()->getSecurityKey();
-        if (!$securityKey || \mb_strtolower($securityKey) === 'auto') {
-            if (isset($httpHost)) {
-                $securityKey = \preg_replace('/^www./', '', \strtolower(\str_replace(':', '_', $httpHost)));
-            } else {
-                $securityKey = (SapiDetector::isWebScript() ? 'web' : 'cli');
-            }
-        }
-
-        if (!empty($securityKey)) {
-            $securityKey .= '/';
-        }
-
-        return static::cleanFileName($securityKey);
-    }
-
-    /**
-     * @throws PhpfastcacheIOException
-     */
-    protected function mkdir(string $fullPath, string $fullPathTmp): void
-    {
-        $fullPathHash = $this->getConfig()->getDefaultFileNameHashFunction()($fullPath);
-
-        if (!isset($this->tmp[$fullPathHash]) || (!@\file_exists($fullPath) || !@\is_writable($fullPath))) {
-            if (!@\file_exists($fullPath)) {
-                if (@mkdir($fullPath, $this->getDefaultChmod(), true) === false && !\is_dir($fullPath)) {
-                    throw new PhpfastcacheIOException('The directory ' . $fullPath . ' could not be created.');
+        if (!isset($this->tmp[$full_path_hash]) || (!@\file_exists($full_path) || !@\is_writable($full_path))) {
+            if (!@\file_exists($full_path)) {
+                if (@mkdir($full_path, $this->getDefaultChmod(), true) === false && !\is_dir($full_path)) {
+                    throw new PhpfastcacheIOException('The directory ' . $full_path . ' could not be created.');
                 }
-            } elseif (!@\is_writable($fullPath) && !@\chmod($fullPath, $this->getDefaultChmod()) && $this->getConfig()->isAutoTmpFallback()) {
-                /**
-                 * Switch back to tmp dir
-                 * again if the path is not writable
-                 */
-                $fullPath = $fullPathTmp;
-                if (!@\file_exists($fullPath) && @\mkdir($fullPath, $this->getDefaultChmod(), true) && !\is_dir($fullPath)) {
-                    throw new PhpfastcacheIOException('The directory ' . $fullPath . ' could not be created.');
+            } else {
+                if (!@\is_writable($full_path)) {
+                    if (!@\chmod($full_path, $this->getDefaultChmod()) && $this->getConfig()->isAutoTmpFallback()) {
+                        /**
+                         * Switch back to tmp dir
+                         * again if the path is not writable
+                         */
+                        $full_path = $full_path_tmp;
+                        if (!@\file_exists($full_path)) {
+                            if (@\mkdir($full_path, $this->getDefaultChmod(), true) && !\is_dir($full_path)) {
+                                throw new PhpfastcacheIOException('The directory ' . $full_path . ' could not be created.');
+                            }
+                        }
+                    }
                 }
             }
 
@@ -192,21 +192,24 @@ trait IOHelperTrait
              * writable including the temporary
              * one, we must throw an exception
              */
-            if (!@\file_exists($fullPath) || !@\is_writable($fullPath)) {
+            if (!@\file_exists($full_path) || !@\is_writable($full_path)) {
                 throw new PhpfastcacheIOException(
-                    'Path "' . $fullPath . '" is not writable, please set a chmod 0777 or any writable permission and make sure to make use of an absolute path !'
+                    'Path "' . $full_path . '" is not writable, please set a chmod 0777 or any writable permission and make sure to make use of an absolute path !'
                 );
             }
 
-            $this->tmp[$fullPathHash] = $fullPath;
+            $this->tmp[$full_path_hash] = $full_path;
+            $this->htaccessGen($full_path, $this->getConfig()->isValidOption('htaccess') ? $this->getConfig()->getHtaccess() : false);
         }
+
+        return realpath($full_path);
     }
 
     /**
-     * @param string $filename
+     * @param $filename
      * @return string
      */
-    protected static function cleanFileName(string $filename): string
+    protected static function cleanFileName($filename): string
     {
         $regex = [
             '/[\?\[\]\/\\\=\<\>\:\;\,\'\"\&\$\#\*\(\)\|\~\`\!\{\}]/',
@@ -231,23 +234,64 @@ trait IOHelperTrait
     }
 
     /**
-     * @param string $keyword
+     * @param $path
+     * @param bool $create
+     * @throws PhpfastcacheIOException
+     */
+    protected function htaccessGen($path, $create = true)
+    {
+        if ($create === true) {
+            if (!\is_writable($path)) {
+                try {
+                    if (!\chmod($path, 0777)) {
+                        throw new PhpfastcacheIOException('Chmod failed on : ' . $path);
+                    }
+                } catch (PhpfastcacheIOException $e) {
+                    throw new PhpfastcacheIOException('PLEASE CHMOD ' . $path . ' - 0777 OR ANY WRITABLE PERMISSION!', 0, $e);
+                }
+            }
+
+            if (!\file_exists($path . '/.htaccess')) {
+                $file = @\fopen($path . '/.htaccess', 'w+b');
+                if (!$file) {
+                    throw new PhpfastcacheIOException('PLEASE CHMOD ' . $path . ' - 0777 OR ANY WRITABLE PERMISSION!');
+                }
+                \fwrite(
+                    $file,
+                    <<<HTACCESS
+### This .htaccess is auto-generated by PhpFastCache ###
+<IfModule mod_authz_host>
+Require all denied
+</IfModule>
+<IfModule !mod_authz_host>
+Order Allow,Deny
+Deny from all
+</IfModule>
+HTACCESS
+                );
+                \fclose($file);
+            }
+        }
+    }
+
+    /**
+     * @param $keyword
      * @return string
      */
-    protected function encodeFilename(string $keyword): string
+    protected function encodeFilename($keyword): string
     {
         return $this->getConfig()->getDefaultFileNameHashFunction()($keyword);
     }
 
     /**
-     * @param string $file
+     * @param $file
      * @return string
      * @throws PhpfastcacheIOException
      */
-    protected function readFile(string $file): string
+    protected function readFile($file): string
     {
         if (!\is_readable($file)) {
-            throw new PhpfastcacheIOException("Cannot read file located at: $file");
+            throw new PhpfastcacheIOException("Cannot read file located at: {$file}");
         }
         if (\function_exists('file_get_contents')) {
             return (string)\file_get_contents($file);
@@ -255,12 +299,12 @@ trait IOHelperTrait
 
         $string = '';
 
-        $fileHandle = @\fopen($file, 'rb');
-        while (!\feof($fileHandle)) {
-            $line = \fgets($fileHandle);
+        $file_handle = @\fopen($file, 'rb');
+        while (!\feof($file_handle)) {
+            $line = \fgets($file_handle);
             $string .= $line;
         }
-        \fclose($fileHandle);
+        \fclose($file_handle);
 
         return $string;
     }
@@ -277,18 +321,24 @@ trait IOHelperTrait
      * @param bool $secureFileManipulation
      * @return bool
      * @throws PhpfastcacheIOException
-     * @throws \Exception
      */
-    protected function writeFile(string $file, string $data, bool $secureFileManipulation = false): bool
+    protected function writefile(string $file, string $data, bool $secureFileManipulation = false): bool
     {
-        $this->eventManager->dispatch(Event::CACHE_WRITE_FILE_ON_DISK, $this, $file, $secureFileManipulation);
+        /**
+         * @eventName CacheWriteFileOnDisk
+         * @param ExtendedCacheItemPoolInterface $this
+         * @param string $file
+         * @param bool $secureFileManipulation
+         *
+         */
+        $this->eventManager->dispatch('CacheWriteFileOnDisk', $this, $file, $secureFileManipulation);
 
         if ($secureFileManipulation) {
             $tmpFilename = Directory::getAbsolutePath(
                 dirname($file) . \DIRECTORY_SEPARATOR . 'tmp_' . $this->getConfig()->getDefaultFileNameHashFunction()(
                     \bin2hex(\random_bytes(16))
                 )
-            ) . '.' . $this->getConfig()->getCacheFileExtension() . \random_int(1000, 9999);
+            ) . '.' .  $this->getConfig()->getCacheFileExtension() . \random_int(1000, 9999);
 
             $handle = \fopen($tmpFilename, 'w+b');
             if (\is_resource($handle)) {

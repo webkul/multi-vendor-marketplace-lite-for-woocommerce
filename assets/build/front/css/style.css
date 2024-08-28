@@ -264,3 +264,9 @@
 	margin-top:3px;
 	cursor:pointer;
 }
+.mp-profile-wrapper .wkmp-front-seller-textarea-info h2 {
+    font-weight: 500;
+}
+.wkmp-seller-endpoints .wkmp-add-product-form .wkmp_downloadable_upload_file {
+    margin: 10px 0;
+}

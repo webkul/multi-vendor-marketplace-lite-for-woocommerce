@@ -449,8 +449,8 @@ if ( ! class_exists( 'WKMP_Install' ) ) {
 				$transactions        = get_option( '_wkmp_transaction_endpoint_name', esc_html__( 'Transaction', 'wk-marketplace' ) );
 				$notifications       = get_option( '_wkmp_notification_endpoint_name', esc_html__( 'Notification', 'wk-marketplace' ) );
 				$shop_followers      = get_option( '_wkmp_shop_follower_endpoint_name', esc_html__( 'Shop Follower', 'wk-marketplace' ) );
-				$seller_all_products = get_option( '_wkmp_seller_product_endpoint_name', esc_html__( 'Product from Seller', 'wk-marketplace' ) );
-				$recent_products     = get_option( '_wkmp_store_endpoint_name', esc_html__( 'Recent Product from Seller', 'wk-marketplace' ) );
+				$seller_all_products = get_option( '_wkmp_seller_product_endpoint_name', esc_html__( 'All Products', 'wk-marketplace' ) );
+				$recent_products     = get_option( '_wkmp_store_endpoint_name', esc_html__( 'Recent Products', 'wk-marketplace' ) );
 
 				$endpoints = array(
 					'_wkmp_dashboard_endpoint'           => in_array( 'seller-dashboard', $wc_endpoints, true ) ? esc_attr( 'wkmp-dashboard' ) : esc_attr( 'seller-dashboard' ),
@@ -468,8 +468,8 @@ if ( ! class_exists( 'WKMP_Install' ) ) {
 					'_wkmp_transaction_endpoint_name'    => ( __( 'Transaction', 'wk-marketplace' ) === $transactions ) ? esc_html__( 'Transactions', 'wk-marketplace' ) : $transactions,
 					'_wkmp_notification_endpoint_name'   => ( __( 'Notification', 'wk-marketplace' ) === $notifications ) ? esc_html__( 'Notifications', 'wk-marketplace' ) : $notifications,
 					'_wkmp_shop_follower_endpoint_name'  => ( __( 'Shop Follower', 'wk-marketplace' ) === $shop_followers ) ? esc_html__( 'Shop Followers', 'wk-marketplace' ) : $shop_followers,
-					'_wkmp_seller_product_endpoint_name' => ( __( 'Product from Seller', 'wk-marketplace' ) === $seller_all_products ) ? esc_html__( 'Products from Seller', 'wk-marketplace' ) : $seller_all_products,
-					'_wkmp_store_endpoint_name'          => ( __( 'Recent Product from Seller', 'wk-marketplace' ) === $recent_products ) ? esc_html__( 'Sellers Recent Product', 'wk-marketplace' ) : $recent_products,
+					'_wkmp_seller_product_endpoint_name' => ( __( 'All Products', 'wk-marketplace' ) === $seller_all_products ) ? esc_html__( 'Products from Seller', 'wk-marketplace' ) : $seller_all_products,
+					'_wkmp_store_endpoint_name'          => ( __( 'Recent Products', 'wk-marketplace' ) === $recent_products ) ? esc_html__( 'Sellers Recent Product', 'wk-marketplace' ) : $recent_products,
 				);
 
 				foreach ( $endpoints as $option_key => $option_value ) {

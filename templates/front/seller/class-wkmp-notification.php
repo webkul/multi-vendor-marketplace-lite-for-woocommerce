@@ -230,7 +230,7 @@ if ( ! class_exists( 'WKMP_Notification' ) ) {
 				$interval_days = '<strong>' . esc_html__( ' today', 'wk-marketplace' ) . '</strong>';
 
 				if ( $interval->days > 0 ) {
-					$interval_days = wp_sprintf( /* translators: %d: Interval days. */ esc_html__( '%d  <strong> day(s) ago </strong>', 'wk-marketplace' ), $interval->days );
+					$interval_days = wp_sprintf( /* translators: %d: Interval days. */ _n( '%d <strong> day ago.</strong>', '%d <strong> days ago.</strong>', $interval->days, 'wk-marketplace' ), $interval->days );
 				}
 
 				if ( 'order' === $action ) {
@@ -246,14 +246,13 @@ if ( ! class_exists( 'WKMP_Notification' ) ) {
 				$db_content        = empty( $value['content'] ) ? '' : $value['content'];
 				$formatted_content = $db_obj->wkmp_get_formatted_notification_content( $db_content );
 
-				$content = sprintf( /* translators: %1$s: URL, %2%s: Content, %3$s: Days. */ esc_html__( ' %1$s  %2$s %3$s', 'wk-marketplace' ), $link, $formatted_content, $interval_days );
+				$content = sprintf( /* translators: %1$s: URL, %2%s: Content, %3$s: Days. */ esc_html__( ' %1$s %2$s %3$s', 'wk-marketplace' ), $link, $formatted_content, $interval_days );
 
 				if ( 'seller' === $action ) {
 					$user         = get_user_by( 'ID', $context_id );
 					$display_name = $wkmarketplace->wkmp_get_user_display_name( $context_id, $user );
 
-					$link    = '<a href="#">' . esc_html( $display_name ) . ' </a>';
-					$content = sprintf( /* translators: %1$s: URL, %2%s: Content, %3$s: Days. */ esc_html__( ' %1$s  %2$s %3$s.', 'wk-marketplace' ), $formatted_content, $link, $interval_days );
+					$content = sprintf( /* translators: %1$s: Reviewer name, %2%s: Content, %3$s: Days. */ esc_html__( ' %1$s from <strong> %2$s </strong> %3$s', 'wk-marketplace' ), $formatted_content, $display_name, $interval_days );
 				}
 
 				$display[] = array(
@@ -279,7 +278,6 @@ if ( ! class_exists( 'WKMP_Notification' ) ) {
 									'href'   => array(),
 									'target' => array(),
 								),
-
 							)
 						);
 						?>

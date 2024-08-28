@@ -164,14 +164,15 @@ if ( ! class_exists( 'WKMP_Admin_Template_Functions' ) ) {
 		public function wkmp_marketplace_queries() {
 			$obj_queries = Queries\WKMP_Admin_Queries::get_instance();
 			$wk_page     = \WK_Caching::wk_get_request_data( 'page' );
-			$success     = \WK_Caching::wk_get_request_data( 'success', array( 'filter' => 'int' ) );
+
+			$transient = get_transient( 'wkmp_deleted_queries_transient' );
 			?>
 			<h1><?php esc_html_e( 'Queries List', 'wk-marketplace' ); ?></h1>
 			<?php
-			if ( in_array( $success, array( 1, 404 ), true ) ) {
+			if ( ! empty( $transient ) && in_array( intval( $transient['success'] ), array( 1, 404 ), true ) ) {
 				$message      = esc_html__( 'Please select at least one query.', 'wk-marketplace' );
 				$notice_class = 'notice-error';
-				if ( 404 !== $success ) {
+				if ( 404 !== intval( $transient['success'] ) ) {
 					$message      = esc_html__( 'Seller queries has been deleted successfully.', 'wk-marketplace' );
 					$notice_class = 'notice-success';
 				}
@@ -180,6 +181,7 @@ if ( ! class_exists( 'WKMP_Admin_Template_Functions' ) ) {
 					<p><?php echo esc_html( $message ); ?></p>
 				</div>
 				<?php
+				delete_transient( 'wkmp_deleted_queries_transient' );
 			}
 			?>
 			<form method="get">

@@ -96,15 +96,28 @@ if ( ! class_exists( 'WKMP_Seller_Template_Functions' ) ) {
 			$query_vars       = $wp->query_vars;
 			$product_endpoint = get_option( '_wkmp_product_list_endpoint', 'sellers-products' );
 			$query_args       = empty( $query_vars[ $product_endpoint ] ) ? 0 : $query_vars[ $product_endpoint ];
-			$page_no          = 1;
 
-			if ( ! empty( $query_args ) ) {
-				$args_array = explode( '/', $query_args );
-				$page_no    = ( is_array( $args_array ) && 2 === count( $args_array ) && 'page' === $args_array[0] ) ? $args_array[1] : $page_no;
+			$show_product_list_table = apply_filters( 'wkmp_is_show_product_list_table', true, $query_args );
+			do_action( 'wkmp_before_product_list_table', $query_args, $this->seller_id );
+
+			if ( $show_product_list_table ) {
+				$page_no = 1;
+				$filter  = '';
+
+				if ( ! empty( $query_args ) ) {
+					$args_array = explode( '/', $query_args );
+
+					if ( is_array( $args_array ) && count( $args_array ) >= 2 ) {
+						$filter  = ( 'filter' === $args_array[0] ) ? $args_array[1] : $filter;
+						$page_no = ( 'page' === $args_array[0] ) ? $args_array[1] : $page_no;
+
+						$page_no = ( ! empty( $filter ) && 4 === count( $args_array ) && 'page' === $args_array[2] ) ? $args_array[3] : $page_no;
+					}
+				}
+
+				$product_list = WKMP_Product_List::get_instance();
+				$product_list->wkmp_product_list( $this->seller_id, $page_no, $filter );
 			}
-
-			$product_list = WKMP_Product_List::get_instance();
-			$product_list->wkmp_product_list( $this->seller_id, $page_no );
 		}
 
 		/**

@@ -38,9 +38,11 @@ foreach ( $postmeta_variation as $key => $value ) {
 $wc_currency = get_woocommerce_currency_symbol( get_option( 'woocommerce_currency' ) );
 
 $show_stock_fields = 'display:none;';
+$show_stock_status = 'display:table-row;';
 
 if ( isset( $variation_arr['_manage_stock'] ) && 'yes' === $variation_arr['_manage_stock'] ) {
 	$show_stock_fields = 'display:table-row;';
+	$show_stock_status = 'display:none;';
 }
 $hide_virtual_style = 'display:' . ( isset( $variation_arr['_virtual'] ) && 'yes' === $variation_arr['_virtual'] ) ? 'none' : 'table-row'
 ?>
@@ -103,7 +105,7 @@ $hide_virtual_style = 'display:' . ( isset( $variation_arr['_virtual'] ) && 'yes
 							<input type="date" class="hasDatepicker wkmp_product_input" id="wkmp_variation_sale_end_date_<?php echo esc_attr( $variation_id ); ?>" name="wkmp_variable_sale_price_dates_to[<?php echo esc_attr( $variation_id ); ?>]" value="<?php echo isset( $variation_arr['_sale_price_dates_to'] ) ? esc_attr( $variation_arr['_sale_price_dates_to'] ) : ''; ?>" placeholder="<?php esc_attr_e( 'To… YYYY-MM-DD', 'wk-marketplace' ); ?>" maxlength="10" pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])">
 						</td>
 					</tr>
-					<tr class="mpshow_if_variation_manage_stock wkmp_stock_status" style="<?php echo esc_attr( $show_stock_fields ); ?>">
+					<tr class="mpshow_if_variation_manage_stock wkmp_stock_qty" style="<?php echo esc_attr( $show_stock_fields ); ?>">
 						<td>
 							<label><?php esc_html_e( 'Stock Qty: ', 'wk-marketplace' ); ?></label>
 							<input class="wkmp_variable_stock wkmp_product_input" size="5" name="wkmp_variable_stock[<?php echo esc_attr( $variation_id ); ?>]" value="<?php echo isset( $variation_arr['_stock'] ) ? esc_attr( $variation_arr['_stock'] ) : ''; ?>" step="any" type="number">
@@ -117,7 +119,7 @@ $hide_virtual_style = 'display:' . ( isset( $variation_arr['_virtual'] ) && 'yes
 							</select>
 						</td>
 					</tr>
-					<tr class="wkmp_stock_status" style="<?php echo esc_attr( $show_stock_fields ); ?>">
+					<tr class="wkmp_stock_status" style="<?php echo esc_attr( $show_stock_status ); ?>">
 						<td colspan="2">
 							<label><?php esc_html_e( 'Stock status', 'wk-marketplace' ); ?></label>
 							<select name="wkmp_variable_stock_status[<?php echo esc_attr( $variation_id ); ?>]" style="width:100%;">

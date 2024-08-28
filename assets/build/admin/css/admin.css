@@ -441,7 +441,6 @@ fieldset.mp-fieldset table {
   font-weight: 400;
 }
 .wkmp_avatar_logo_section .wkmp-img-thumbnail {
-  padding: 15px 10px 0 0;
   width: 110px;
   max-width: 110px;
 }
@@ -763,12 +762,41 @@ fieldset.mp-fieldset table {
     color: #F5F6F6;
 }
 .wp-list-table.plugins .wkmp-get_pro {
-    background: #55a246;
     padding: 3px 7px;
+    background: linear-gradient(135deg, #00f, #2149f3);
     color: #fff;
     border-radius: 10px;
     font-weight: 600;
+    animation: jumpText 1s ease-in-out infinite;
+    display: inline-block;
+    position: relative;
 }
+.wp-list-table.plugins .wkmp-get_pro:after {
+  content: '';
+  display: block;
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  left: 0;
+  background: linear-gradient(to right,rgba(255,255,255,11) 0,rgba(255,255,255,8.03) 113%,rgba(255,255,255,5.6) 30%,rgba(255,255,255,.85) 50%,rgba(255,255,255,.85) 70%,rgba(255,255,255,.85) 71%,rgba(255,255,255,0) 100%);
+  width: 10%;
+  height: 100%;
+  transform: skew(-10deg,0deg);
+  animation: move 1.4s;
+  animation-iteration-count: infinite;
+}
+@keyframes move {
+  0% {left: 0;opacity: 0}
+  5% {opacity: 0}
+  48% {opacity: .2}
+  80% {opacity: 0}
+  100% {left: 82%}
+}
+@keyframes jumpText {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
 /* End Style: Upgrade Pro Toast/Snackbar */
 
 /* Style the settings tabs */
@@ -823,4 +851,7 @@ fieldset.mp-fieldset table {
   white-space: pre-wrap;
   margin:10px;
   width:90%;
+}
+.marketplace_page_seller-shop-followers input#search-id-search-input {
+    width: 300px;
 }

@@ -8,8 +8,6 @@
 
 namespace WkMarketplace\Templates\Front\Seller\Product;
 
-use WK_Caching;
-
 defined( 'ABSPATH' ) || exit; // Exit if access directly.
 
 if ( ! class_exists( 'WKMP_Product_Form' ) ) {
@@ -328,7 +326,7 @@ if ( ! class_exists( 'WKMP_Product_Form' ) ) {
 							$attribute['is_variation'] = 0;
 						}
 
-						$attribute['is_taxonomy']                           = (int) $attribute['is_taxonomy'];
+						$attribute['is_taxonomy']                           = 0;
 						$att[ str_replace( ' ', '-', $attribute['name'] ) ] = $attribute;
 					}
 				}
@@ -536,6 +534,12 @@ if ( ! class_exists( 'WKMP_Product_Form' ) ) {
 
 							$att = empty( $att ) ? array() : $att;
 
+							foreach ( $att as $key => $attr_data ) {
+								if ( ! empty( $attr_data['value'] ) && is_array( $attr_data['value'] ) ) {
+									$att[ $key ]['value'] = implode( '|', $attr_data['value'] );
+								}
+							}
+
 							update_post_meta( $sell_pr_id, '_product_attributes', $att );
 
 							if ( '' !== $stock_qty ) {
@@ -561,6 +565,8 @@ if ( ! class_exists( 'WKMP_Product_Form' ) ) {
 
 						$this->wkmp_update_pro_category( $product_cats, $sell_pr_id );
 						wp_set_object_terms( $sell_pr_id, $product_type, 'product_type', false );
+
+						do_action( 'wkmp_after_seller_product_update', $sell_pr_id, $att_val );
 					}
 
 					do_action( 'marketplace_process_product_meta', $sell_pr_id );
@@ -618,23 +624,23 @@ if ( ! class_exists( 'WKMP_Product_Form' ) ) {
 			$var_regu_price         = array();
 			$var_sale_price         = array();
 
-			$mp_attr_names       = empty( $_POST['mp_attribute_name'] ) ? '' : wc_clean( wp_unslash( $_POST['mp_attribute_name'] ) );
-			$is_downloadables    = empty( $_POST['wkmp_variable_is_downloadable'] ) ? '' : wc_clean( wp_unslash( $_POST['wkmp_variable_is_downloadable'] ) );
-			$vars_is_virtual     = empty( $_POST['wkmp_variable_is_virtual'] ) ? '' : wc_clean( wp_unslash( $_POST['wkmp_variable_is_virtual'] ) );
-			$sales_from          = empty( $_POST['wkmp_variable_sale_price_dates_from'] ) ? '' : wc_clean( wp_unslash( $_POST['wkmp_variable_sale_price_dates_from'] ) );
-			$sales_to            = empty( $_POST['wkmp_variable_sale_price_dates_to'] ) ? '' : wc_clean( wp_unslash( $_POST['wkmp_variable_sale_price_dates_to'] ) );
-			$backorders          = empty( $_POST['wkmp_variable_backorders'] ) ? '' : wc_clean( wp_unslash( $_POST['wkmp_variable_backorders'] ) );
-			$manage_stocks       = empty( $_POST['wkmp_variable_manage_stock'] ) ? '' : wc_clean( wp_unslash( $_POST['wkmp_variable_manage_stock'] ) );
-			$stocks_status       = empty( $_POST['wkmp_variable_stock_status'] ) ? '' : wc_clean( wp_unslash( $_POST['wkmp_variable_stock_status'] ) );
+			$mp_attr_names       = empty( $_POST['mp_attribute_name'] ) ? array() : wc_clean( wp_unslash( $_POST['mp_attribute_name'] ) );
+			$is_downloadables    = empty( $_POST['wkmp_variable_is_downloadable'] ) ? array() : wc_clean( wp_unslash( $_POST['wkmp_variable_is_downloadable'] ) );
+			$vars_is_virtual     = empty( $_POST['wkmp_variable_is_virtual'] ) ? array() : wc_clean( wp_unslash( $_POST['wkmp_variable_is_virtual'] ) );
+			$sales_from          = empty( $_POST['wkmp_variable_sale_price_dates_from'] ) ? array() : wc_clean( wp_unslash( $_POST['wkmp_variable_sale_price_dates_from'] ) );
+			$sales_to            = empty( $_POST['wkmp_variable_sale_price_dates_to'] ) ? array() : wc_clean( wp_unslash( $_POST['wkmp_variable_sale_price_dates_to'] ) );
+			$backorders          = empty( $_POST['wkmp_variable_backorders'] ) ? array() : wc_clean( wp_unslash( $_POST['wkmp_variable_backorders'] ) );
+			$manage_stocks       = empty( $_POST['wkmp_variable_manage_stock'] ) ? array() : wc_clean( wp_unslash( $_POST['wkmp_variable_manage_stock'] ) );
+			$stocks_status       = empty( $_POST['wkmp_variable_stock_status'] ) ? array() : wc_clean( wp_unslash( $_POST['wkmp_variable_stock_status'] ) );
 			$variable_skus       = empty( $_POST['wkmp_variable_sku'] ) ? '' : wc_clean( wp_unslash( $_POST['wkmp_variable_sku'] ) );
-			$download_file_urls  = empty( $_POST['_mp_variation_downloads_files_url'] ) ? '' : wc_clean( wp_unslash( $_POST['_mp_variation_downloads_files_url'] ) );
-			$download_file_names = empty( $_POST['_mp_variation_downloads_files_name'] ) ? '' : wc_clean( wp_unslash( $_POST['_mp_variation_downloads_files_name'] ) );
+			$download_file_urls  = empty( $_POST['_mp_variation_downloads_files_url'] ) ? array() : wc_clean( wp_unslash( $_POST['_mp_variation_downloads_files_url'] ) );
+			$download_file_names = empty( $_POST['_mp_variation_downloads_files_name'] ) ? array() : wc_clean( wp_unslash( $_POST['_mp_variation_downloads_files_name'] ) );
 
-			$downloads_expiry = empty( $_POST['wkmp_variable_download_expiry'] ) ? '' : wc_clean( wp_unslash( $_POST['wkmp_variable_download_expiry'] ) );
-			$downloads_limit  = empty( $_POST['wkmp_variable_download_limit'] ) ? '' : wc_clean( wp_unslash( $_POST['wkmp_variable_download_limit'] ) );
-			$variable_stocks  = empty( $_POST['wkmp_variable_stock'] ) ? '' : wc_clean( wp_unslash( $_POST['wkmp_variable_stock'] ) );
-			$variable_img_ids = empty( $_POST['upload_var_img'] ) ? '' : wc_clean( wp_unslash( $_POST['upload_var_img'] ) );
-			$var_menu_orders  = empty( $_POST['wkmp_variation_menu_order'] ) ? '' : wc_clean( wp_unslash( $_POST['wkmp_variation_menu_order'] ) );
+			$downloads_expiry = empty( $_POST['wkmp_variable_download_expiry'] ) ? array() : wc_clean( wp_unslash( $_POST['wkmp_variable_download_expiry'] ) );
+			$downloads_limit  = empty( $_POST['wkmp_variable_download_limit'] ) ? array() : wc_clean( wp_unslash( $_POST['wkmp_variable_download_limit'] ) );
+			$variable_stocks  = empty( $_POST['wkmp_variable_stock'] ) ? array() : wc_clean( wp_unslash( $_POST['wkmp_variable_stock'] ) );
+			$variable_img_ids = empty( $_POST['upload_var_img'] ) ? array() : wc_clean( wp_unslash( $_POST['upload_var_img'] ) );
+			$var_menu_orders  = empty( $_POST['wkmp_variation_menu_order'] ) ? array() : wc_clean( wp_unslash( $_POST['wkmp_variation_menu_order'] ) );
 
 			$regular_prices   = empty( $_POST['wkmp_variable_regular_price'] ) ? array() : wc_clean( $_POST['wkmp_variable_regular_price'] );
 			$sale_prices      = empty( $_POST['wkmp_variable_sale_price'] ) ? array() : wc_clean( $_POST['wkmp_variable_sale_price'] );
@@ -711,10 +717,12 @@ if ( ! class_exists( 'WKMP_Product_Form' ) ) {
 				$variation_data['_manage_stock'][] = $manage_stock;
 
 				if ( 'yes' === $manage_stock ) {
-					$variation_data['_stock'][] = $variable_stocks[ $var_id ];
+					$stk_qty                           = empty( $variable_stocks[ $var_id ] ) ? 0 : intval( $variable_stocks[ $var_id ] );
+					$variation_data['_stock'][]        = $stk_qty;
+					$variation_data['_stock_status'][] = ( $stk_qty > 0 ) ? 'instock' : 'outofstock';
 				} else {
+					$variation_data['_stock_status'][] = isset( $stocks_status[ $var_id ] ) ? $stocks_status[ $var_id ] : '';
 					$variation_data['_stock'][]        = '';
-					$variation_data['_stock_status'][] = $stocks_status[ $var_id ];
 				}
 
 				$var_sku_check = wp_strip_all_tags( $variable_skus[ $var_id ] );

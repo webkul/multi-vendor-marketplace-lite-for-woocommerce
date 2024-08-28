@@ -2,34 +2,35 @@
 
 /**
  *
- * This file is part of Phpfastcache.
+ * This file is part of phpFastCache.
  *
  * @license MIT License (MIT)
  *
- * For full copyright and license information, please see the docs/CREDITS.txt and LICENCE files.
+ * For full copyright and license information, please see the docs/CREDITS.txt file.
  *
+ * @author Khoa Bui (khoaofgod)  <khoaofgod@gmail.com> https://www.phpfastcache.com
  * @author Georges.L (Geolim4)  <contact@geolim4.com>
- * @author Contributors  https://github.com/PHPSocialNetwork/phpfastcache/graphs/contributors
+ *
  */
-
 declare(strict_types=1);
 
 namespace Phpfastcache\Drivers\Devnull;
 
-use Phpfastcache\Core\Item\ExtendedCacheItemInterface;
-use Phpfastcache\Core\Pool\ExtendedCacheItemPoolInterface;
-use Phpfastcache\Core\Pool\TaggableCacheItemPoolTrait;
+use Phpfastcache\Core\Pool\{DriverBaseTrait, ExtendedCacheItemPoolInterface};
 use Phpfastcache\Entities\DriverStatistic;
-use Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException;
+use Phpfastcache\Exceptions\{PhpfastcacheInvalidArgumentException};
 use Psr\Cache\CacheItemInterface;
+
 
 /**
  * Class Driver
- * @method Config getConfig()
+ * @package phpFastCache\Drivers
+ * @property Config $config Config object
+ * @method Config getConfig() Return the config object
  */
 class Driver implements ExtendedCacheItemPoolInterface
 {
-    use TaggableCacheItemPoolTrait;
+    use DriverBaseTrait;
 
     /**
      * @return bool
@@ -54,36 +55,46 @@ class Driver implements ExtendedCacheItemPoolInterface
     }
 
     /**
-     * @param ExtendedCacheItemInterface $item
+     * @param CacheItemInterface $item
      * @return mixed
      * @throws PhpfastcacheInvalidArgumentException
      */
-    protected function driverWrite(ExtendedCacheItemInterface $item): bool
+    protected function driverWrite(CacheItemInterface $item): bool
     {
-        $this->assertCacheItemType($item, Item::class);
+        /**
+         * Check for Cross-Driver type confusion
+         */
+        if ($item instanceof Item) {
+            return true;
+        }
 
-        return true;
+        throw new PhpfastcacheInvalidArgumentException('Cross-Driver type confusion detected');
     }
 
     /**
-     * @param ExtendedCacheItemInterface $item
-     * @return ?array<string, mixed>
+     * @param CacheItemInterface $item
+     * @return null
      */
-    protected function driverRead(CacheItemInterface $item): ?array
+    protected function driverRead(CacheItemInterface $item)
     {
         return null;
     }
 
     /**
-     * @param ExtendedCacheItemInterface $item
+     * @param CacheItemInterface $item
      * @return bool
      * @throws PhpfastcacheInvalidArgumentException
      */
-    protected function driverDelete(ExtendedCacheItemInterface $item): bool
+    protected function driverDelete(CacheItemInterface $item): bool
     {
-        $this->assertCacheItemType($item, Item::class);
+        /**
+         * Check for Cross-Driver type confusion
+         */
+        if ($item instanceof Item) {
+            return true;
+        }
 
-        return true;
+        throw new PhpfastcacheInvalidArgumentException('Cross-Driver type confusion detected');
     }
 
     /**
@@ -93,6 +104,12 @@ class Driver implements ExtendedCacheItemPoolInterface
     {
         return true;
     }
+
+    /********************
+     *
+     * PSR-6 Extended Methods
+     *
+     *******************/
 
     /**
      * @return bool

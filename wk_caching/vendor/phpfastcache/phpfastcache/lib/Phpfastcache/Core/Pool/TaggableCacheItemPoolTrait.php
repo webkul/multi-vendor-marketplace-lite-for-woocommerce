@@ -2,71 +2,57 @@
 
 /**
  *
- * This file is part of Phpfastcache.
+ * This file is part of phpFastCache.
  *
  * @license MIT License (MIT)
  *
- * For full copyright and license information, please see the docs/CREDITS.txt and LICENCE files.
+ * For full copyright and license information, please see the docs/CREDITS.txt file.
  *
+ * @author Khoa Bui (khoaofgod)  <khoaofgod@gmail.com> https://www.phpfastcache.com
  * @author Georges.L (Geolim4)  <contact@geolim4.com>
- * @author Contributors  https://github.com/PHPSocialNetwork/phpfastcache/graphs/contributors
+ *
  */
-
 declare(strict_types=1);
 
 namespace Phpfastcache\Core\Pool;
 
 use DateTime;
 use Phpfastcache\Core\Item\ExtendedCacheItemInterface;
-use Phpfastcache\Exceptions\PhpfastcacheCoreException;
-use Phpfastcache\Exceptions\PhpfastcacheDriverException;
-use Phpfastcache\Exceptions\PhpfastcacheInvalidArgumentException;
-use Phpfastcache\Exceptions\PhpfastcacheLogicException;
-use Psr\Cache\CacheItemInterface;
+use Phpfastcache\Exceptions\{PhpfastcacheInvalidArgumentException, PhpfastcacheLogicException};
+use Psr\Cache\{CacheItemInterface};
 
 /**
  * Trait TaggableCacheItemPoolTrait
  * @package Phpfastcache\Core\Pool
+ * @method ExtendedCacheItemInterface getItem(string $key) Return the config object
+ * @method ExtendedCacheItemInterface[] getItems(array $keys) Return the config object
  */
 trait TaggableCacheItemPoolTrait
 {
-    use ExtendedCacheItemPoolTrait;
-
     /**
-     * @inheritDoc
-     * @throws PhpfastcacheCoreException
-     * @throws PhpfastcacheDriverException
-     * @throws PhpfastcacheInvalidArgumentException
-     * @throws PhpfastcacheLogicException
+     * @inheritdoc
      */
-    public function getItemsByTagsAsJsonString(
-        array $tagNames,
-        int $option = \JSON_THROW_ON_ERROR,
-        int $depth = 512,
-        int $strategy = TaggableCacheItemPoolInterface::TAG_STRATEGY_ONE
-    ): string {
-        return \json_encode(
-            \array_map(
-                static fn(CacheItemInterface $item) => $item->get(),
-                \array_values($this->getItemsByTags($tagNames, $strategy))
-            ),
-            $option,
-            $depth,
-        );
+    public function getItemsByTagsAsJsonString(array $tagNames, int $option = 0, int $depth = 512, int $strategy = TaggableCacheItemPoolInterface::TAG_STRATEGY_ONE): string
+    {
+        $callback = static function (CacheItemInterface $item) {
+            return $item->get();
+        };
+
+        return \json_encode(\array_map($callback, \array_values($this->getItemsByTags($tagNames, $strategy))), $option, $depth);
     }
 
     /**
-     * @inheritDoc
-     * @throws PhpfastcacheCoreException
-     * @throws PhpfastcacheDriverException
-     * @throws PhpfastcacheInvalidArgumentException
-     * @throws PhpfastcacheLogicException
+     * @inheritdoc
      */
     public function getItemsByTags(array $tagNames, int $strategy = TaggableCacheItemPoolInterface::TAG_STRATEGY_ONE): array
     {
         $items = [];
         foreach (\array_unique($tagNames) as $tagName) {
-            $items[] = $this->fetchItemsByTagFromBackend($tagName);
+            if (\is_string($tagName)) {
+                $items[] = $this->fetchItemsByTagFromBackend($tagName);
+            } else {
+                throw new PhpfastcacheInvalidArgumentException('$tagName must be a a string');
+            }
         }
 
         $items = \array_merge([], ...$items);
@@ -93,34 +79,37 @@ trait TaggableCacheItemPoolTrait
 
     /**
      * @param string $tagName
-     * @return ExtendedCacheItemInterface[]
-     * @throws PhpfastcacheCoreException
-     * @throws PhpfastcacheDriverException
+     * @return array
      * @throws PhpfastcacheInvalidArgumentException
-     * @throws PhpfastcacheLogicException
      */
     protected function fetchItemsByTagFromBackend(string $tagName): array
     {
-        $driverResponse = $this->getItem($this->getTagKey($tagName));
+        if (\is_string($tagName)) {
+            $driverResponse = $this->getItem($this->getTagKey($tagName));
+            if ($driverResponse->isHit()) {
+                $tagsItems = (array)$driverResponse->get();
 
-        if ($driverResponse->isHit()) {
-            $tagsItems = (array)$driverResponse->get();
-            /**
-             * getItems() may provide expired item(s)
-             * themselves provided by a cache of item
-             * keys based stored the tag item.
-             * Therefore, we pass a filter callback
-             * to remove the expired Item(s) provided by
-             * the item keys passed through getItems()
-             *
-             * #headache
-             */
-            return \array_filter(
-                $this->getItems(\array_unique(\array_keys($tagsItems))),
-                static fn (ExtendedCacheItemInterface $item) => $item->isHit(),
-            );
+                /**
+                 * getItems() may provides expired item(s)
+                 * themselves provided by a cache of item
+                 * keys based stored the tag item.
+                 * Therefore we pass a filter callback
+                 * to remove the expired Item(s) provided by
+                 * the item keys passed through getItems()
+                 *
+                 * #headache
+                 */
+                return \array_filter(
+                    $this->getItems(\array_unique(\array_keys($tagsItems))),
+                    static function (ExtendedCacheItemInterface $item) {
+                        return $item->isHit();
+                    }
+                );
+            }
+            return [];
         }
-        return [];
+
+        throw new PhpfastcacheInvalidArgumentException('$tagName must be a string');
     }
 
     /**
@@ -129,63 +118,55 @@ trait TaggableCacheItemPoolTrait
      */
     protected function getTagKey(string $key): string
     {
-        return TaggableCacheItemPoolInterface::DRIVER_TAGS_KEY_PREFIX . $key;
+        return self::DRIVER_TAGS_KEY_PREFIX . $key;
     }
 
     /**
-     * @inheritDoc
-     * @throws PhpfastcacheCoreException
-     * @throws PhpfastcacheInvalidArgumentException
-     * @throws PhpfastcacheLogicException
-     * @throws PhpfastcacheDriverException
+     * @inheritdoc
      */
     public function deleteItemsByTags(array $tagNames, int $strategy = TaggableCacheItemPoolInterface::TAG_STRATEGY_ONE): bool
     {
-        $return = true;
+        $return = null;
 
         foreach ($this->getItemsByTags($tagNames, $strategy) as $item) {
             $result = $this->deleteItem($item->getKey());
-            if ($result !== true) {
+            if ($return !== false) {
                 $return = $result;
             }
         }
 
-        return $return;
+        return (bool)$return;
     }
 
     /**
-     * @inheritDoc
-     * @throws PhpfastcacheCoreException
-     * @throws PhpfastcacheInvalidArgumentException
-     * @throws PhpfastcacheLogicException
-     * @throws PhpfastcacheDriverException
+     * @inheritdoc
      */
     public function deleteItemsByTag(string $tagName, int $strategy = TaggableCacheItemPoolInterface::TAG_STRATEGY_ONE): bool
     {
-        $return = true;
-        foreach ($this->getItemsByTag($tagName, $strategy) as $item) {
-            $result = $this->deleteItem($item->getKey());
-            if ($result !== true) {
-                $return = $result;
+        if (\is_string($tagName)) {
+            $return = null;
+            foreach ($this->getItemsByTag($tagName, $strategy) as $item) {
+                $result = $this->deleteItem($item->getKey());
+                if ($return !== false) {
+                    $return = $result;
+                }
             }
+
+            return (bool)$return;
         }
 
-        return $return;
+        throw new PhpfastcacheInvalidArgumentException('$tagName must be a string');
     }
 
     /**
-     * @inheritDoc
-     * @throws PhpfastcacheCoreException
-     * @throws PhpfastcacheDriverException
-     * @throws PhpfastcacheInvalidArgumentException
-     * @throws PhpfastcacheLogicException
+     * @inheritdoc
      */
     public function getItemsByTag(string $tagName, int $strategy = TaggableCacheItemPoolInterface::TAG_STRATEGY_ONE): array
     {
         $items = $this->fetchItemsByTagFromBackend($tagName);
         if ($strategy === TaggableCacheItemPoolInterface::TAG_STRATEGY_ONLY) {
             foreach ($items as $key => $item) {
-                if (\array_diff($item->getTags(), [$tagName])) {
+                if (\array_diff($item->getTags(), $tagName)) {
                     unset($items[$key]);
                 }
             }
@@ -194,178 +175,152 @@ trait TaggableCacheItemPoolTrait
     }
 
     /**
-     * @inheritDoc
-     * @throws PhpfastcacheCoreException
-     * @throws PhpfastcacheDriverException
-     * @throws PhpfastcacheInvalidArgumentException
-     * @throws PhpfastcacheLogicException
-     * @throws \ReflectionException
+     * @inheritdoc
      */
     public function incrementItemsByTags(array $tagNames, int $step = 1, int $strategy = TaggableCacheItemPoolInterface::TAG_STRATEGY_ONE): bool
     {
-        $return = true;
+        $return = null;
         foreach ($tagNames as $tagName) {
             $result = $this->incrementItemsByTag($tagName, $step, $strategy);
-            if ($result !== true) {
+            if ($return !== false) {
                 $return = $result;
             }
         }
 
-        return $return;
+        return (bool)$return;
     }
 
     /**
-     * @inheritDoc
-     * @throws PhpfastcacheCoreException
-     * @throws PhpfastcacheDriverException
-     * @throws PhpfastcacheInvalidArgumentException
-     * @throws PhpfastcacheLogicException
-     * @throws \ReflectionException
+     * @inheritdoc
      */
     public function incrementItemsByTag(string $tagName, int $step = 1, int $strategy = TaggableCacheItemPoolInterface::TAG_STRATEGY_ONE): bool
     {
-        foreach ($this->getItemsByTag($tagName, $strategy) as $item) {
-            $item->increment($step);
-            $this->saveDeferred($item);
+        if (\is_string($tagName) && \is_int($step)) {
+            foreach ($this->getItemsByTag($tagName, $strategy) as $item) {
+                $item->increment($step);
+                $this->saveDeferred($item);
+            }
+
+            return (bool)$this->commit();
         }
 
-        return $this->commit();
+        throw new PhpfastcacheInvalidArgumentException('$tagName must be a string and $step an integer');
     }
 
     /**
-     * @inheritDoc
-     * @throws PhpfastcacheCoreException
-     * @throws PhpfastcacheDriverException
-     * @throws PhpfastcacheInvalidArgumentException
-     * @throws PhpfastcacheLogicException
-     * @throws \ReflectionException
+     * @inheritdoc
      */
     public function decrementItemsByTags(array $tagNames, int $step = 1, int $strategy = TaggableCacheItemPoolInterface::TAG_STRATEGY_ONE): bool
     {
-        $return = true;
+        $return = null;
         foreach ($tagNames as $tagName) {
             $result = $this->decrementItemsByTag($tagName, $step, $strategy);
-            if ($result !== true) {
+            if ($return !== false) {
                 $return = $result;
             }
         }
 
-        return $return;
+        return (bool)$return;
     }
 
     /**
-     * @inheritDoc
-     * @throws PhpfastcacheCoreException
-     * @throws PhpfastcacheDriverException
-     * @throws PhpfastcacheInvalidArgumentException
-     * @throws PhpfastcacheLogicException
-     * @throws \ReflectionException
+     * @inheritdoc
      */
     public function decrementItemsByTag(string $tagName, int $step = 1, int $strategy = TaggableCacheItemPoolInterface::TAG_STRATEGY_ONE): bool
     {
-        foreach ($this->getItemsByTag($tagName, $strategy) as $item) {
-            $item->decrement($step);
-            $this->saveDeferred($item);
+        if (\is_string($tagName) && \is_int($step)) {
+            foreach ($this->getItemsByTag($tagName, $strategy) as $item) {
+                $item->decrement($step);
+                $this->saveDeferred($item);
+            }
+
+            return (bool)$this->commit();
         }
 
-        return $this->commit();
+        throw new PhpfastcacheInvalidArgumentException('$tagName must be a string and $step an integer');
     }
 
     /**
-     * @inheritDoc
-     * @throws PhpfastcacheCoreException
-     * @throws PhpfastcacheDriverException
-     * @throws PhpfastcacheInvalidArgumentException
-     * @throws PhpfastcacheLogicException
-     * @throws \ReflectionException
+     * @inheritdoc
      */
-    public function appendItemsByTags(array $tagNames, array|string $data, int $strategy = TaggableCacheItemPoolInterface::TAG_STRATEGY_ONE): bool
+    public function appendItemsByTags(array $tagNames, $data, int $strategy = TaggableCacheItemPoolInterface::TAG_STRATEGY_ONE): bool
     {
-        $return = true;
+        $return = null;
         foreach ($tagNames as $tagName) {
             $result = $this->appendItemsByTag($tagName, $data, $strategy);
-            if ($result !== true) {
+            if ($return !== false) {
                 $return = $result;
             }
         }
 
-        return $return;
+        return (bool)$return;
     }
 
     /**
-     * @inheritDoc
-     * @throws PhpfastcacheCoreException
-     * @throws PhpfastcacheDriverException
-     * @throws PhpfastcacheInvalidArgumentException
-     * @throws PhpfastcacheLogicException
-     * @throws \ReflectionException
+     * @inheritdoc
      */
-    public function appendItemsByTag(string $tagName, array|string $data, int $strategy = TaggableCacheItemPoolInterface::TAG_STRATEGY_ONE): bool
+    public function appendItemsByTag(string $tagName, $data, int $strategy = TaggableCacheItemPoolInterface::TAG_STRATEGY_ONE): bool
     {
-        foreach ($this->getItemsByTag($tagName, $strategy) as $item) {
-            $item->append($data);
-            $this->saveDeferred($item);
+        if (\is_string($tagName)) {
+            foreach ($this->getItemsByTag($tagName, $strategy) as $item) {
+                $item->append($data);
+                $this->saveDeferred($item);
+            }
+
+            return (bool)$this->commit();
         }
 
-        return $this->commit();
+        throw new PhpfastcacheInvalidArgumentException('$tagName must be a string');
     }
 
     /**
-     * @inheritDoc
-     * @throws PhpfastcacheCoreException
-     * @throws PhpfastcacheDriverException
-     * @throws PhpfastcacheInvalidArgumentException
-     * @throws PhpfastcacheLogicException
-     * @throws \ReflectionException
+     * @inheritdoc
      */
-    public function prependItemsByTags(array $tagNames, array|string $data, int $strategy = TaggableCacheItemPoolInterface::TAG_STRATEGY_ONE): bool
+    public function prependItemsByTags(array $tagNames, $data, int $strategy = TaggableCacheItemPoolInterface::TAG_STRATEGY_ONE): bool
     {
-        $return = true;
+        $return = null;
         foreach ($tagNames as $tagName) {
             $result = $this->prependItemsByTag($tagName, $data, $strategy);
-            if ($result !== true) {
+            if ($return !== false) {
                 $return = $result;
             }
         }
 
-        return $return;
+        return (bool)$return;
     }
 
     /**
-     * @inheritDoc
-     * @throws PhpfastcacheCoreException
-     * @throws PhpfastcacheDriverException
-     * @throws PhpfastcacheInvalidArgumentException
-     * @throws PhpfastcacheLogicException
-     * @throws \ReflectionException
+     * @inheritdoc
      */
-    public function prependItemsByTag(string $tagName, array|string $data, int $strategy = TaggableCacheItemPoolInterface::TAG_STRATEGY_ONE): bool
+    public function prependItemsByTag(string $tagName, $data, int $strategy = TaggableCacheItemPoolInterface::TAG_STRATEGY_ONE): bool
     {
-        foreach ($this->getItemsByTag($tagName, $strategy) as $item) {
-            $item->prepend($data);
-            $this->saveDeferred($item);
+        if (\is_string($tagName)) {
+            foreach ($this->getItemsByTag($tagName, $strategy) as $item) {
+                $item->prepend($data);
+                $this->saveDeferred($item);
+            }
+
+            return (bool)$this->commit();
         }
 
-        return $this->commit();
+        throw new PhpfastcacheInvalidArgumentException('$tagName must be a string');
     }
 
     /**
-     * @param array<mixed> $wrapper
-     * @return string[]
+     * @param array $wrapper
+     * @return mixed
      */
-    protected function driverUnwrapTags(array $wrapper): array
+    protected function driverUnwrapTags(array $wrapper)
     {
-        return $wrapper[TaggableCacheItemPoolInterface::DRIVER_TAGS_WRAPPER_INDEX];
+        return $wrapper[self::DRIVER_TAGS_WRAPPER_INDEX];
     }
 
     /**
      * @param ExtendedCacheItemInterface $item
-     * @throws PhpfastcacheCoreException
-     * @throws PhpfastcacheDriverException
      * @throws PhpfastcacheInvalidArgumentException
      * @throws PhpfastcacheLogicException
      */
-    protected function cleanItemTags(ExtendedCacheItemInterface $item): void
+    protected function cleanItemTags(ExtendedCacheItemInterface $item)
     {
         $this->driverWriteTags($item->removeTags($item->getTags()));
     }
@@ -373,19 +328,17 @@ trait TaggableCacheItemPoolTrait
     /**
      * @param ExtendedCacheItemInterface $item
      * @return bool
-     * @throws PhpfastcacheCoreException
      * @throws PhpfastcacheInvalidArgumentException
      * @throws PhpfastcacheLogicException
-     * @throws PhpfastcacheDriverException
      */
     protected function driverWriteTags(ExtendedCacheItemInterface $item): bool
     {
         /**
          * Do not attempt to write tags
-         * on tags item, it can lead
+         * on tags item, it can leads
          * to an infinite recursive calls
          */
-        if (str_starts_with($item->getKey(), TaggableCacheItemPoolInterface::DRIVER_TAGS_KEY_PREFIX)) {
+        if (\strpos($item->getKey(), self::DRIVER_TAGS_KEY_PREFIX) === 0) {
             throw new PhpfastcacheLogicException('Trying to set tag(s) to an Tag item index: ' . $item->getKey());
         }
 
@@ -407,6 +360,7 @@ trait TaggableCacheItemPoolTrait
              * avoid to use array_unique
              * that has slow performances
              */
+
             $data = \array_merge((array)$data, [$item->getKey() => $expTimestamp]);
             $tagsItem->set($data);
 
@@ -455,13 +409,15 @@ trait TaggableCacheItemPoolTrait
     }
 
     /**
-     * @param array<string> $keys
-     * @return array<string>
+     * @param array $keys
+     * @return array
      */
     protected function getTagKeys(array $keys): array
     {
         return \array_map(
-            fn (string $key) => $this->getTagKey($key),
+            function (string $key) {
+                return $this->getTagKey($key);
+            },
             $keys
         );
     }

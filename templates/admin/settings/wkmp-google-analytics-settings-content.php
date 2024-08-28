@@ -13,7 +13,7 @@ $pro_disabled = $wkmarketplace->wkmp_is_pro_module_disabled();
 ?>
 <form method="POST" action="options.php">
 <?php settings_fields( 'wkmp-google-analytics-settings-group' ); ?>
-<table class="form-table">
+<table class="form-table wkmp-google-analytics-settings">
 	<tbody>
 		<tr valign="top">
 			<th scope="row" class="titledesc">
@@ -40,7 +40,7 @@ $pro_disabled = $wkmarketplace->wkmp_is_pro_module_disabled();
 		<tr valign="top">
 			<th scope="row" class="titledesc">
 				<label for="wkmp-google-account-number">
-					<?php esc_html_e( 'Account Number', 'wk-marketplace' ); ?>
+					<?php esc_html_e( 'Measurement ID', 'wk-marketplace' ); ?>
 				</label>
 			</th>
 			<td class="forminp forminp-text">
@@ -61,28 +61,8 @@ $pro_disabled = $wkmarketplace->wkmp_is_pro_module_disabled();
 			<?php ( $pro_disabled ) ? $template_functions->wkmp_show_upgrade_lock_icon() : ''; ?>
 			</td>
 		</tr>
-		<tr valign="top">
-			<th scope="row" class="anonymizeIp">
-				<label for="wkmp-analytics-anonymize-ip"><?php esc_html_e( 'Anonymize IP', 'wk-marketplace' ); ?></label>
-			</th>
-			<td class="forminp forminp-text">
-				<?php
-				echo wp_kses(
-					wc_help_tip( esc_html__( 'If checked, IP of customor will be anonymized during tracking.', 'wk-marketplace' ), true ),
-					array(
-						'span' => array(
-							'tabindex'   => array(),
-							'aria-label' => array(),
-							'data-tip'   => array(),
-							'class'      => array(),
-						),
-					)
-				);
-				?>
-				<input <?php echo ( $pro_disabled ) ? 'onclick="return false"' : ''; ?> name="_wkmp_analytics_anonymize_ip" type="checkbox" id="wkmp_analytics_anonymize_ip" value="1" <?php checked( get_option( '_wkmp_analytics_anonymize_ip' ), 1 ); ?> />
-				<?php ( $pro_disabled ) ? $template_functions->wkmp_show_upgrade_lock_icon() : ''; ?>
-			</td>
-		</tr>
+
+		<?php do_action( 'wkmp_after_google_analytics_settings' ); ?>
 
 		<tr><td colspan="2"><hr/></td></tr>
 
@@ -109,7 +89,7 @@ $pro_disabled = $wkmarketplace->wkmp_is_pro_module_disabled();
 				<p class="wkmp-text"><?php esc_html_e( 'Although it is optional, but if filled top billing countries on seller dashboard will be populated for all countries properly especially for US regions.', 'wk-marketplace' ); ?></p>
 			</td>
 		</tr>
-		<?php do_action( 'wkmp_add_settings_field' ); ?>
+		<?php do_action( 'wkmp_add_settings_field_analytics' ); ?>
 	</tbody>
 </table>
 <?php submit_button( esc_html__( 'Save Changes', 'wk-marketplace' ), 'primary' ); ?>

@@ -2,72 +2,116 @@
 
 /**
  *
- * This file is part of Phpfastcache.
+ * This file is part of phpFastCache.
  *
  * @license MIT License (MIT)
  *
- * For full copyright and license information, please see the docs/CREDITS.txt and LICENCE files.
+ * For full copyright and license information, please see the docs/CREDITS.txt file.
  *
+ * @author Khoa Bui (khoaofgod)  <khoaofgod@gmail.com> https://www.phpfastcache.com
  * @author Georges.L (Geolim4)  <contact@geolim4.com>
- * @author Contributors  https://github.com/PHPSocialNetwork/phpfastcache/graphs/contributors
+ *
  */
-
 declare(strict_types=1);
 
 namespace Phpfastcache\Entities;
 
+/**
+ * Class DriverStatistic
+ * @package phpFastCache\Entities
+ */
 class DriverStatistic
 {
-    protected string $info = '';
+    /**
+     * @var string
+     */
+    protected $info = '';
 
-    protected int $size = 0;
+    /**
+     * @var int
+     */
+    protected $size = 0;
 
-    protected string $data = '';
+    /**
+     * @var string
+     */
+    protected $data = '';
 
-    protected mixed $rawData;
+    /**
+     * @var mixed
+     */
+    protected $rawData;
 
+    /**
+     * @return string Return info or false if no information available
+     */
     public function getInfo(): string
     {
         return $this->info;
     }
 
-    public function setInfo(string $info): static
+    /**
+     * @param string $info
+     * @return $this
+     */
+    public function setInfo(string $info): self
     {
         $this->info = $info;
 
         return $this;
     }
 
+    /**
+     * @return int Return size in octet or false if no information available
+     */
     public function getSize(): int
     {
         return $this->size;
     }
 
-    public function setSize(int $size): static
+    /**
+     * @param int $size
+     * @return $this
+     */
+    public function setSize(int $size)
     {
         $this->size = $size;
 
         return $this;
     }
 
-    public function getData(): string
+    /**
+     * @return mixed
+     */
+    public function getData()
     {
         return $this->data;
     }
 
-    public function setData(string $data): static
+    /**
+     * @param mixed $data
+     * @return $this
+     */
+    public function setData($data): self
     {
         $this->data = ($data ?: '');
 
         return $this;
     }
 
-    public function getRawData(): mixed
+    /**
+     * @return mixed
+     */
+    public function getRawData()
     {
         return $this->rawData;
     }
 
-    public function setRawData(mixed $raw): static
+    /**
+     * @param mixed $raw
+     * @return $this
+     */
+    public function setRawData($raw): self
     {
         $this->rawData = $raw;
 
@@ -75,7 +119,7 @@ class DriverStatistic
     }
 
     /**
-     * @return array<string, string>
+     * @return array
      */
     public function getPublicDesc(): array
     {

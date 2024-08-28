@@ -11,7 +11,6 @@ namespace WkMarketplace\Helper\Common;
 defined( 'ABSPATH' ) || exit(); // Exit if access directly.
 
 if ( ! class_exists( 'WKMP_Seller_Notification' ) ) {
-
 	/**
 	 * Seller Notification related queries class
 	 */
@@ -82,7 +81,7 @@ if ( ! class_exists( 'WKMP_Seller_Notification' ) ) {
 		 * @param string $type Notification type.
 		 * @param string $keyword Keyword.
 		 */
-		public function wkmp_get_notification_data( $type, $keyword ) {
+		public function wkmp_get_notification_data( $type, $keyword = '' ) {
 			global $current_user;
 			$wpdb_obj = $this->wpdb;
 
@@ -107,8 +106,7 @@ if ( ! class_exists( 'WKMP_Seller_Notification' ) ) {
 				)
 			);
 
-			$page_no = empty( $page_no ) ? 1 : abs( $page_no );
-
+			$page_no        = empty( $page_no ) ? 1 : abs( $page_no );
 			$items_per_page = absint( get_option( 'posts_per_page', 10 ) );
 			$offset         = ( $page_no * $items_per_page ) - $items_per_page;
 
@@ -209,7 +207,7 @@ if ( ! class_exists( 'WKMP_Seller_Notification' ) ) {
 			$content = ( 'wkmp_out_of_stock' === $content ) ? esc_html__( 'Product is out of stock', 'wk-marketplace' ) : $content;
 			$content = ( 'wkmp_order_processing' === $content ) ? esc_html__( 'Order status has been changed to <strong>Processing</strong>', 'wk-marketplace' ) : $content;
 			$content = ( 'wkmp_order_complete' === $content ) ? esc_html__( 'Order status has been changed to <strong>Completed</strong>', 'wk-marketplace' ) : $content;
-			$content = ( 'wkmp_order_complete' === $content ) ? esc_html__( 'New review has been received', 'wk-marketplace' ) : $content;
+			$content = ( 'wkmp_new_review_received_' === $content ) ? esc_html__( 'A new review was received', 'wk-marketplace' ) : $content;
 
 			if ( 0 === strpos( $content, 'wkmp_new_order_by_customer_id_' ) ) {
 				$customer_id  = intval( $content );
@@ -219,7 +217,7 @@ if ( ! class_exists( 'WKMP_Seller_Notification' ) ) {
 			}
 
 			if ( 0 === strpos( $content, 'wkmp_new_review_received_' ) ) {
-				$content = esc_html__( 'New review has been received', 'wk-marketplace' );
+				$content = esc_html__( 'A new review was received', 'wk-marketplace' );
 			}
 
 			if ( 0 === strpos( $content, 'wkmp_low_stock_' ) ) {

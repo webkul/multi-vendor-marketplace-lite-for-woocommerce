@@ -1,15 +1,15 @@
 <?php
-
 /**
  *
- * This file is part of Phpfastcache.
+ * This file is part of phpFastCache.
  *
  * @license MIT License (MIT)
  *
- * For full copyright and license information, please see the docs/CREDITS.txt and LICENCE files.
+ * For full copyright and license information, please see the docs/CREDITS.txt file.
  *
+ * @author Khoa Bui (khoaofgod)  <khoaofgod@gmail.com> https://www.phpfastcache.com
  * @author Georges.L (Geolim4)  <contact@geolim4.com>
- * @author Contributors  https://github.com/PHPSocialNetwork/phpfastcache/graphs/contributors
+ *
  */
 
 declare(strict_types=1);
@@ -17,27 +17,63 @@ declare(strict_types=1);
 namespace Phpfastcache\Drivers\Mongodb;
 
 use Phpfastcache\Config\ConfigurationOption;
-use Phpfastcache\Exceptions\PhpfastcacheLogicException;
 
 class Config extends ConfigurationOption
 {
-    protected string $host = '127.0.0.1';
-    protected int $port = 27017;
-    protected int $timeout = 3;
-    protected string $username = '';
-    protected string $password = '';
-    protected string $collectionName = 'phpfastcache';
-    protected string $databaseName = Driver::MONGODB_DEFAULT_DB_NAME;
-    protected string $protocol = 'mongodb';
+    /**
+     * @var string
+     */
+    protected $host = '127.0.0.1';
 
-    /** @var array<mixed>  */
-    protected array $servers = [];
+    /**
+     * @var int
+     */
+    protected $port = 27017;
 
-    /** @var array<mixed>  */
-    protected array $options = [];
+    /**
+     * @var int
+     */
+    protected $timeout = 3;
 
-    /** @var array<mixed>  */
-    protected array $driverOptions = [];
+    /**
+     * @var string
+     */
+    protected $username = '';
+
+    /**
+     * @var string
+     */
+    protected $password = '';
+
+    /**
+     * @var array
+     */
+    protected $servers = [];
+
+    /**
+     * @var string
+     */
+    protected $collectionName = 'phpfastcache';
+
+    /**
+     * @var string
+     */
+    protected $databaseName = Driver::MONGODB_DEFAULT_DB_NAME;
+
+    /**
+     * @var array
+     */
+    protected $options = [];
+
+    /**
+     * @var array
+     */
+    protected $driverOptions = [];
+
+    /**
+     * @var string
+     */
+    protected $protocol = 'mongodb';
 
     /**
      * @return string
@@ -50,11 +86,9 @@ class Config extends ConfigurationOption
     /**
      * @param string $host
      * @return self
-     * @throws PhpfastcacheLogicException
      */
-    public function setHost(string $host): static
+    public function setHost(string $host): self
     {
-        $this->enforceLockedProperty(__FUNCTION__);
         $this->host = $host;
         return $this;
     }
@@ -70,11 +104,9 @@ class Config extends ConfigurationOption
     /**
      * @param int $port
      * @return self
-     * @throws PhpfastcacheLogicException
      */
-    public function setPort(int $port): static
+    public function setPort(int $port): self
     {
-        $this->enforceLockedProperty(__FUNCTION__);
         $this->port = $port;
         return $this;
     }
@@ -90,11 +122,9 @@ class Config extends ConfigurationOption
     /**
      * @param int $timeout
      * @return self
-     * @throws PhpfastcacheLogicException
      */
-    public function setTimeout(int $timeout): static
+    public function setTimeout(int $timeout): self
     {
-        $this->enforceLockedProperty(__FUNCTION__);
         $this->timeout = $timeout;
         return $this;
     }
@@ -110,11 +140,9 @@ class Config extends ConfigurationOption
     /**
      * @param string $username
      * @return self
-     * @throws PhpfastcacheLogicException
      */
-    public function setUsername(string $username): static
+    public function setUsername(string $username): self
     {
-        $this->enforceLockedProperty(__FUNCTION__);
         $this->username = $username;
         return $this;
     }
@@ -130,17 +158,15 @@ class Config extends ConfigurationOption
     /**
      * @param string $password
      * @return self
-     * @throws PhpfastcacheLogicException
      */
-    public function setPassword(string $password): static
+    public function setPassword(string $password): self
     {
-        $this->enforceLockedProperty(__FUNCTION__);
         $this->password = $password;
         return $this;
     }
 
     /**
-     * @return array<mixed>
+     * @return array
      */
     public function getServers(): array
     {
@@ -148,13 +174,11 @@ class Config extends ConfigurationOption
     }
 
     /**
-     * @param array<mixed> $servers
+     * @param array $servers
      * @return self
-     * @throws PhpfastcacheLogicException
      */
-    public function setServers(array $servers): static
+    public function setServers(array $servers): self
     {
-        $this->enforceLockedProperty(__FUNCTION__);
         $this->servers = $servers;
         return $this;
     }
@@ -170,11 +194,9 @@ class Config extends ConfigurationOption
     /**
      * @param string $collectionName
      * @return self
-     * @throws PhpfastcacheLogicException
      */
-    public function setCollectionName(string $collectionName): static
+    public function setCollectionName(string $collectionName): self
     {
-        $this->enforceLockedProperty(__FUNCTION__);
         $this->collectionName = $collectionName;
         return $this;
     }
@@ -190,17 +212,15 @@ class Config extends ConfigurationOption
     /**
      * @param string $databaseName
      * @return self
-     * @throws PhpfastcacheLogicException
      */
-    public function setDatabaseName(string $databaseName): static
+    public function setDatabaseName(string $databaseName): self
     {
-        $this->enforceLockedProperty(__FUNCTION__);
         $this->databaseName = $databaseName;
         return $this;
     }
 
     /**
-     * @return array<mixed>
+     * @return array
      */
     public function getOptions(): array
     {
@@ -209,19 +229,17 @@ class Config extends ConfigurationOption
 
     /**
      * @see https://docs.mongodb.com/manual/reference/connection-string/#connections-connection-options
-     * @param array<mixed> $options
+     * @param array $options
      * @return Config
-     * @throws PhpfastcacheLogicException
      */
-    public function setOptions(array $options): static
+    public function setOptions(array $options): self
     {
-        $this->enforceLockedProperty(__FUNCTION__);
         $this->options = $options;
         return $this;
     }
 
     /**
-     * @return array<mixed>
+     * @return array
      */
     public function getDriverOptions(): array
     {
@@ -229,13 +247,11 @@ class Config extends ConfigurationOption
     }
 
     /**
-     * @param array<mixed> $driverOptions
+     * @param array $driverOptions
      * @return self
-     * @throws PhpfastcacheLogicException
      */
-    public function setDriverOptions(array $driverOptions): static
+    public function setDriverOptions(array $driverOptions): self
     {
-        $this->enforceLockedProperty(__FUNCTION__);
         $this->driverOptions = $driverOptions;
         return $this;
     }
@@ -251,11 +267,9 @@ class Config extends ConfigurationOption
     /**
      * @param string $protocol
      * @return self
-     * @throws PhpfastcacheLogicException
      */
-    public function setProtocol(string $protocol): static
+    public function setProtocol(string $protocol): self
     {
-        $this->enforceLockedProperty(__FUNCTION__);
         $this->protocol = $protocol;
         return $this;
     }

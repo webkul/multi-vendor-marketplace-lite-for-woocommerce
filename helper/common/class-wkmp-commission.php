@@ -301,7 +301,24 @@ if ( ! class_exists( 'WKMP_Commission' ) ) {
 		public function wkmp_get_seller_final_order_info( $order_id, $seller_id ) {
 			$wpdb_obj   = $this->wpdb;
 			$sell_order = wc_get_order( $order_id );
-			$data       = array();
+
+			$data = array(
+				'id'                  => $order_id . '-' . $seller_id,
+				'order_id'            => $order_id,
+				'product'             => array(),
+				'quantity'            => 0,
+				'product_total'       => 0,
+				'total_seller_amount' => 0,
+				'refunded_amount'     => 0,
+				'total_commission'    => 0,
+				'status'              => '',
+				'shipping'            => 0,
+				'method_id'           => '',
+				'seller_id'           => '',
+				'discount'            => array(),
+				'action'              => '',
+				'tax'                 => '',
+			);
 
 			if ( $sell_order instanceof \WC_Order ) {
 				$or_status    = $sell_order->get_status();
@@ -313,24 +330,6 @@ if ( ! class_exists( 'WKMP_Commission' ) ) {
 				if ( ! empty( $sel_ord_data ) ) {
 					$sel_amt   = $sel_ord_data['total_sel_amt'] + $sel_ord_data['ship_data'];
 					$admin_amt = $sel_ord_data['total_comision'];
-				}
-
-				$rwd_data = array();
-
-				$reward_data = $wpdb_obj->get_results( $wpdb_obj->prepare( "SELECT meta_value FROM {$wpdb_obj->prefix}mporders_meta WHERE seller_id = %d AND order_id = %d AND meta_key = 'order_reward' ", esc_attr( $seller_id ), esc_attr( $order_id ) ) );
-
-				if ( ! empty( $reward_data ) ) {
-					$sel_amt            = $sel_amt - $reward_data[0]->meta_value;
-					$rwd_data['seller'] = $reward_data[0]->meta_value;
-				}
-
-				$walt_data = array();
-
-				$wallet_data = $wpdb_obj->get_results( $wpdb_obj->prepare( "SELECT meta_value FROM {$wpdb_obj->prefix}mporders_meta WHERE seller_id = %d AND order_id = %d AND meta_key = 'order_wallet_amt' ", esc_attr( $seller_id ), esc_attr( $order_id ) ) );
-
-				if ( ! empty( $wallet_data ) ) {
-					$sel_amt             = $sel_amt - $wallet_data[0]->meta_value;
-					$walt_data['seller'] = $wallet_data[0]->meta_value;
 				}
 
 				$seller_order_tax = $wpdb_obj->get_var( $wpdb_obj->prepare( "SELECT meta_value FROM {$wpdb_obj->prefix}mporders_meta WHERE seller_id = %d AND order_id = %d AND meta_key = 'seller_order_tax' ", $seller_id, $order_id ) );
@@ -345,25 +344,21 @@ if ( ! class_exists( 'WKMP_Commission' ) ) {
 				$seller_order_refund_data = $this->wkmp_get_seller_order_refund_data( $order_id, $seller_id );
 				$refunded_amount          = empty( $seller_order_refund_data['refunded_amount'] ) ? 0 : $seller_order_refund_data['refunded_amount'];
 
-				$data = array(
-					'id'                  => $order_id . '-' . $seller_id,
-					'order_id'            => $order_id,
-					'product'             => $sel_ord_data['pro_info'],
-					'quantity'            => $sel_ord_data['total_qty'],
-					'product_total'       => $sel_ord_data['pro_total'],
-					'total_seller_amount' => $sel_amt,
-					'refunded_amount'     => $refunded_amount,
-					'total_commission'    => $admin_amt,
-					'status'              => $or_status,
-					'reward_data'         => $rwd_data,
-					'wallet_data'         => $walt_data,
-					'shipping'            => $sel_ord_data['ship_data'],
-					'method_id'           => $sel_ord_data['method_id'],
-					'seller_id'           => $sel_ord_data['seller_id'],
-					'discount'            => $sel_ord_data['discount'],
-					'action'              => $act_status,
-					'tax'                 => $seller_order_tax,
-				);
+				$data['product']       = $sel_ord_data['pro_info'];
+				$data['quantity']      = $sel_ord_data['total_qty'];
+				$data['product_total'] = $sel_ord_data['pro_total'];
+				$data['shipping']      = $sel_ord_data['ship_data'];
+				$data['method_id']     = $sel_ord_data['method_id'];
+				$data['method_id']     = $sel_ord_data['method_id'];
+				$data['seller_id']     = $sel_ord_data['seller_id'];
+				$data['discount']      = $sel_ord_data['discount'];
+
+				$data['total_seller_amount'] = $sel_amt;
+				$data['refunded_amount']     = $refunded_amount;
+				$data['total_commission']    = $admin_amt;
+				$data['status']              = $or_status;
+				$data['action']              = $act_status;
+				$data['tax']                 = $seller_order_tax;
 			}
 
 			return apply_filters( 'wk_marketplace_final_seller_ord_info', $data );

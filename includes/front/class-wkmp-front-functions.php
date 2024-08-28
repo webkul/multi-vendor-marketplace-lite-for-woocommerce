@@ -651,7 +651,6 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 			}
 
 			if ( $user_id > 0 ) {
-				$active_color = apply_filters( 'wkmp_active_color_code', '#96588a' );
 				?>
 				<style>
 					/**Favorite Sellers */
@@ -660,9 +659,6 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 						font-family: 'Webkul Rango';
 						font-size: 20px;
 						font-weight: normal;
-					}
-					.wkmp-product-author-shop .wkmp_active_heart, .mp-dashboard-wrapper h2,.mp-dashboard-wrapper .summary-icon,.mp-dashboard-wrapper .mp-store-top-billing-country h4, .mp-dashboard-wrapper .mp-store-sale-order-history-section .header p {
-						color:<?php echo esc_attr( $active_color ); ?>;
 					}
 				</style>
 				<?php
@@ -762,6 +758,7 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 		 * @throws \Exception Throwing exception.
 		 */
 		public function wkmp_new_order_map_seller( $order_id, $posted_data = array(), $order = '' ) {
+
 			if ( ! $order instanceof \WC_Order && is_numeric( $order_id ) ) {
 				$order = wc_get_order( $order_id );
 			}
@@ -773,10 +770,10 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 
 			foreach ( $items as $item ) {
 				$assigned_seller = wc_get_order_item_meta( $item->get_id(), 'assigned_seller', true );
-				if ( ! empty( $assigned_seller ) ) {
+				$assigned_seller = empty( $assigned_seller ) ? get_post_field( 'post_author', $item->get_product_id() ) : $assigned_seller;
+
+				if ( ! in_array( $assigned_seller, $author_array, true ) ) {
 					$author_array[] = $assigned_seller;
-				} else {
-					$author_array[] = get_post_field( 'post_author', $item->get_product_id() );
 				}
 			}
 
@@ -807,9 +804,10 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 				foreach ( $items as $item ) {
 					$item_id         = $item->get_id();
 					$assigned_seller = wc_get_order_item_meta( $item_id, 'assigned_seller', true );
-					$tax_total       = 0;
-					$amount          = floatval( $item['line_total'] );
-					$product_qty     = intval( $item['quantity'] );
+
+					$tax_total   = 0;
+					$amount      = floatval( $item['line_total'] );
+					$product_qty = intval( $item['quantity'] );
 
 					$product_id      = empty( $item['variation_id'] ) ? $item['product_id'] : $item['variation_id'];
 					$commission_data = $mp_commission->wkmp_calculate_product_commission( $product_id, $product_qty, $amount, $assigned_seller, $tax_total );
@@ -1248,7 +1246,7 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 		 * Showing notices when product quantity is greater than threshold value.
 		 *
 		 * @param array  $notes Qty notes.
-		 * @param string $type Notice type print or return
+		 * @param string $type Notice type print or return.
 		 *
 		 * @return array
 		 */

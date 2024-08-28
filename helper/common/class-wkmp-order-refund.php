@@ -165,7 +165,7 @@ if ( ! class_exists( 'WKMP_Order_Refund' ) ) {
 		 */
 		public function wkmp_set_seller_order_refund_data() {
 			$wpdb_obj        = $this->wpdb;
-			$order_id        = $this->refund_args['order_id'];
+			$order_id        = empty( $this->refund_args['order_id'] ) ? 0 : $this->refund_args['order_id'];
 			$this->seller_id = apply_filters( 'wkmp_modify_order_refund_user_id', $this->seller_id, $order_id );
 
 			$commission_helper = Common\WKMP_Commission::get_instance();

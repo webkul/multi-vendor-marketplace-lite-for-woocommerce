@@ -23,12 +23,12 @@ defined( 'ABSPATH' ) || exit; // Exit if access directly.
 					</div>
 					<div class="wk_row">
 						<span class="label"><?php esc_html_e( 'Amount :', 'wk-marketplace' ); ?></span>
-						<span class="value"><span class="price"><?php echo wp_kses_data( wc_price( apply_filters( 'wkmp_add_order_fee_to_total', $transaction_info->amount - $seller_order_info['refunded_amount'], $order_info->get_id() ), array( 'currency' => $order_info->get_currency() ) ) ); ?></span></span>
+						<span class="value"><span class="price"><?php echo wp_kses_data( wc_price( apply_filters( 'wkmp_add_order_fee_to_total', $transaction_info->amount - $seller_order_info['refunded_amount'], $transaction_info->order_id ), array( 'currency' => $currency ) ) ); ?></span></span>
 					</div>
 					<?php if ( isset( $seller_order_info['refunded_amount'] ) && $seller_order_info['refunded_amount'] ) { ?>
 						<div class="wk_row">
 							<span class="label"><?php esc_html_e( 'Refunded Amount', 'wk-marketplace' ); ?> : </span>
-							<span class="value"><span class="price"><?php echo wp_kses_data( wc_price( $seller_order_info['refunded_amount'], array( 'currency' => $order_info->get_currency() ) ) ); ?></span></span>
+							<span class="value"><span class="price"><?php echo wp_kses_data( wc_price( $seller_order_info['refunded_amount'], array( 'currency' => $currency ) ) ); ?></span></span>
 						</div>
 					<?php } ?>
 					<div class="wk_row">
@@ -61,16 +61,16 @@ defined( 'ABSPATH' ) || exit; // Exit if access directly.
 				<td><?php echo esc_html( $product_name ); ?></td>
 				<td><?php echo esc_html( $seller_order_info['quantity'] ); ?></td>
 				<td>
-					<?php echo wp_kses_data( wc_price( ( $seller_order_info['product_total'] - $seller_order_info['refunded_amount'] ), array( 'currency' => $order_info->get_currency() ) ) ); ?>
+					<?php echo wp_kses_data( wc_price( ( $seller_order_info['product_total'] - $seller_order_info['refunded_amount'] ), array( 'currency' => $currency ) ) ); ?>
 				</td>
 				<td>
-					<?php echo wp_kses_data( wc_price( $seller_order_info['total_commission'], array( 'currency' => $order_info->get_currency() ) ) ); ?>
+					<?php echo wp_kses_data( wc_price( $seller_order_info['total_commission'], array( 'currency' => $currency ) ) ); ?>
 				</td>
 				<?php
-				do_action( 'wkmp_account_transactions_columns_data', $order_info->get_id() );
+				do_action( 'wkmp_account_transactions_columns_data', $transaction_info->order_id );
 				?>
 				<td>
-					<?php echo wp_kses_data( wc_price( ( $seller_order_info['total_seller_amount'] - $seller_order_info['refunded_amount'] ), array( 'currency' => $order_info->get_currency() ) ) ); ?>
+					<?php echo wp_kses_data( wc_price( ( $seller_order_info['total_seller_amount'] - $seller_order_info['refunded_amount'] ), array( 'currency' => $currency ) ) ); ?>
 				</td>
 			</tr>
 			</tbody>

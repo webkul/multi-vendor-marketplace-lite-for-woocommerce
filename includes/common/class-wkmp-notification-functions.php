@@ -9,13 +9,12 @@
 
 namespace WkMarketplace\Includes\Common;
 
+defined( 'ABSPATH' ) || exit(); // Exit if access directly.
+
 use WkMarketplace\Helper\Common;
 use WkMarketplace\Helper\Admin;
 
-defined( 'ABSPATH' ) || exit(); // Exit if access directly.
-
 if ( ! class_exists( 'WKMP_Notification_Functions' ) ) {
-
 	/**
 	 * Class WKMP_Notification_Functions.
 	 *

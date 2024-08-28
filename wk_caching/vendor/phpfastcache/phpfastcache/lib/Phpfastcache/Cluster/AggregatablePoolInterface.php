@@ -2,25 +2,27 @@
 
 /**
  *
- * This file is part of Phpfastcache.
+ * This file is part of phpFastCache.
  *
  * @license MIT License (MIT)
  *
  * For full copyright and license information, please see the docs/CREDITS.txt file.
  *
- * @author Georges.L (Geolim4) <contact@geolim4.com>
+ * @author  Georges.L (Geolim4)  <contact@geolim4.com>
  *
  */
-
 declare(strict_types=1);
 
 namespace Phpfastcache\Cluster;
 
-use Phpfastcache\Core\Pool\ExtendedCacheItemPoolInterface;
+use Psr\Cache\CacheItemPoolInterface;
 
-interface AggregatablePoolInterface extends ExtendedCacheItemPoolInterface
+/**
+ * Interface ClusterInterface Aggregatable
+ *
+ * @package Phpfastcache\Cluster
+ */
+interface AggregatablePoolInterface extends CacheItemPoolInterface
 {
-    public function isAggregatedBy(): ?ClusterPoolInterface;
 
-    public function setAggregatedBy(ClusterPoolInterface $clusterPool): static;
 }

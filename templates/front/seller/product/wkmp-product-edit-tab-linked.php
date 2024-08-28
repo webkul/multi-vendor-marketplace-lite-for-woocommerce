@@ -23,7 +23,6 @@ defined( 'ABSPATH' ) || exit; // Exit if access directly.
 				$upsell_ids = $product->get_upsell_ids( 'edit' );
 				$upsell_ids = array_map( 'intval', $upsell_ids );
 
-
 				foreach ( $product_array as $key => $value ) {
 					$product_id = empty( $value->ID ) ? 0 : intval( $value->ID );
 					$item       = wc_get_product( $product_id );

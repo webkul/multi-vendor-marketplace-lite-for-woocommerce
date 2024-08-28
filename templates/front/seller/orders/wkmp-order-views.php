@@ -56,13 +56,23 @@ if ( ! empty( $order_data ) ) {
 						</thead>
 						<tbody>
 						<?php
+						$total_payment = apply_filters( 'wkmp_add_order_fee_to_total', round( floatval( $mp_order_data['total_seller_amount'] ), 2 ), $mp_order_data['order_id'] );
+
 						foreach ( $order_data as $product_id => $details ) {
-							$total_payment = apply_filters( 'wkmp_add_order_fee_to_total', round( floatval( $mp_order_data['total_seller_amount'] ), 2 ), $mp_order_data['order_id'] );
 							if ( $details['variable_id'] < 1 ) {
 								?>
 								<tr class="order_item alt-table-row">
 									<td class="product-name toptable">
-										<a target="_blank" href="<?php echo esc_url( get_permalink( $product_id ) ); ?>"><?php echo esc_html( $details['product_name'] ); ?></a>
+										<?php
+										$prod_link = get_permalink( $product_id );
+										if ( empty( $prod_link ) ) {
+											echo esc_html( $details['product_name'] ); // No permalink, display product name directly.
+										} else {
+											?>
+											<a class="wkmp-seller-product-name" target="_blank" href="<?php echo esc_url( $prod_link ); ?>"><?php echo esc_html( $details['product_name'] ); ?></a>
+											<?php
+										}
+										?>
 										<strong class="product-quantity">× <?php echo esc_html( $details['qty'] ); ?>
 										<?php if ( ! empty( $seller_order_refund_data['line_items'][ $details['item_key'] ]['qty'] ) ) { ?>
 												<br>
@@ -197,20 +207,6 @@ if ( ! empty( $order_data ) ) {
 							}
 						}
 
-						$sel_rwd_note = '';
-						if ( ! empty( $mp_order_data['reward_data'] ) ) {
-							if ( ! empty( $mp_order_data['reward_data']['seller'] ) ) {
-								$sel_rwd_note = ' ' . round( $mp_order_data['reward_data']['seller'] * $reward_points, 2 ) . '( ' . __( 'Reward', 'wk-marketplace' ) . ' )';
-							}
-						}
-
-						$sel_walt_note = '';
-						if ( ! empty( $mp_order_data['wallet_data'] ) ) {
-							if ( ! empty( $mp_order_data['wallet_data']['seller'] ) ) {
-								$sel_walt_note = ' ' . round( $mp_order_data['wallet_data']['seller'], 2 ) . '( ' . __( 'Wallet', 'wk-marketplace' ) . ' )';
-							}
-						}
-
 						if ( $mp_order_data['product_total'] !== $mp_order_data['total_seller_amount'] ) {
 							$tip = $total_payment;
 
@@ -227,14 +223,7 @@ if ( ! empty( $order_data ) ) {
 								$tip .= ' + ';
 								$tip .= ( $mp_order_data['shipping'] ) . ' ( ' . __( 'Shipping', 'wk-marketplace' ) . ' ) ';
 							}
-							if ( ! empty( $sel_rwd_note ) ) {
-								$tip .= ' - ';
-								$tip .= $sel_rwd_note;
-							}
-							if ( ! empty( $sel_walt_note ) ) {
-								$tip .= ' - ';
-								$tip .= $sel_walt_note;
-							}
+
 							if ( ! empty( $mp_order_data['tax'] ) ) {
 								$tip .= sprintf( '+ %f ( %s ) ', $mp_order_data['tax'], esc_html__( ' Tax', 'wk-marketplace' ) );
 							}
@@ -388,35 +377,7 @@ if ( ! empty( $order_data ) ) {
 								}
 							}
 						}
-						$wc_order    = wc_get_order( $order_id );
-						$reward_used = $wc_order->get_meta( '_wkmpreward_points_used', true );
 
-						if ( ! empty( $reward_used ) ) {
-							?>
-							<tr>
-								<th scope="row"><b><?php esc_html_e( 'Reward Points: ', 'wk-marketplace' ); ?></b></th>
-								<td class="td">
-									<?php echo wp_kses_data( wc_price( - $reward_used, array( 'currency' => $order_currency ) ) ); ?>
-								</td>
-							</tr>
-							<?php
-						}
-
-						$wallet_amount_used = $wc_order->get_meta( '_wkmpwallet_amount_used', true );
-
-						if ( ! empty( $wallet_amount_used ) ) {
-							?>
-							<tr>
-								<th scope="row"><b><?php esc_html_e( 'Payment via Wallet: ', 'wk-marketplace' ); ?></b></th>
-								<td class="td"><?php echo wp_kses_data( wc_price( - $wallet_amount_used, array( 'currency' => $order_currency ) ) ); ?></td>
-							</tr>
-
-							<tr>
-								<th scope="row"><b><?php esc_html_e( 'Remaining Payment: ', 'wk-marketplace' ); ?></b></th>
-								<td class="td"><?php echo wp_kses_data( wc_price( $total_payment + $mp_order_data['total_commission'] + $wallet_amount_used, array( 'currency' => $order_currency ) ) ); ?></td>
-							</tr>
-							<?php
-						}
 						if ( ! empty( $payment_method ) ) {
 							?>
 							<tr>

@@ -76,7 +76,15 @@ if ( ! class_exists( 'WKMP_Transaction' ) ) {
 			if ( ! empty( $transaction_info ) ) {
 				if ( intval( $transaction_info->seller_id ) === intval( $this->seller_id ) ) {
 					$order_info = wc_get_order( $transaction_info->order_id );
-					$columns    = apply_filters(
+
+					if ( $order_info instanceof \WC_Order ) {
+						$currency = $order_info->get_currency();
+					} else {
+						$currency = get_woocommerce_currency();
+						wc_print_notice( esc_html__( 'Associated order has been deleted.', 'wk-marketplace' ), 'notice' );
+					}
+
+					$columns = apply_filters(
 						'wkmp_account_transactions_columns',
 						array(
 							'order_id'     => esc_html__( 'Order Id', 'wk-marketplace' ),
@@ -93,9 +101,9 @@ if ( ! class_exists( 'WKMP_Transaction' ) ) {
 
 					foreach ( $seller_order_info['product'] as $pro_nme ) {
 						if ( ! empty( $product_name ) ) {
-							$product_name = $product_name . ' + ';
+							$product_name .= ' + ';
 						}
-						$product_name = $product_name . $pro_nme['title'];
+						$product_name .= $pro_nme['title'];
 					}
 
 					require_once __DIR__ . '/wkmp-transaction-view.php';

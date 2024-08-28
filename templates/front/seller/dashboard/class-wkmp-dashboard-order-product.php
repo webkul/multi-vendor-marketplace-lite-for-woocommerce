@@ -81,8 +81,14 @@ if ( ! class_exists( 'WKMP_Dashboard_Order_Product' ) ) {
 				'post_status'    => 'publish',
 			);
 
-			$loop = new \WP_Query( $args );
+			$loop            = new \WP_Query( $args );
+			$primary_color   = apply_filters( 'wkmp_active_color_code', '#96588a' );
+			list($r, $g, $b) = sscanf( $primary_color, '#%02x%02x%02x' );
 
+			$secondary_color    = apply_filters( 'wkmp_graph_dataset_color_code', '#673AB7' );
+			list($rs, $gs, $bs) = sscanf( $secondary_color, '#%02x%02x%02x' );
+
+			$shift = 50;
 			?>
 			<div class="mp-store-order-product-section">
 				<div class="mp-store-order-status-section">
@@ -120,13 +126,13 @@ if ( ! class_exists( 'WKMP_Dashboard_Order_Product' ) ) {
 								datasets: [{
 									data: statusArr,
 									backgroundColor: [
-										'rgba(142, 36, 170,1)',
-										'rgba(142, 36, 170,1)',
-										'rgba(171, 70, 188,1)',
-										'rgba(186, 104, 200,1)',
-										'rgba(186, 104, 200,1)',
-										'rgba(206, 147, 216,1)',
-										'rgba(245, 232, 246,1)'
+										'rgba(<?php echo esc_attr( $r . ',' . $g . ',' . $b . ', 1' ); ?>)',
+										'rgba(<?php echo esc_attr( $r . ',' . ( $g + $shift ) . ',' . ( $b + $shift ) . ', 1' ); ?>)',
+										'rgba(<?php echo esc_attr( $r . ',' . ( $g + ( 1.5 * $shift ) ) . ',' . ( $b + ( 1.5 * $shift ) ) . ', 1' ); ?>)',
+										'rgba(<?php echo esc_attr( $r . ',' . ( $g + ( 2 * $shift ) ) . ',' . ( $b + ( 2 * $shift ) ) . ', 1' ); ?>)',
+										'rgba(<?php echo esc_attr( $rs . ',' . $gs . ',' . $bs . ', 1' ); ?>)',
+										'rgba(<?php echo esc_attr( $rs . ',' . ( $gs + $shift ) . ',' . ( $bs + $shift ) . ', 1' ); ?>)',
+										'rgba(<?php echo esc_attr( $rs . ',' . ( $gs + ( 1.5 * $shift ) ) . ',' . ( $bs + ( 1.5 * $shift ) ) . ', 1' ); ?>)'
 									],
 								}],
 

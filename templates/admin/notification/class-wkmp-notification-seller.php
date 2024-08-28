@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin template Functions
+ * Admin seller notification template function.
  *
  * @package Multi-Vendor Marketplace Lite for WooCommerce
  * @version 5.0.0
@@ -10,14 +10,14 @@ namespace WkMarketplace\Templates\Admin\Notification;
 
 defined( 'ABSPATH' ) || exit; // Exit if access directly.
 
-if ( ! class_exists( 'WKMP_Notification_Product' ) ) {
+if ( ! class_exists( 'WKMP_Notification_Seller' ) ) {
 
 	/**
-	 * Class WKMP_Notification_Product
+	 * Class WKMP_Notification_Seller
 	 *
 	 * @package WkMarketplace\Templates\Admin\Notification
 	 */
-	class WKMP_Notification_Product {
+	class WKMP_Notification_Seller {
 		/**
 		 * Instance variable
 		 *
@@ -26,7 +26,7 @@ if ( ! class_exists( 'WKMP_Notification_Product' ) ) {
 		protected static $instance = null;
 
 		/**
-		 * WKMP_Notification_Product constructor.
+		 * WKMP_Notification_Seller constructor.
 		 */
 		public function __construct() {
 		}
@@ -51,7 +51,8 @@ if ( ! class_exists( 'WKMP_Notification_Product' ) ) {
 		 * @return void
 		 */
 		public function display_notification_content( $db_obj ) {
-			$notifications = $db_obj->wkmp_get_notification_data( 'product' );
+			global $wkmarketplace, $current_user;
+			$notifications = $db_obj->wkmp_get_notification_data( 'seller' );
 			$display       = array();
 
 			foreach ( $notifications['data'] as $value ) {
@@ -62,23 +63,20 @@ if ( ! class_exists( 'WKMP_Notification_Product' ) ) {
 				$db_content = empty( $value['content'] ) ? '' : $value['content'];
 				$db_content = $db_obj->wkmp_get_formatted_notification_content( $db_content );
 
+				$seller_id = empty( $value['author_id'] ) ? 0 : $value['author_id'];
+
+				if ( ! empty( $seller_id ) && in_array( 'administrator', $current_user->roles, true ) ) {
+					$seller_name = $wkmarketplace->wkmp_get_user_display_name( $seller_id, '', 'shop_name' );
+					$db_content .= wp_sprintf( /* translators: %s: Seller profile. */ esc_html__( ' on the <strong> %s </strong> Profile', 'wk-marketplace' ), $seller_name );
+				}
+
 				if ( ! empty( $value['context'] ) ) {
-					$product_id = $value['context'];
+					$customer_id  = $value['context'];
+					$display_name = $wkmarketplace->wkmp_get_user_display_name( $customer_id );
 
-					$product_title = get_the_title( $product_id );
-					$edit_link     = admin_url( 'post.php?post=' . $product_id . '&action=edit' );
-					$target        = '_blank';
-
-					if ( empty( $product_title ) ) {
-						$product_title = __( '(deleted-item)', 'wk-marketplace' );
-						$edit_link     = '#';
-						$target        = '';
-					}
-
-					$link    = '<a title="' . $product_id . '" href="' . $edit_link . '" target="' . $target . '"> #' . $product_title . ' </a>';
-					$content = sprintf( /* translators: %1$s: URL, %2%s: Content, %3$s: Days. */ _n( ' %1$s %2$s %3$d <strong> day ago.</strong>', ' %1$s %2$s %3$d <strong> days ago.</strong>', $interval->days, 'wk-marketplace' ), $link, $db_content, $interval->days );
+					$content = wp_sprintf( /* translators: %1$s: Content, %2%s: Reviewer name, %3$s: Days. */ _n( ' %1$s from <strong> %2$s </strong> %3$d <strong> day ago.</strong>', ' %1$s from <strong> %2$s </strong> %3$d <strong> days ago.</strong>', $interval->days, 'wk-marketplace' ), $db_content, $display_name, $interval->days );
 				} else {
-					$content = sprintf( /* translators: %1$s: Content, %2%s: Days. */ _n( ' %1$s %2$d <strong> day ago.</strong>', ' %1$s %2$d <strong> days ago.</strong>', $interval->days, 'wk-marketplace' ), $db_content, $interval->days );
+					$content = wp_sprintf( /* translators: %1$s: Content, %2%s: Days. */ _n( ' %1$s %2$d <strong> day ago.</strong>', ' %1$s %2$d <strong> days ago.</strong>', $interval->days, 'wk-marketplace' ), $db_content, $interval->days );
 				}
 
 				$display[] = array(

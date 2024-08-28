@@ -232,6 +232,7 @@ if ( ! class_exists( 'WKMP_General_Queries' ) ) {
 					$seller_order = wc_get_order( $order_id );
 
 					if ( ! is_a( $seller_order, 'WC_Order' ) ) {
+						--$total_orders;
 						continue;
 					}
 
@@ -274,7 +275,7 @@ if ( ! class_exists( 'WKMP_General_Queries' ) ) {
 							'order_total'    => $total,
 							'order_currency' => get_woocommerce_currency_symbol( $seller_order->get_currency() ),
 							'action'         => '<a href="' . admin_url( 'admin.php?page=order-history&action=view&oid=' . $order_id ) . '" class="button button-primary">' . esc_html__( 'View', 'wk-marketplace' ) . '</a>',
-							'view'           => get_permalink( get_option( 'woocommerce_myaccount_page_id' ) ) . get_option( '_wkmp_order_history_endpoint', 'sellers-orders' ) . '/' . intval( $order_id ),
+							'view'           => wc_get_endpoint_url( get_option( '_wkmp_order_history_endpoint', 'sellers-orders' ) . '/' . intval( $order_id ) ),
 						);
 					}
 				}
@@ -300,9 +301,10 @@ if ( ! class_exists( 'WKMP_General_Queries' ) ) {
 				$total = $order_data['order_total'] + $ship_total + $tax_total;
 
 				if ( ! empty( $refund_data['refunded_amount'] ) ) {
-					$total = '<del>' . $total . '</del> ' . $order_data['order_currency'] . round( $total - $refund_data['refunded_amount'], 2 );
+					$total = '<del>' . $total . '</del> ' . $order_data['order_currency'] . round( round( $total, 2 ) - $refund_data['refunded_amount'], 2 );
 				}
-				$total                            = apply_filters( 'wkmp_add_order_fee_to_total', $total, $order_id );
+				$total = apply_filters( 'wkmp_add_order_fee_to_total', $total, $order_id );
+
 				$data[ $order_id ]['order_total'] = $order_data['order_currency'] . $total . ' ' . esc_html__( 'for', 'wk-marketplace' ) . ' ' . $order_data['total_qty'] . ' ' . esc_html__( ' items', 'wk-marketplace' );
 			}
 

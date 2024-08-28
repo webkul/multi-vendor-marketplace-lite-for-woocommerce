@@ -171,7 +171,6 @@
 	float: right;
 }
 .mp-dashboard-wrapper .mp-store-sale-order-history-section select {
-	background: #fff;
 	padding: 4px 10px;
 	border-radius: 3px;
 	outline: 0;
@@ -896,7 +895,7 @@
 	border-radius: 3px;
 	border: 1px solid #d5d5d5;
 	background-color: #fff;
-	width: 100%;
+	width: 45%;
 }
 .wkmp-add-product-form #product-form #product_sku {
 	margin-right: 0;
@@ -935,6 +934,7 @@
 }
 .wkmp-add-product-form #product-form .wkmp_attributes .wk-mp-attribute-config {
 	margin-top: 10px;
+	width: 60%;
 }
 .wkmp-add-product-form #product-form .wkmp_marketplace_variation {
 	border: solid 1px #eee;
@@ -1110,7 +1110,7 @@
 	margin-left: 5px;
 	font-size: 18px;
 }
-.wkmp_container .add-variant-attribute:before {
+.wkmp_container .wkmp-add-variant-attribute:before {
 	content: "\e943";
 	font-family: 'Webkul Rango';
 	margin-right: 5px;
@@ -1432,7 +1432,6 @@ table.wc-shipping-zones-list th:nth-child(2) {
 	margin: 0;
 }
 .wkmp-seller-products-lists table tbody tr td:nth-child(2) {
-	display: inline-flex;
 	border-bottom: none;
 }
 .wkmp-seller-products-lists table tbody tr td:nth-child(2) a {
@@ -1691,7 +1690,6 @@ form#wkmp-product-list-form .wkmp-minimum-order.settings {
 .wkmp-seller-endpoints .wkmp-seller-products-lists .wkmp-row-actions {
 	font-size: 13px;
 }
-
 .wkmp-seller-endpoints .wkmp-seller-products-lists .wkmp_delete_seller_product{
 	color: #b32d2e;
 }
@@ -1718,11 +1716,6 @@ form#wkmp-product-list-form .wkmp-minimum-order.settings {
 #wp-admin-bar-wkmp-front-dashboard .ab-icon:before {
     content: "\f344";
 	top: 4px;
-}
-.wkmp-add-product-form .wkmp-attribute-placeholder {
-    width: 70%;
-    float: left;
-    text-align: left;
 }
 .wkmp-seller-endpoints .wkmp-product-navigation .wkmp-back-to-products-list {
     position: relative;
@@ -1753,4 +1746,24 @@ form#wkmp-product-list-form .wkmp-minimum-order.settings {
 
 .wkmp-shop-follower-table thead tr td:last-child{
 	width: 17%
+}
+.wkmp-add-product-form .wkmp-attribute-add-wrap {
+    display: flex;
+}
+.wkmp-add-product-form .wkmp-add-variant-attribute {
+    width: 30%;
+    float: left;
+}
+.wkmp-add-product-form .wkmp-attribute-add-select {
+    position: relative;
+    left: 2%;
+}
+.wkmp-add-product-form .wkmp-attribute-placeholder{
+	text-align:start;
+}
+.wkmp-add-product-form #product-form .wkmp_attributes .wkmp_product_input.option {
+    width: 45%;
+}
+.wkmp-add-product-form #product-form .wkmp_attributes .wkmp_product_attribute_term_values ~ .mp_actions{
+	margin-left: 20px;
 }

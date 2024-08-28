@@ -162,7 +162,7 @@ if ( empty( $mp_page_title ) ) {
 	<?php do_action( 'mkt_before_seller_preview_products', $this->seller_id ); ?>
 
 	<div class="mp-seller-recent-product">
-		<h3><?php esc_html_e( 'Recent Product from Seller', 'wk-marketplace' ); ?></h3>
+		<h3><?php echo esc_html( get_option( '_wkmp_store_endpoint_name', esc_html__( 'Recent Products', 'wk-marketplace' ) ) ); ?></h3>
 		<?php
 		$query_args = array(
 			'author'         => $this->seller_id,
@@ -191,18 +191,20 @@ if ( empty( $mp_page_title ) ) {
 		wp_reset_postdata();
 		?>
 	</div>
-	<?php do_action( 'mkt_after_seller_preview_products' ); ?>
+	<?php
+	do_action( 'mkt_after_seller_preview_products' );
 
+	if ( isset( $seller_info->about_shop ) && ! empty( $seller_info->about_shop ) ) {
+		?>
 	<!-- About shop -->
-	<div class="mp-about-shop">
-		<p><b><?php esc_html_e( 'About', 'wk-marketplace' ); ?></b></p>
+	<div class="mp-about-shop wkmp-front-seller-textarea-info">
+		<h2><?php esc_html_e( 'About Shop', 'wk-marketplace' ); ?></h2>
 		<p><?php echo isset( $seller_info->about_shop ) ? wp_kses_post( nl2br( $seller_info->about_shop ) ) : ''; ?></p>
 	</div>
+		<?php
+	}
+	do_action( 'mkt_before_seller_review_data', $seller_info );
 
-	<?php do_action( 'mkt_before_seller_review_data' ); ?>
-
-	<!-- Shop reviews -->
-	<?php
 	if ( $reviews ) {
 		$count = 0;
 		?>

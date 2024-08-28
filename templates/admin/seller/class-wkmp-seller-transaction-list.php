@@ -148,7 +148,6 @@ if ( ! class_exists( 'WKMP_Seller_Transaction_List' ) ) {
 		 */
 		public function get_columns() {
 			return array(
-				'cb'             => '<input type="checkbox" />',
 				'transaction_id' => esc_html__( 'Transaction Id', 'wk-marketplace' ),
 				'order_id'       => esc_html__( 'Order Id', 'wk-marketplace' ),
 				'amount'         => esc_html__( 'Amount', 'wk-marketplace' ),
