@@ -3,13 +3,13 @@
 <file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/helper/common/class-wkmp-seller-ask-queries.php" errors="0" warnings="1" fixable="0">
     <warning line="185" column="21" source="WordPress.DB.SlowDBQuery.slow_db_query_meta_value" severity="5" fixable="0">Detected usage of meta_value, possible slow query.</warning>
 </file>
-<file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/class-wk-caching-core-loader.php" errors="2" warnings="0" fixable="0">
-    <error line="95" column="5" source="Generic.Files.OneObjectStructurePerFile.MultipleFound" severity="5" fixable="0">Only one object structure is allowed in a file</error>
-    <error line="95" column="5" source="PSR1.Classes.ClassDeclaration.MultipleClasses" severity="5" fixable="0">Each class must be in a file by itself</error>
-</file>
 <file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/templates/front/seller/product/class-wkmp-product-form.php" errors="0" warnings="2" fixable="0">
     <warning line="121" column="21" source="WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude" severity="5" fixable="0">Using exclusionary parameters, like exclude, in calls to get_posts() should be done with caution, see https://wpvip.com/documentation/performance-improvements-by-removing-usage-of-post__not_in/ for more information.</warning>
     <warning line="234" column="25" source="WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude" severity="5" fixable="0">Using exclusionary parameters, like exclude, in calls to get_posts() should be done with caution, see https://wpvip.com/documentation/performance-improvements-by-removing-usage-of-post__not_in/ for more information.</warning>
+</file>
+<file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/class-wk-caching-core-loader.php" errors="2" warnings="0" fixable="0">
+    <error line="95" column="5" source="Generic.Files.OneObjectStructurePerFile.MultipleFound" severity="5" fixable="0">Only one object structure is allowed in a file</error>
+    <error line="95" column="5" source="PSR1.Classes.ClassDeclaration.MultipleClasses" severity="5" fixable="0">Each class must be in a file by itself</error>
 </file>
 <file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/templates/front/seller/orders/class-wkmp-orders.php" errors="2" warnings="2" fixable="0">
     <warning line="396" column="26" source="WordPressVIPMinimum.Files.IncludingFile.UsingCustomFunction" severity="3" fixable="0">File inclusion using custom function ( `apply_filters()` ). Must return local file source, as external URLs are prohibited on WordPress VIP. Probably needs manual inspection.</warning>
@@ -26,17 +26,17 @@
     <warning line="187" column="25" source="WordPress.DB.SlowDBQuery.slow_db_query_meta_value" severity="5" fixable="0">Detected usage of meta_value, possible slow query.</warning>
     <warning line="228" column="28" source="WordPress.DB.SlowDBQuery.slow_db_query_meta_value" severity="5" fixable="0">Detected usage of meta_value, possible slow query.</warning>
 </file>
-<file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/templates/admin/settings/wkmp-general-settings-content.php" errors="0" warnings="1" fixable="0">
-    <warning line="198" column="25" source="WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude" severity="5" fixable="0">Using exclusionary parameters, like exclude, in calls to get_posts() should be done with caution, see https://wpvip.com/documentation/performance-improvements-by-removing-usage-of-post__not_in/ for more information.</warning>
+<file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/templates/front/seller/product/wkmp-seller-product-list.php" errors="1" warnings="0" fixable="0">
+    <error line="34" column="76" source="WordPress.Security.EscapeOutput.OutputNotEscaped" severity="5" fixable="0">All output should be run through an escaping function (see the Security sections in the WordPress Developer Handbooks), found 'apply_filters'.</error>
 </file>
 <file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/includes/shipping/mp-local-pickup/class-wkmp-local-pickup-shipping-method.php" errors="0" warnings="1" fixable="0">
     <warning line="272" column="26" source="WordPressVIPMinimum.Files.IncludingFile.UsingCustomFunction" severity="3" fixable="0">File inclusion using custom function ( `WC()` ). Must return local file source, as external URLs are prohibited on WordPress VIP. Probably needs manual inspection.</warning>
 </file>
-<file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/templates/front/seller/product/wkmp-seller-product-list.php" errors="1" warnings="0" fixable="0">
-    <error line="34" column="76" source="WordPress.Security.EscapeOutput.OutputNotEscaped" severity="5" fixable="0">All output should be run through an escaping function (see the Security sections in the WordPress Developer Handbooks), found 'apply_filters'.</error>
-</file>
 <file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/helper/admin/class-wkmp-seller-order-data.php" errors="0" warnings="1" fixable="0">
     <warning line="215" column="21" source="WordPress.DB.SlowDBQuery.slow_db_query_meta_value" severity="5" fixable="0">Detected usage of meta_value, possible slow query.</warning>
+</file>
+<file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/templates/admin/settings/wkmp-general-settings-content.php" errors="0" warnings="1" fixable="0">
+    <warning line="198" column="25" source="WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude" severity="5" fixable="0">Using exclusionary parameters, like exclude, in calls to get_posts() should be done with caution, see https://wpvip.com/documentation/performance-improvements-by-removing-usage-of-post__not_in/ for more information.</warning>
 </file>
 <file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/includes/admin/class-wkmp-admin-functions.php" errors="0" warnings="10" fixable="0">
     <warning line="210" column="17" source="WordPress.WP.Capabilities.Undetermined" severity="3" fixable="0">Couldn't determine the value passed to the $capability parameter in function call to add_menu_page(). Please check if it matches a valid capability. Found: $capability</warning>

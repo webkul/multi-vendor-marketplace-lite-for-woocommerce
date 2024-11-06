@@ -234,7 +234,7 @@ if ( ! class_exists( 'WKMP_Admin_Template_Functions' ) ) {
 					<div class="upgrade-popup-content wkmp_pro_upgrade_content">
 						<span class="upgrade-close wkmp_pro_upgrade_popup_close"></span>
 						<div class="upgrade-logo">
-							<img src="<?php echo esc_url( WKMP_LITE_PLUGIN_URL . 'assets/images/wkmp-diamong.png' ); ?>" alt="<?php esc_attr_e( 'Marketplace Pro', 'wk-marketplace' ); ?>">
+							<img src="<?php echo esc_url( WKMP_LITE_PLUGIN_URL . 'assets/images/wkmp-diamond.png' ); ?>" alt="<?php esc_attr_e( 'Marketplace Pro', 'wk-marketplace' ); ?>">
 						</div>
 						<h2 class="upgrade-title"><?php esc_html_e( 'Upgrade to Pro', 'wk-marketplace' ); ?></h2>
 						<p class="upgrade-content"><?php esc_html_e( 'Please upgrade to pro to explore all these awesome features and enable to support our 50+ Marketplace addons.', 'wk-marketplace' ); ?></p>
