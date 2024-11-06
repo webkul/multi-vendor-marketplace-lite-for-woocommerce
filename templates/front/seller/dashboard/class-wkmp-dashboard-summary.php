@@ -39,22 +39,24 @@ if ( ! class_exists( 'WKMP_Dashboard_Summary' ) ) {
 		public function __construct( $db_obj, $marketplace, $seller_orders, $seller_id ) {
 			$this->seller_orders = $seller_orders;
 
-			$this->wkmp_seller_dashboard_summary();
+			$this->wkmp_seller_dashboard_summary( $seller_id );
 		}
 
 		/**
 		 * Show seller dashboard summary.
 		 *
+		 * @param int $seller_id Seller id.
+		 *
 		 * @return void
 		 */
-		public function wkmp_seller_dashboard_summary() {
+		public function wkmp_seller_dashboard_summary( $seller_id = 0 ) {
 			$data          = $this->seller_orders;
 			$total_payout  = isset( $data->paid_amount ) ? $data->paid_amount : 0;
 			$total_sales   = isset( $data->seller_total_ammount ) ? $data->seller_total_ammount : 0;
 			$total_refund  = isset( $data->total_refunded_amount ) ? $data->total_refunded_amount : 0;
 			$remaining_amt = $total_sales - $total_payout;
 			?>
-			<div class="mp-store-summary">
+			<div data-seller_id="<?php echo esc_attr( $seller_id ); ?>" class="mp-store-summary">
 				<div class="mp-store-summary-section life-time-sale">
 					<div class="summary-stats">
 						<h2><?php echo wp_kses_post( $this->get_formatted_price_html( $total_sales ) ); ?></h2>

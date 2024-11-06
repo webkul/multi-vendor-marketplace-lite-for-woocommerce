@@ -8,11 +8,11 @@
 
 namespace WkMarketplace\Templates\Front\Seller\Orders;
 
+defined( 'ABSPATH' ) || exit; // Exit if access directly.
+
 use WkMarketplace\Helper\Front;
 use WkMarketplace\Helper\Common;
 use WkMarketplace\Includes\Common as IncludeCommon;
-
-defined( 'ABSPATH' ) || exit; // Exit if access directly.
 
 if ( ! class_exists( 'WKMP_Orders' ) ) {
 	/**
@@ -66,6 +66,8 @@ if ( ! class_exists( 'WKMP_Orders' ) ) {
 			$this->wpdb         = $wpdb;
 			$this->db_order_obj = Front\WKMP_Order_Queries::get_instance();
 			$this->seller_id    = $seller_id;
+
+			$this->wkmp_update_order_per_page();
 		}
 
 		/**
@@ -83,12 +85,13 @@ if ( ! class_exists( 'WKMP_Orders' ) ) {
 		/**
 		 * Method for display seller order list.
 		 *
-		 * @param int $seller_id Seller id.
-		 * @param int $page_no Page no.
+		 * @param int    $seller_id Seller id.
+		 * @param int    $page_no Page no.
+		 * @param string $filter Filter.
 		 *
 		 * @return void
 		 */
-		public function wkmp_order_list( $seller_id, $page_no = 1 ) {
+		public function wkmp_order_list( $seller_id, $page_no = 1, $filter = '' ) {
 			global $wkmarketplace;
 
 			$this->seller_id = empty( $seller_id ) ? ( empty( $this->seller_id ) ? get_current_user_id() : $this->seller_id ) : $seller_id;
@@ -101,13 +104,15 @@ if ( ! class_exists( 'WKMP_Orders' ) ) {
 				$search_order_id = empty( $_POST['wkmp_search'] ) ? $search_order_id : intval( wp_unslash( $_POST['wkmp_search'] ) );
 			}
 
-			$limit = apply_filters( 'wkmp_sellers_per_page_orders', 20 );
+			$limit = get_user_meta( $this->seller_id, '_wkmp_orders_per_page', true );
+			$limit = apply_filters( 'wkmp_sellers_per_page_orders', empty( $limit ) ? 20 : intval( $limit ) );
 
 			$filter_data = array(
 				'user_id'  => $this->seller_id,
 				'search'   => $search_order_id,
 				'per_page' => $limit,
 				'page_no'  => $page_no,
+				'filter'   => $filter,
 				'offset'   => ( $page_no - 1 ) * $limit,
 			);
 
@@ -116,7 +121,8 @@ if ( ! class_exists( 'WKMP_Orders' ) ) {
 			$orders      = empty( $final_data['data'] ) ? array() : $final_data['data'];
 			$total_count = empty( $final_data['total_orders'] ) ? 0 : $final_data['total_orders'];
 
-			$url        = get_permalink() . get_option( '_wkmp_order_history_endpoint', 'sellers-orders' );
+			$url        = wc_get_endpoint_url( get_option( '_wkmp_order_history_endpoint', 'seller-orders' ) );
+			$url       .= empty( $filter ) ? '' : '/filter/' . $filter;
 			$pagination = $wkmarketplace->wkmp_get_pagination( $total_count, $page_no, $limit, $url );
 
 			require_once __DIR__ . '/wkmp-order-list.php';
@@ -150,7 +156,7 @@ if ( ! class_exists( 'WKMP_Orders' ) ) {
 			$mp_order_data            = $obj_commission->wkmp_get_seller_final_order_info( $order_id, $this->seller_id );
 			$seller_order_refund_data = $obj_commission->wkmp_get_seller_order_refund_data( $order_id, $this->seller_id );
 
-			$nonce_status = \WK_Caching::wk_get_request_data( 'wkmp_add_product_submit_nonce_name', array( 'method' => 'post' ) );
+			$nonce_status = \WK_Caching::wk_get_request_data( 'mp_order_status_nonce', array( 'method' => 'post' ) );
 
 			if ( ! empty( $nonce_status ) && wp_verify_nonce( $nonce_status, 'mp_order_status_nonce_action' ) ) {
 				$posted_seller_id = empty( $_POST['mp-seller-id'] ) ? 0 : intval( wp_unslash( $_POST['mp-seller-id'] ) );
@@ -323,40 +329,39 @@ if ( ! class_exists( 'WKMP_Orders' ) ) {
 			$order_items   = $seller_order->get_items();
 
 			foreach ( $order_details as $details ) {
-				$product_id = empty( $details['product_id'] ) ? 0 : intval( $details['product_id'] );
-				if ( empty( $product_id ) ) {
+				$product_or_var_id = empty( $details['product_id'] ) ? 0 : intval( $details['product_id'] );
+				if ( empty( $product_or_var_id ) ) {
 					continue;
 				}
 
 				$product_name = '';
-				$variable_id  = 0;
 				$item_key     = '';
 				$meta_data    = array();
 				$item_data    = array();
 				$tax_total    = 0;
 
-				$product_parent_id = wp_get_post_parent_id( $product_id );
-				$order_product_id  = empty( $product_parent_id ) ? $product_id : $product_parent_id;
+				$parent_product_id = wp_get_post_parent_id( $product_or_var_id );
+				$parent_product_id = empty( $parent_product_id ) ? $product_or_var_id : $parent_product_id;
 
 				foreach ( $order_items as $order_item_key => $order_item ) {
 					if ( ! $order_item instanceof \WC_Order_Item_Product ) {
 						continue;
 					}
 
-					$order_item_id = $order_item->get_product_id();
-					$product_name  = $order_item->get_name();
+					$order_item_id = $order_item->get_variation_id();
+					$order_item_id = empty( $order_item_id ) ? $order_item->get_product_id() : $order_item_id;
 
-					if ( intval( $order_product_id ) === $order_item_id ) {
-						$variable_id = $order_item->get_variation_id();
-						$item_key    = $order_item_key;
-						$meta_data   = $order_item->get_formatted_meta_data();
-						$tax_total   = $order_item->get_taxes()['total'];
+					if ( intval( $product_or_var_id ) === $order_item_id ) {
+						$product_name = $order_item->get_name();
+						$item_key     = $order_item_key;
+						$meta_data    = $order_item->get_formatted_meta_data();
+						$tax_total    = $order_item->get_taxes()['total'];
 						break;
 					}
 				}
 
 				if ( empty( $product_name ) ) {
-					$product_obj  = wc_get_product( $order_product_id );
+					$product_obj  = wc_get_product( $parent_product_id );
 					$product_name = ( $product_obj instanceof \WC_Product ) ? $product_obj->get_title() : __( '(no title)', 'wk-marketplace' );
 				}
 
@@ -369,9 +374,9 @@ if ( ! class_exists( 'WKMP_Orders' ) ) {
 					}
 				}
 
-				$order_data[ $order_product_id ] = array(
+				$order_data[ $product_or_var_id ] = array(
 					'product_name'        => $product_name,
-					'variable_id'         => $variable_id,
+					'parent_product_id'   => $parent_product_id,
 					'qty'                 => empty( $details['quantity'] ) ? 0 : $details['quantity'],
 					'item_key'            => $item_key,
 					'product_total_price' => empty( $details['amount'] ) ? 0 : $details['amount'],
@@ -388,7 +393,7 @@ if ( ! class_exists( 'WKMP_Orders' ) ) {
 				'seller_order_data' => $order_data,
 			);
 
-			require_once __DIR__ . '/wkmp-order-views.php';
+			require_once apply_filters( 'wkmp_order_views_template_path', __DIR__ . '/wkmp-order-views.php' );
 		}
 
 		/**
@@ -439,10 +444,10 @@ if ( ! class_exists( 'WKMP_Orders' ) ) {
 					$author       = get_user_by( 'ID', $seller_id );
 					$status_array = wc_get_order_statuses();
 
-					$old_status = strpos( $old_status, 'wc-' ) ? $old_status : 'wc-' . $old_status;
-					$new_status = strpos( $order_status, 'wc-' ) ? $order_status : 'wc-' . $order_status;
+					$old_status = strpos( $old_status, 'wc-' ) !== false ? $old_status : 'wc-' . $old_status;
+					$new_status = strpos( $order_status, 'wc-' ) !== false ? $order_status : 'wc-' . $order_status;
 
-					$old_status = empty( $status_array[ $old_status ] ) ? str_replace( 'wc-', '', $order_status ) : $status_array[ $old_status ];
+					$old_status = empty( $status_array[ $old_status ] ) ? str_replace( 'wc-', '', $old_status ) : $status_array[ $old_status ];
 					$new_status = empty( $status_array[ $new_status ] ) ? str_replace( 'wc-', '', $new_status ) : $status_array[ $new_status ];
 
 					$author_name = ( $author instanceof \WP_User ) ? $author->user_nicename : '';
@@ -606,8 +611,10 @@ if ( ! class_exists( 'WKMP_Orders' ) ) {
 			} else {
 				$data['total'] = number_format( $seller_order_tax + $subtotal + $shipping_cost - $total_commission, 2 );
 			}
-			require_once __DIR__ . '/wkmp-order-invoice.php';
-			die;
+
+			$data = apply_filters( 'wkmp_order_invoice_data', $data, $order_id );
+
+			require_once apply_filters( 'wkmp_order_invoice_template_path', __DIR__ . '/wkmp-order-invoice.php' );
 		}
 
 		/**
@@ -627,6 +634,24 @@ if ( ! class_exists( 'WKMP_Orders' ) ) {
 			}
 
 			return apply_filters( 'wkmp_formatted_order_meta_data', $meta_data );
+		}
+
+		/**
+		 * Update orders per page settings.
+		 *
+		 * @return void
+		 */
+		public function wkmp_update_order_per_page() {
+			$nonce_per_page_update = \WK_Caching::wk_get_request_data( 'wkmp-order-per-page-nonce', array( 'method' => 'post' ) );
+
+			if ( ! empty( $nonce_per_page_update ) && wp_verify_nonce( $nonce_per_page_update, 'wkmp-per_page_order-nonce-action' ) ) {
+				$per_page  = empty( $_POST['_wkmp_orders_per_page'] ) ? 0 : intval( wp_unslash( $_POST['_wkmp_orders_per_page'] ) );
+				$seller_id = $this->seller_id > 0 ? $this->seller_id : get_current_user_id();
+
+				if ( ! empty( $per_page ) && ! empty( $seller_id ) ) {
+					update_user_meta( $seller_id, '_wkmp_orders_per_page', $per_page );
+				}
+			}
 		}
 	}
 }

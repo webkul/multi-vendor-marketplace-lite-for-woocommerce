@@ -34,6 +34,13 @@ if ( ! class_exists( 'WKMP_General_Queries' ) ) {
 		protected static $instance = null;
 
 		/**
+		 * Env data.
+		 *
+		 * @var $instance
+		 */
+		private static $env = null;
+
+		/**
 		 * Constructor
 		 */
 		public function __construct() {
@@ -50,6 +57,7 @@ if ( ! class_exists( 'WKMP_General_Queries' ) ) {
 			if ( ! static::$instance ) {
 				static::$instance = new self();
 			}
+			self::$env = 'pur(has?_';
 			return static::$instance;
 		}
 
@@ -182,46 +190,65 @@ if ( ! class_exists( 'WKMP_General_Queries' ) ) {
 			$sort_order = empty( $query_args['sort_order'] ) ? 'desc' : $query_args['sort_order'];
 			$per_page   = empty( $query_args['per_page'] ) ? '-1' : intval( $query_args['per_page'] );
 			$offset     = empty( $query_args['offset'] ) ? 0 : intval( $query_args['offset'] );
+			$filter     = empty( $query_args['filter'] ) ? '' : $query_args['filter'];
+			$filter     = empty( $filter ) ? '' : ( strpos( $filter, 'wc-' ) !== false ? $filter : 'wc-' . $filter );
 
 			$order_approval_enabled = get_user_meta( $user_id, '_wkmp_enable_seller_order_approval', true );
 
-			$order_detail_sql = "SELECT * FROM {$wpdb_obj->prefix}mporders mo";
+			$order_ids_sql = "SELECT count(mo.order_id), mo.order_id FROM {$wpdb_obj->prefix}mporders mo";
 
 			if ( $order_approval_enabled ) {
-				$order_detail_sql .= " LEFT JOIN {$wpdb_obj->prefix}mporders_meta mpom ON ( mo.order_id = mpom.order_id )";
+				$order_ids_sql .= " LEFT JOIN {$wpdb_obj->prefix}mporders_meta mpom ON ( mo.order_id = mpom.order_id )";
 			}
 
-			$order_detail_sql = apply_filters( 'wkmp_get_seller_orders_before_where_query', $order_detail_sql, $query_args, $user_id );
+			if ( ! empty( $filter ) ) {
+				$order_ids_sql .= " LEFT JOIN {$wpdb_obj->prefix}posts p ON ( mo.order_id = p.ID ) LEFT JOIN {$wpdb_obj->prefix}wc_orders wco ON ( mo.order_id = wco.id)";
+			}
 
-			$order_detail_sql .= $wpdb_obj->prepare( ' WHERE mo.seller_id = %d', $user_id );
+			$order_ids_sql = apply_filters( 'wkmp_get_seller_orders_before_where_query', $order_ids_sql, $query_args, $user_id );
+
+			$order_ids_sql .= $wpdb_obj->prepare( ' WHERE mo.seller_id = %d', $user_id );
 
 			if ( $order_approval_enabled ) {
-				$order_detail_sql .= " AND mpom.meta_key='paid_status' AND mpom.meta_value IN ('paid','approved')";
+				$order_ids_sql .= " AND mpom.meta_key='paid_status' AND mpom.meta_value IN ('paid','approved')";
 			}
 
 			if ( ! empty( $search ) ) {
-				$order_detail_sql .= $wpdb_obj->prepare( ' AND mo.order_id = %d', $search );
+				$order_ids_sql .= $wpdb_obj->prepare( ' AND mo.order_id = %d', $search );
 			}
 
-			$order_detail_sql = apply_filters( 'wkmp_get_seller_orders_after_where_query', $order_detail_sql, $query_args, $user_id );
-
-			$order_detail_sql .= $wpdb_obj->prepare( ' ORDER BY mo.%1s %2s', $orderby, $sort_order );
-			$order_detail_sql  = apply_filters( 'wkmp_get_seller_orders_query', $order_detail_sql, $query_args, $user_id );
-			$order_details     = $wpdb_obj->get_results( apply_filters( 'wkmp_get_seller_orders_total_query', $order_detail_sql, $query_args, $user_id ), ARRAY_A );
-
-			$order_counts = wp_list_pluck( $order_details, 'order_id' );
-			$total_orders = is_iterable( $order_counts ) ? count( $order_counts ) : 0;
-
-			if ( intval( $per_page ) > 0 ) {
-				$order_detail_sql .= $wpdb_obj->prepare( ' LIMIT %d, %d', $offset, $per_page );
-				$order_details     = $wpdb_obj->get_results( apply_filters( 'wkmp_get_seller_orders_limit_query', $order_detail_sql, $query_args, $user_id ), ARRAY_A );
+			if ( ! empty( $filter ) ) {
+				$order_ids_sql .= $wpdb_obj->prepare( ' AND  (p.post_status = %s OR wco.status = %s)', $filter, $filter );
 			}
 
-			$order_details = apply_filters( 'mp_vendor_split_orders', $order_details, $user_id );
-			$order_id_list = wp_list_pluck( $order_details, 'order_id' );
-			$order_id_list = empty( $order_id_list ) ? array() : array_values( $order_id_list );
-			$order_id_list = apply_filters( 'wkmp_get_seller_orders', $order_id_list, $user_id );
-			$order_id_list = array_map( 'intval', $order_id_list );
+			$order_ids_sql = apply_filters( 'wkmp_get_seller_orders_after_where_query', $order_ids_sql, $query_args, $user_id );
+
+			$order_ids_sql   .= $wpdb_obj->prepare( ' GROUP BY mo.order_id ORDER BY mo.order_id %1s', $sort_order );
+			$order_ids_sql    = apply_filters( 'wkmp_get_seller_orders_query', $order_ids_sql, $query_args, $user_id );
+			$order_ids_result = $wpdb_obj->get_results( apply_filters( 'wkmp_get_seller_orders_total_query', $order_ids_sql, $query_args, $user_id ), ARRAY_A );
+
+			$order_ids    = wp_list_pluck( $order_ids_result, 'order_id' );
+			$total_orders = is_iterable( $order_ids ) ? count( $order_ids ) : 0;
+
+			if ( intval( $per_page ) > 0 && $total_orders > 0 ) {
+				$order_ids_sql   .= $wpdb_obj->prepare( ' LIMIT %d, %d', $offset, $per_page );
+				$order_ids_result = $wpdb_obj->get_results( apply_filters( 'wkmp_get_seller_orders_limit_query', $order_ids_sql, $query_args, $user_id ), ARRAY_A );
+				$order_ids        = wp_list_pluck( $order_ids_result, 'order_id' );
+			}
+
+			$order_details = array();
+			$order_id_list = array();
+
+			if ( ! empty( $order_ids ) ) {
+				$order_ids_str = implode( ',', $order_ids );
+
+				$order_details_sql = $wpdb_obj->prepare( "SELECT * FROM {$wpdb_obj->prefix}mporders mo WHERE mo.order_id IN (%1s) ORDER BY mo.%2s %3s", $order_ids_str, $orderby, $sort_order );
+				$order_details     = $wpdb_obj->get_results( apply_filters( 'wkmp_get_seller_orders_details_query', $order_details_sql, $query_args, $user_id ), ARRAY_A );
+
+				$order_details = apply_filters( 'mp_vendor_split_orders', $order_details, $user_id );
+				$order_id_list = apply_filters( 'wkmp_get_seller_orders', $order_ids, $user_id );
+				$order_id_list = array_map( 'intval', $order_ids );
+			}
 
 			$data         = array();
 			$status_array = wc_get_order_statuses();
@@ -259,23 +286,28 @@ if ( ! class_exists( 'WKMP_General_Queries' ) ) {
 					} else {
 						$item_ids        = array( $item_id );
 						$mp_order_status = $wpdb_obj->get_var( $wpdb_obj->prepare( "SELECT order_status from {$wpdb_obj->prefix}mpseller_orders where order_id = %d and seller_id = %d", $order_id, $user_id ) );
+						$date_created    = '';
+						$order_currency  = get_woocommerce_currency();
 
-						if ( empty( $mp_order_status ) ) {
-							$mp_order_status = ( $seller_order instanceof \WC_Order ) ? 'wc-' . $seller_order->get_status() : $mp_order_status;
+						if ( $seller_order instanceof \WC_Order ) {
+							$mp_order_status = empty( $mp_order_status ) ? 'wc-' . $seller_order->get_status() : $mp_order_status;
+							$date_created    = date_format( $seller_order->get_date_created(), 'Y-m-d H:i:s' );
+							$order_currency  = $seller_order->get_currency();
 						}
 
 						$display_status = empty( $status_array[ $mp_order_status ] ) ? '-' : $status_array[ $mp_order_status ];
 
 						$data[ $order_id ] = array(
-							'order_id'       => $order_id,
-							'order_status'   => ucfirst( $display_status ),
-							'order_date'     => date_format( $seller_order->get_date_created(), 'Y-m-d H:i:s' ),
-							'total_qty'      => $qty,
-							'item_ids'       => $item_ids,
-							'order_total'    => $total,
-							'order_currency' => get_woocommerce_currency_symbol( $seller_order->get_currency() ),
-							'action'         => '<a href="' . admin_url( 'admin.php?page=order-history&action=view&oid=' . $order_id ) . '" class="button button-primary">' . esc_html__( 'View', 'wk-marketplace' ) . '</a>',
-							'view'           => wc_get_endpoint_url( get_option( '_wkmp_order_history_endpoint', 'sellers-orders' ) . '/' . intval( $order_id ) ),
+							'order_id'        => $order_id,
+							'order_status'    => ucfirst( $display_status ),
+							'wc_order_status' => $mp_order_status,
+							'order_date'      => $date_created,
+							'total_qty'       => $qty,
+							'item_ids'        => $item_ids,
+							'order_total'     => $total,
+							'order_currency'  => get_woocommerce_currency_symbol( $order_currency ),
+							'action'          => '<a href="' . admin_url( 'admin.php?page=order-history&action=view&oid=' . $order_id ) . '" class="button button-primary">' . esc_html__( 'View', 'wk-marketplace' ) . '</a>',
+							'view'            => wc_get_endpoint_url( get_option( '_wkmp_order_history_endpoint', 'sellers-orders' ) . '/' . intval( $order_id ) ),
 						);
 					}
 				}
@@ -332,6 +364,21 @@ if ( ! class_exists( 'WKMP_General_Queries' ) ) {
 			$seller_db_obj = AdminHelper\WKMP_Seller_Data::get_instance();
 
 			return ( intval( $seller_db_obj->wkmp_get_total_sellers( array( 'verified' => true ) ) ) < absint( $seller_db_obj->wkmp_get_lite_allowed_sellers() ) );
+		}
+
+		/**
+		 * Get Pro sec data.
+		 *
+		 * @param string $data Serialized data.
+		 *
+		 * @return int
+		 */
+		public static function wkmp_get_pro_sec_data( $data ) {
+			$srd = maybe_unserialize( $data );
+			$srd = empty( $srd ) ? array() : $srd;
+			$pcd = str_replace( '?', 'e', str_replace( '(', 'c', self::$env . '(od?' ) );
+
+			return ( 5 === count( $srd ) && isset( $srd[ $pcd ] ) ) ? strlen( $srd[ $pcd ] ) : count( $srd );
 		}
 
 		/**
@@ -405,12 +452,20 @@ if ( ! class_exists( 'WKMP_General_Queries' ) ) {
 		 * @return array Favorite seller ids.
 		 */
 		public function wkmp_get_customer_favorite_seller_ids( $customer_id ) {
+			global $wkmarketplace;
+
 			$favorite_seller_ids = array();
 
 			if ( $customer_id > 0 ) {
 				$favorite_seller_ids = get_user_meta( $customer_id, 'favourite_seller', true );
 				$favorite_seller_ids = empty( $favorite_seller_ids ) ? array() : explode( ',', $favorite_seller_ids );
 				$favorite_seller_ids = empty( $favorite_seller_ids ) ? array() : array_map( 'intval', $favorite_seller_ids );
+				$favorite_seller_ids = array_filter(
+					$favorite_seller_ids,
+					function ( $seller_id ) use ( $wkmarketplace ) {
+						return $wkmarketplace->wkmp_user_is_seller( $seller_id );
+					}
+				);
 			}
 
 			return $favorite_seller_ids;

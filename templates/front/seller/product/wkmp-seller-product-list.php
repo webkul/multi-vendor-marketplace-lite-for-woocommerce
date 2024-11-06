@@ -31,7 +31,7 @@ defined( 'ABSPATH' ) || exit; // Exit if access directly.
 <form action="" method="post" enctype="multipart/form-data" id="wkmp-delete-product" style="margin-bottom:unset;">
 	<div class="wkmp-table-responsive wkmp-seller-products-lists">
 		<table class="table table-bordered table-hover">
-			<caption class="wkmp-seller-products-lists-caption"><?php echo apply_filters( 'wkmp_seller_product_table_caption', wp_sprintf( /* translators: %1$s: Anchor for per page. %2$s: Closing anchor tag. */ esc_html__( 'Click on the Name to edit a product. Hover on rows to see actions. %1$s Per Page Settings %3$s', 'wk-marketplace' ), '<a id="wkmp_products_per_page_settings" class="wkmp-products-per-page-settings" href="javascript:void(0);">', '</a>' ) ); ?></caption>
+			<caption class="wkmp-seller-products-lists-caption"><?php echo apply_filters( 'wkmp_seller_product_table_caption', wp_sprintf( /* translators: %1$s: Anchor for per page, %2$s: Per Page, %3$s: Closing anchor tag. */ esc_html__( 'Click on the Name to edit a product. Hover on rows to see actions. %1$s Items Per Page (%2$s) %3$s', 'wk-marketplace' ), '<a id="wkmp_products_per_page_settings" class="wkmp-products-per-page-settings" href="javascript:void(0);">', esc_html( $limit ), '</a>' ) ); ?></caption>
 			<thead>
 			<tr>
 				<td style="width:1px;"><input type="checkbox" id="wkmp-checked-all"></td>
@@ -173,7 +173,7 @@ $wkmp_min_order_amount = (float) str_replace( $thousand_seperator, '', $wkmp_min
 		</div>
 		<div class="modal-footer">
 			<button type="button" class="button close-modal"><?php esc_html_e( 'Close', 'wk-marketplace' ); ?></button>
-			<button id="wkmp-submit-product-per-page-update" type="submit" form="wkmp-product-per-page-form" class="button"><?php esc_html_e( 'Save', 'wk-marketplace' ); ?></button>
+			<button id="wkmp-submit-product-per-page-update" type="submit" class="button"><?php esc_html_e( 'Save', 'wk-marketplace' ); ?></button>
 		</div>
 	</div>
 </div>

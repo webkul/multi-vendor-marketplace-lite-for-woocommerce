@@ -82,7 +82,7 @@ if ( ! class_exists( 'WKMP_Seller_Profile' ) ) {
 								<td><p><?php echo empty( $this->seller_info->shop_name ) ? '' : esc_html( $this->seller_info->shop_name ); ?></p></td>
 							</tr>
 							<tr>
-								<td><p><b><?php esc_html_e( 'Shop Address: ', 'wk-marketplace' ); ?></b></p></td>
+								<td><p><b><?php esc_html_e( 'Shop Slug: ', 'wk-marketplace' ); ?></b></p></td>
 								<td><p><?php echo empty( $this->seller_info->shop_address ) ? '' : esc_html( $this->seller_info->shop_address ); ?></p></td>
 							</tr>
 							<tr>

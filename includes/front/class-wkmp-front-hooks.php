@@ -58,7 +58,7 @@ if ( ! class_exists( 'WKMP_Front_Hooks' ) ) {
 			add_action( 'woocommerce_account_navigation', array( $function_handler, 'wkmp_show_register_success_notice' ), 1 );
 
 			// Adding sold item meta to order items.
-			add_action( 'woocommerce_checkout_create_order_line_item', array( $function_handler, 'wkmp_add_sold_by_order_item_meta' ), 10, 4 );
+			add_action( 'woocommerce_checkout_create_order_line_item', array( $function_handler, 'wkmp_add_sold_by_order_item_meta' ), 10, 3 );
 
 			// Validating and showing notice on cart page when cart total is less than threshold amount.
 			add_action( 'woocommerce_checkout_process', array( $function_handler, 'wkmp_validate_minimum_order_amount' ) );

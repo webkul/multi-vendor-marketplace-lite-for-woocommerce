@@ -42,9 +42,9 @@ if ( ! class_exists( 'WKMP_Front_Block_Functions' ) ) {
 		 */
 		public function wkmp_front_block_scripts() {
 			if ( is_cart() || is_checkout() ) {
-				$suffix     = ( defined( 'WKWC_DEV' ) && true === WKWC_DEV ) ? '' : '.min';
-				$asset_path = ( defined( 'WKWC_DEV' ) && true === WKWC_DEV ) ? 'build' : 'dist';
-				wp_enqueue_script( 'wkmp-front-block-script', WKMP_LITE_PLUGIN_URL . 'assets/' . $asset_path . '/front/js/front-block' . $suffix . '.js', array( 'wp-util' ), WKMP_LITE_SCRIPT_VERSION, true );
+				$suffix = ( defined( 'WKWC_DEV' ) && true === WKWC_DEV ) ? '' : '.min';
+				$path   = ( defined( 'WKWC_DEV' ) && true === WKWC_DEV ) ? 'src' : 'assets';
+				wp_enqueue_script( 'wkmp-front-block-script', WKMP_LITE_PLUGIN_URL . $path . '/front/js/front-block' . $suffix . '.js', array( 'wp-util' ), WKMP_LITE_SCRIPT_VERSION, true );
 			}
 		}
 

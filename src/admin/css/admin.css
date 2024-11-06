@@ -444,7 +444,7 @@ fieldset.mp-fieldset table {
   width: 110px;
   max-width: 110px;
 }
-.wkmp_shop_banner .wkmp_remove_banner {
+.wkmp-seller-profile-image-grids .wkmp-remove-button {
   color:#fff;
   background-color:#da2020
 }
@@ -854,4 +854,10 @@ fieldset.mp-fieldset table {
 }
 .marketplace_page_seller-shop-followers input#search-id-search-input {
     width: 300px;
+}
+.wkmp-general-settings-form select {
+    width: 30em;
+}
+.wkmp-general-settings-form .regular-text {
+    width: 28.5em;
 }

@@ -81,9 +81,6 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 		public function wkmp_front_scripts() {
 			global $wkmarketplace, $wp;
 
-			$suffix     = ( defined( 'WKWC_DEV' ) && true === WKWC_DEV ) ? '' : '.min';
-			$asset_path = ( defined( 'WKWC_DEV' ) && true === WKWC_DEV ) ? 'build' : 'dist';
-
 			$locale        = localeconv();
 			$decimal_point = isset( $locale['decimal_point'] ) ? $locale['decimal_point'] : '.';
 			$decimal       = ( ! empty( wc_get_price_decimal_separator() ) ) ? wc_get_price_decimal_separator() : $decimal_point;
@@ -160,6 +157,7 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 				'ship4'              => esc_html__( 'Slug', 'wk-marketplace' ),
 				'ship5'              => esc_html__( 'Description for your reference', 'wk-marketplace' ),
 				'ship6'              => esc_html__( 'Are you sure you want to delete this zone?', 'wk-marketplace' ),
+				'spcl_char_error'    => esc_html__( 'Special characters and spaces are not allowed', 'wk-marketplace' ),
 				'decimal_separator'  => get_option( 'woocommerce_price_decimal_sep', '.' ),
 				'i18n_decimal_error' => sprintf( /* translators: %s: decimal */ __( 'Please enter with one decimal point (%s) without thousand separators.', 'wk-marketplace' ), $decimal ),
 				'separate_dashboard' => get_option( '_wkmp_admin_dashboard_endpoint', 'separate-dashboard' ),
@@ -170,7 +168,10 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 				'ajaxNonce' => wp_create_nonce( 'wkmp-front-nonce' ),
 			);
 
-			wp_enqueue_script( 'wkmp-front-script', WKMP_LITE_PLUGIN_URL . 'assets/' . $asset_path . '/front/js/front' . $suffix . '.js', array( 'select2', 'wp-util' ), WKMP_LITE_SCRIPT_VERSION, true );
+			$suffix = ( defined( 'WKWC_DEV' ) && true === WKWC_DEV ) ? '' : '.min';
+			$path   = ( defined( 'WKWC_DEV' ) && true === WKWC_DEV ) ? 'src' : 'assets';
+
+			wp_enqueue_script( 'wkmp-front-script', WKMP_LITE_PLUGIN_URL . $path . '/front/js/front' . $suffix . '.js', array( 'select2', 'wp-util' ), WKMP_LITE_SCRIPT_VERSION, true );
 			wp_enqueue_script( 'select2-js', plugins_url() . '/woocommerce/assets/js/select2/select2.min.js', array(), WKMP_LITE_SCRIPT_VERSION, true );
 
 			wp_localize_script(
@@ -192,37 +193,37 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 
 			if ( $dashboard && array_key_exists( $dashboard, $query_vars ) ) {
 				wp_enqueue_script( 'jquery' );
-				wp_enqueue_script( 'mp_chart_script', WKMP_LITE_PLUGIN_URL . 'assets/dist/common/js/chart.umd.js', array(), WKMP_LITE_SCRIPT_VERSION, false );
-				wp_enqueue_script( 'mp_graph_loader_script', WKMP_LITE_PLUGIN_URL . 'assets/dist/common/js/loader.js', array(), WKMP_LITE_SCRIPT_VERSION, false );
+				wp_enqueue_script( 'mp_chart_script', WKMP_LITE_PLUGIN_URL . 'assets/common/js/chart.umd.js', array(), WKMP_LITE_SCRIPT_VERSION, false );
+				wp_enqueue_script( 'mp_graph_loader_script', WKMP_LITE_PLUGIN_URL . 'assets/common/js/loader.js', array(), WKMP_LITE_SCRIPT_VERSION, false );
 			}
 
 			wp_dequeue_style( 'bootstrap-css' );
 			wp_enqueue_style( 'dashicons' );
 
 			if ( $wkmarketplace->wkmp_is_woocommerce_page() || $wkmarketplace->wkmp_is_seller_page( $query_vars ) ) {
-				wp_enqueue_style( 'wkmp-front-style-css', WKMP_LITE_PLUGIN_URL . 'assets/' . $asset_path . '/front/css/style' . $suffix . '.css', array(), WKMP_LITE_SCRIPT_VERSION );
+				wp_enqueue_style( 'wkmp-front-style-css', WKMP_LITE_PLUGIN_URL . $path . '/front/css/style' . $suffix . '.css', array(), WKMP_LITE_SCRIPT_VERSION );
 
 				if ( $wkmarketplace->wkmp_is_seller_page( $query_vars ) ) {
-					wp_enqueue_style( 'wkmp-front-style', WKMP_LITE_PLUGIN_URL . 'assets/' . $asset_path . '/front/css/front' . $suffix . '.css', array(), WKMP_LITE_SCRIPT_VERSION );
+					wp_enqueue_style( 'wkmp-front-style', WKMP_LITE_PLUGIN_URL . $path . '/front/css/front' . $suffix . '.css', array(), WKMP_LITE_SCRIPT_VERSION );
 					wp_enqueue_style( 'select2-css', plugins_url() . '/woocommerce/assets/css/select2.css', array(), WKMP_LITE_SCRIPT_VERSION );
 				}
 			}
 
 			if ( is_account_page() ) {
-				wp_enqueue_style( 'wkmp-account-page-stype', WKMP_LITE_PLUGIN_URL . 'assets/' . $asset_path . '/front/css/myaccount-style' . $suffix . '.css', array(), WKMP_LITE_SCRIPT_VERSION, 'all' );
+				wp_enqueue_style( 'wkmp-account-page-stype', WKMP_LITE_PLUGIN_URL . $path . '/front/css/myaccount-style' . $suffix . '.css', array(), WKMP_LITE_SCRIPT_VERSION, 'all' );
 			}
 
 			$url_data = wp_parse_url( home_url( $wp->request ) );
 			$keyword  = $wkmarketplace->seller_page_slug . '/invoice';
 
 			if ( ! empty( $url_data['path'] ) && strpos( $url_data['path'], $keyword ) > 0 ) {
-				wp_enqueue_style( 'wkmp-invoice-stype', WKMP_LITE_PLUGIN_URL . 'assets/' . $asset_path . '/admin/css/invoice-style' . $suffix . '.css', array(), WKMP_LITE_SCRIPT_VERSION, 'all' );
+				wp_enqueue_style( 'wkmp-invoice-stype', WKMP_LITE_PLUGIN_URL . $path . '/admin/css/invoice-style' . $suffix . '.css', array(), WKMP_LITE_SCRIPT_VERSION, 'all' );
 			}
 
 			// Theme compatibility CSS.
 			if ( in_array( get_template(), array( 'flatsome', 'woodmart' ), true ) ) {
 				$rtl = is_rtl() ? '-rtl' : '';
-				wp_enqueue_style( 'wkmp-compatibility', WKMP_LITE_PLUGIN_URL . 'assets/' . $asset_path . '/front/css/wkmp-theme-compatibility' . $suffix . '.css', array(), WKMP_LITE_SCRIPT_VERSION );
+				wp_enqueue_style( 'wkmp-compatibility', WKMP_LITE_PLUGIN_URL . $path . '/front/css/wkmp-theme-compatibility' . $suffix . '.css', array(), WKMP_LITE_SCRIPT_VERSION );
 				if ( 'woodmart' === get_template() ) {
 					wp_enqueue_style( 'wkmp-page-my-account', get_template_directory_uri() . '/css/parts/woo-page-my-account' . $rtl . '.min.css', array(), '6.0.3' );
 				}
@@ -237,23 +238,25 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 		 * @return void
 		 */
 		public function wkmp_create_wc_seller_endpoints() {
-			$endpoints = array(
-				get_option( '_wkmp_dashboard_endpoint', 'seller-dashboard' ),
-				get_option( '_wkmp_product_list_endpoint', 'seller-dashboard' ),
-				get_option( '_wkmp_add_product_endpoint', 'seller-add-product' ),
-				get_option( '_wkmp_edit_product_endpoint', 'seller-edit-product' ),
-				get_option( '_wkmp_order_history_endpoint', 'seller-orders' ),
-				get_option( '_wkmp_transaction_endpoint', 'seller-transactions' ),
-				get_option( '_wkmp_profile_endpoint', 'seller-profile' ),
-				get_option( '_wkmp_notification_endpoint', 'seller-notifications' ),
-				get_option( '_wkmp_shop_follower_endpoint', 'seller-notifications' ),
-				get_option( '_wkmp_asktoadmin_endpoint', 'seller-ask-admin' ),
-				get_option( '_wkmp_store_endpoint', 'seller-store' ),
-				get_option( '_wkmp_seller_product_endpoint', 'seller-products' ),
-				get_option( '_wkmp_feedbacks_endpoint', 'seller-feedbacks' ),
-				get_option( '_wkmp_add_feedback_endpoint', 'add-feedback' ),
-				get_option( '_wkmp_favorite_seller_endpoint', 'favorite-sellers' ),
-
+			$endpoints = apply_filters(
+				'wkmp_wc_seller_front_endpoints',
+				array(
+					get_option( '_wkmp_dashboard_endpoint', 'seller-dashboard' ),
+					get_option( '_wkmp_product_list_endpoint', 'seller-dashboard' ),
+					get_option( '_wkmp_add_product_endpoint', 'seller-add-product' ),
+					get_option( '_wkmp_edit_product_endpoint', 'seller-edit-product' ),
+					get_option( '_wkmp_order_history_endpoint', 'seller-orders' ),
+					get_option( '_wkmp_transaction_endpoint', 'seller-transactions' ),
+					get_option( '_wkmp_profile_endpoint', 'seller-profile' ),
+					get_option( '_wkmp_notification_endpoint', 'seller-notifications' ),
+					get_option( '_wkmp_shop_follower_endpoint', 'seller-notifications' ),
+					get_option( '_wkmp_asktoadmin_endpoint', 'seller-ask-admin' ),
+					get_option( '_wkmp_store_endpoint', 'seller-store' ),
+					get_option( '_wkmp_seller_product_endpoint', 'seller-products' ),
+					get_option( '_wkmp_feedbacks_endpoint', 'seller-feedbacks' ),
+					get_option( '_wkmp_add_feedback_endpoint', 'add-feedback' ),
+					get_option( '_wkmp_favorite_seller_endpoint', 'favorite-sellers' ),
+				)
 			);
 
 			foreach ( $endpoints as $endpoint ) {
@@ -289,12 +292,12 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 		public function wkmp_seller_registration_errors( $error ) {
 			global $wkmarketplace;
 
-			if ( ! $this->query_handler->wkmp_validate_seller_registration() ) {
-				return new \WP_Error( 'max-seller-error', esc_html__( 'New Seller registration is now allowed. Contact administrator to upgrade the Marketplace plugin to pro version.', 'wk-marketplace' ) );
-			}
-
 			$args = array( 'method' => 'post' );
 			$role = \WK_Caching::wk_get_request_data( 'role', $args );
+
+			if ( 'seller' === $role && ! $this->query_handler->wkmp_validate_seller_registration() ) {
+				return new \WP_Error( 'max-seller-error', esc_html__( 'New Seller registration is not allowed. Contact administrator to upgrade the Marketplace plugin to pro version.', 'wk-marketplace' ) );
+			}
 
 			if ( 'seller' === $role ) {
 				$first_name = \WK_Caching::wk_get_request_data( 'wkmp_firstname', $args );
@@ -480,7 +483,7 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 		public function wkmp_seller_login_redirect( $redirect, $user ) {
 			$add_feedback = get_option( '_wkmp_add_feedback_endpoint', 'add-feedback' );
 			if ( user_can( $user, 'wk_marketplace_seller' ) && stripos( $redirect, $add_feedback ) < 1 ) {
-				$redirect = get_permalink( get_option( 'woocommerce_myaccount_page_id' ) ) . get_option( '_wkmp_dashboard_endpoint', 'seller-dashboard' );
+				$redirect = apply_filters( 'wkmp_seller_login_redirect_url', get_permalink( get_option( 'woocommerce_myaccount_page_id' ) ) . get_option( '_wkmp_dashboard_endpoint', 'seller-dashboard' ) );
 			}
 
 			return $redirect;
@@ -541,6 +544,7 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 			if ( $seller_info ) {
 				$obj_notification = Common\WKMP_Seller_Notification::get_instance();
 				$total_count      = $obj_notification->wkmp_seller_panel_notification_count( get_current_user_id() );
+				$primary_color    = apply_filters( 'wkmp_active_color_code', '#96588a' );
 				?>
 				<style type="text/css" media="screen">
 					<?php
@@ -574,10 +578,10 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 
 					/** Notification menu count */
 					.woocommerce-account .woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link--<?php echo esc_attr( get_option( '_wkmp_notification_endpoint', 'seller-notifications' ) ); ?> a:after {
-						content: "<?php echo esc_attr( $total_count ); ?>";
+						content: "(<?php echo esc_attr( $total_count ); ?>)";
 						display: inline-block;
 						margin-left: 5px;
-						color: #fff;
+						color: <?php echo esc_attr( $primary_color ); ?>;
 						padding: 0 6px;
 						border-radius: 3px;
 						line-height: normal;
@@ -758,7 +762,6 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 		 * @throws \Exception Throwing exception.
 		 */
 		public function wkmp_new_order_map_seller( $order_id, $posted_data = array(), $order = '' ) {
-
 			if ( ! $order instanceof \WC_Order && is_numeric( $order_id ) ) {
 				$order = wc_get_order( $order_id );
 			}
@@ -805,12 +808,11 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 					$item_id         = $item->get_id();
 					$assigned_seller = wc_get_order_item_meta( $item_id, 'assigned_seller', true );
 
-					$tax_total   = 0;
 					$amount      = floatval( $item['line_total'] );
 					$product_qty = intval( $item['quantity'] );
 
 					$product_id      = empty( $item['variation_id'] ) ? $item['product_id'] : $item['variation_id'];
-					$commission_data = $mp_commission->wkmp_calculate_product_commission( $product_id, $product_qty, $amount, $assigned_seller, $tax_total );
+					$commission_data = $mp_commission->wkmp_calculate_product_commission( $product_id, $product_qty, $amount, $assigned_seller );
 
 					$seller_id        = $commission_data['seller_id'];
 					$discount_applied = number_format( (float) ( $item->get_subtotal() - $item->get_total() ), 2, '.', '' );
@@ -1027,14 +1029,13 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 		/**
 		 * Adding seller profile link with each order item.
 		 *
-		 * @param \WC_Order_Item_Product $item Order item object.
-		 * @param string                 $cart_item_key Cart Item key.
-		 * @param array                  $values array of values.
-		 * @param \WC_Order              $order Order object.
+		 * @param object $item \WC_Order_Item_Product Order item object.
+		 * @param string $cart_item_key Cart Item key.
+		 * @param array  $values array of values.
 		 *
 		 * @hooked 'woocommerce_checkout_create_order_line_item' Action link.
 		 */
-		public function wkmp_add_sold_by_order_item_meta( $item, $cart_item_key, $values, $order ) {
+		public function wkmp_add_sold_by_order_item_meta( $item, $cart_item_key, $values ) {
 			$prod_id = isset( $values['product_id'] ) ? $values['product_id'] : 0;
 			if ( $prod_id > 0 ) {
 				$author_id = get_post_field( 'post_author', $prod_id );
@@ -1343,12 +1344,12 @@ if ( ! class_exists( 'WKMP_Front_Functions' ) ) {
 		 * @return array
 		 */
 		public function wkmp_get_cart_validation_error_messages( $cart ) {
-			$cart_itmes = $cart->get_cart_contents();
+			$cart_items = $cart->get_cart_contents();
 
-			$threshold_notes = $this->is_threshold_reached( $cart_itmes );
+			$threshold_notes = $this->is_threshold_reached( $cart_items );
 			$messages        = $this->show_invalid_order_total_notice( $threshold_notes, 'get' );
 
-			$qty_notes = $this->is_qty_allowed( $cart_itmes );
+			$qty_notes = $this->is_qty_allowed( $cart_items );
 			$qty_msgs  = $this->show_invalid_qty_notice( $qty_notes, 'get' );
 
 			return array_merge( $messages, $qty_msgs );

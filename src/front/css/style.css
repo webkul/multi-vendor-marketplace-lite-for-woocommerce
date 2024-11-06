@@ -1,5 +1,5 @@
 /**
- * Styling for front pages (other than Seller Dashboard and endpoints) like My-Account, shop follower, become a seller etc.
+ * Styling for front pages (other than Seller Dashboard and endpoints) like My-Account, shop follower etc.
  *
  * Seller Dashboard and its Endpoints css are written front.css.
  */
@@ -7,10 +7,7 @@
 /*Globally used css starts */
 @font-face {
 	font-family: "Webkul Rango";
-	src: url("../../../fonts/rango.eot");
-	src: url("../../../fonts/rango.woff") format("woff"),
-	url("../../../fonts/rango.ttf") format("truetype"),
-	url("../../../fonts/rango.svg#filename") format("svg");
+	src: url("../../../assets/fonts/rango.woff")format("woff");
 }
 .wkmp_hide {
 	display: none;
@@ -94,7 +91,6 @@
 .wkmp-text-success {
 	color: #3EAB10;
 }
-
 .wkmp-text-right {
 	text-align: right;
 }

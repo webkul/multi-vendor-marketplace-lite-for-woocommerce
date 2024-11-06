@@ -9,12 +9,12 @@
 
 namespace WkMarketplace\Includes;
 
+defined( 'ABSPATH' ) || exit; // Exit if access directly.
+
 use stdClass;
 use WkMarketplace\Includes;
 use WkMarketplacePro\Includes as ProIncludes;
 use WkMarketplace\Helper;
-
-defined( 'ABSPATH' ) || exit; // Exit if access directly.
 
 if ( ! class_exists( 'WKMarketplace' ) ) {
 	if ( ! class_exists( 'WKMarketplace_Pro_Globals' ) && file_exists( dirname( WKMP_LITE_PLUGIN_FILE ) . '/wk-woocommerce-marketplace/includes/class-wkmarketplace-pro-globals.php' ) ) {
@@ -289,7 +289,7 @@ if ( ! class_exists( 'WKMarketplace' ) ) {
 					$this->seller_url = esc_url( admin_url( 'admin.php?page=seller' ) );
 				} else {
 					$this->wkmp_remove_role_cap( $user->ID );
-					$this->seller_url = esc_url( get_permalink( get_option( 'woocommerce_myaccount_page_id' ) ) . get_option( '_wkmp_dashboard_endpoint', 'seller-dashboard' ) );
+					$this->seller_url = apply_filters( 'wkmp_seller_login_redirect_url', esc_url( get_permalink( get_option( 'woocommerce_myaccount_page_id' ) ) . get_option( '_wkmp_dashboard_endpoint', 'seller-dashboard' ) ) );
 					update_user_meta( $user->ID, 'wkmp_seller_backend_dashboard', null );
 				}
 				add_filter( 'login_redirect', array( $this, 'wkmp_redirect_seller' ), 10 );
@@ -396,9 +396,8 @@ if ( ! class_exists( 'WKMarketplace' ) ) {
 		public function wkmp_is_seller_page( $query_vars = array() ) {
 			global $wp;
 
-			if ( empty( $query_vars ) ) {
-				$query_vars = $wp->query_vars;
-			}
+			$query_vars = empty( $query_vars ) ? $wp->query_vars : $query_vars;
+			$query_vars = empty( $query_vars ) ? array() : $query_vars;
 
 			if ( is_page( $this->seller_page_slug ) ) {
 				return true;
@@ -523,7 +522,7 @@ if ( ! class_exists( 'WKMarketplace' ) ) {
 
 			$data['pagination'] = $pagination->wkmp_render();
 
-			$data['results'] = '<p class="woocommerce-result-count">' . sprintf( /* translators: %d total, %d limit, %d offset. */ esc_html__( 'Showing %1$d to %2$d of %3$d (%4$d Pages)', 'wk-marketplace' ), ( $total ) ? ( ( $page - 1 ) * $limit ) + 1 : 0, ( ( ( $page - 1 ) * $limit ) > ( $total - $limit ) ) ? $total : ( ( ( $page - 1 ) * $limit ) + $limit ), $total, ceil( $total / $limit ) ) . '</p>';
+			$data['results'] = '<p class="wkmp-result-count">' . sprintf( /* translators: %d total, %d limit, %d offset. */ esc_html__( 'Showing %1$d to %2$d of %3$d (%4$d Pages)', 'wk-marketplace' ), ( $total ) ? ( ( $page - 1 ) * $limit ) + 1 : 0, ( ( ( $page - 1 ) * $limit ) > ( $total - $limit ) ) ? $total : ( ( ( $page - 1 ) * $limit ) + $limit ), $total, ceil( $total / $limit ) ) . '</p>';
 
 			return $data;
 		}
@@ -1071,6 +1070,85 @@ if ( ! class_exists( 'WKMarketplace' ) ) {
 					}
 				}
 			);
+		}
+
+		/**
+		 * Validate image.
+		 *
+		 * @param array $file File.
+		 *
+		 * @return string
+		 */
+		public function wkmp_validate_image( $file ) {
+			$img_error = '';
+
+			if ( isset( $file['size'] ) && $file['size'] > wp_max_upload_size() ) {
+				$img_error = esc_html__( 'File size too large ', 'wk-marketplace' ) . '[ <= ' . number_format( wp_max_upload_size() / 1048576 ) . ' MB ]';
+			}
+
+			$file_type = $this->wkmp_get_mime_type( $file );
+
+			$allowed_types = array(
+				'image/png',
+				'image/jpeg',
+				'image/jpg',
+				'image/webp',
+				'image/gif',
+			);
+
+			if ( ! $img_error && ! in_array( $file_type, $allowed_types, true ) ) {
+				$img_error = esc_html__( 'Upload valid image only', 'wk-marketplace' ) . '[ png, jpeg, jpg, webp, gif ]';
+			}
+
+			return $img_error;
+		}
+
+		/**
+		 * Custom Mime type content function if extension not installed on server.
+		 * Or php version not supporting this function.
+		 * Or issue due to incorrect php.ini file on client site.
+		 *
+		 * @param array $filename File name.
+		 *
+		 * @return string
+		 */
+		public function wkmp_get_mime_type( $filename ) {
+			$mime_types = array(
+				// Images.
+				'png'  => 'image/png',
+				'webp' => 'image/webp',
+				'jpe'  => 'image/jpeg',
+				'jpeg' => 'image/jpeg',
+				'jpg'  => 'image/jpeg',
+				'gif'  => 'image/gif',
+				'bmp'  => 'image/bmp',
+				'ico'  => 'image/vnd.microsoft.icon',
+				'tiff' => 'image/tiff',
+				'tif'  => 'image/tiff',
+				'svg'  => 'image/svg+xml',
+				'svgz' => 'image/svg+xml',
+			);
+
+			$file_name = empty( $filename['tmp_name'] ) ? '' : $filename['tmp_name'];
+			$value     = empty( $file_name ) ? array() : explode( '.', $file_name );
+
+			if ( is_iterable( $value ) && count( $value ) < 2 ) {
+				$file_name = empty( $filename['name'] ) ? '' : $filename['name'];
+				$value     = empty( $file_name ) ? array() : explode( '.', $file_name );
+			}
+
+			$ext = strtolower( array_pop( $value ) );
+
+			if ( array_key_exists( $ext, $mime_types ) ) {
+				return $mime_types[ $ext ];
+			} elseif ( function_exists( 'finfo_open' ) && file_exists( $file_name ) ) {
+				$finfo    = finfo_open( FILEINFO_MIME );
+				$mimetype = finfo_file( $finfo, $file_name );
+				finfo_close( $finfo );
+				return $mimetype;
+			}
+
+			return 'application/octet-stream';
 		}
 	}
 }

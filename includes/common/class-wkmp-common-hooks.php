@@ -34,7 +34,7 @@ if ( ! class_exists( 'WKMP_Common_Hooks' ) ) {
 
 			add_action( 'woocommerce_shipping_zone_method_added', array( $function_handler, 'wkmp_after_add_admin_shipping_zone' ), 10, 3 );
 			add_action( 'woocommerce_delete_shipping_zone', array( $function_handler, 'wkmp_action_woocommerce_delete_shipping_zone' ) );
-			add_action( 'woocommerce_shipping_classes_save_class', array( $function_handler, 'wkmp_after_add_admin_shipping_class' ), 10, 2 );
+			add_action( 'woocommerce_shipping_classes_save_class', array( $function_handler, 'wkmp_after_add_admin_shipping_class' ) );
 
 			add_action( 'woocommerce_order_status_cancelled', array( $function_handler, 'wkmp_action_on_order_cancel' ) );
 			add_action( 'woocommerce_order_status_failed', array( $function_handler, 'wkmp_action_on_order_changed_mails' ) );

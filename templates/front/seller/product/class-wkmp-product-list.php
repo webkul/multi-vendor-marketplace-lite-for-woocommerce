@@ -9,9 +9,9 @@
 
 namespace WkMarketplace\Templates\Front\Seller\Product;
 
-use WkMarketplace\Helper\Front;
-
 defined( 'ABSPATH' ) || exit; // Exit if access directly.
+
+use WkMarketplace\Helper\Front;
 
 if ( ! class_exists( 'WKMP_Product_List' ) ) {
 	/**
@@ -383,7 +383,7 @@ if ( ! class_exists( 'WKMP_Product_List' ) ) {
 		}
 
 		/**
-		 * Updating per product settings.
+		 * Updating per page product settings.
 		 */
 		public function update_per_product_settings() {
 			$nonce_per_page_update = \WK_Caching::wk_get_request_data( 'wkmp-product-per-page-nonce', array( 'method' => 'post' ) );

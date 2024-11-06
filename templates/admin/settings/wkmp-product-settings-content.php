@@ -15,7 +15,7 @@ $wc_product_types = wc_get_product_types();
 $allowed_types = apply_filters( 'wkmp_allowed_product_types', array( 'simple', 'variable', 'grouped', 'external' ) );
 $final_types   = array_intersect_key( $wc_product_types, array_flip( $allowed_types ) );
 ?>
-<form method="post" action="options.php">
+<form method="post" action="options.php" enctype="multipart/form-data">
 	<?php
 	settings_fields( 'wkmp-product-settings-group' );
 
@@ -32,20 +32,19 @@ $final_types   = array_intersect_key( $wc_product_types, array_flip( $allowed_ty
 		endforeach;
 	endif;
 
-	$fields = array();
-
-	$fields['_wkmp_product_options'] = array(
-		'title'       => __( 'Seller Product Settings', 'wk-marketplace' ),
-		'type'        => 'section_start',
-		'description' => '',
-	);
-
-	$fields['_wkmp_allow_seller_to_publish'] = array(
-		'type'        => 'checkbox',
-		'label'       => esc_html__( 'Allow Seller to Publish', 'wk-marketplace' ),
-		'description' => esc_html__( 'If Checked, Seller can publish his/her items online directly.', 'wk-marketplace' ),
-		'value'       => get_option( '_wkmp_allow_seller_to_publish', true ),
-		'show_lock'   => true,
+	$fields = array(
+		'_wkmp_product_options'         => array(
+			'title'       => __( 'Seller Product Settings', 'wk-marketplace' ),
+			'type'        => 'section_start',
+			'description' => '',
+		),
+		'_wkmp_allow_seller_to_publish' => array(
+			'type'        => 'checkbox',
+			'label'       => esc_html__( 'Allow Seller to Publish', 'wk-marketplace' ),
+			'description' => esc_html__( 'If Checked, Seller can publish his/her items online directly.', 'wk-marketplace' ),
+			'value'       => get_option( '_wkmp_allow_seller_to_publish', true ),
+			'show_lock'   => true,
+		),
 	);
 
 	if ( defined( 'WCML_VERSION' ) && version_compare( WCML_VERSION, '4.12.0', '>' ) && defined( 'ICL_SITEPRESS_VERSION' ) ) {
@@ -101,7 +100,7 @@ $final_types   = array_intersect_key( $wc_product_types, array_flip( $allowed_ty
 	$fields['_wkmp_seller_min_amount_admin_default'] = array(
 		'type'        => 'checkbox',
 		'label'       => esc_html__( 'Amount Value for Seller', 'wk-marketplace' ),
-		'description' => esc_html__( 'If checked, amount value will be used for those sellers who have not filled the minimum order amount.', 'wk-marketplace' ),
+		'description' => esc_html__( 'If checked, the above minimum amount value will be used for those sellers who have not filled the minimum order amount.', 'wk-marketplace' ),
 		'value'       => get_option( '_wkmp_seller_min_amount_admin_default' ),
 	);
 
@@ -132,6 +131,7 @@ $final_types   = array_intersect_key( $wc_product_types, array_flip( $allowed_ty
 	$this->form_helper->wkmp_form_field_builder( $form_fields );
 
 	submit_button( esc_html__( 'Save Changes', 'wk-marketplace' ), 'primary' );
+	wp_nonce_field( '_wkmp_update_product_setting_action', '_wkmp_update_product_setting_nonce' );
 	?>
 </form>
 <hr/>

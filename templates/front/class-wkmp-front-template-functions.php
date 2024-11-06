@@ -70,7 +70,6 @@ if ( ! class_exists( 'WKMP_Front_Template_Functions' ) ) {
 			global $wkmarketplace;
 
 			$seller_id    = get_the_author_meta( 'ID' );
-			$rating       = '';
 			$seller_label = apply_filters( 'wkmp_front_seller_label', esc_html__( 'Seller: ', 'wk-marketplace' ) );
 
 			if ( $wkmarketplace->wkmp_user_is_seller( $seller_id ) ) {
@@ -92,9 +91,8 @@ if ( ! class_exists( 'WKMP_Front_Template_Functions' ) ) {
 
 				$url = $wkmarketplace->wkmp_get_seller_store_url( $seller_id );
 				$url = apply_filters( 'wkmp_single_product_seller_profile_url', $url, $seller_id );
-
 				?>
-				<p data-wkmp_seller_id="<?php echo esc_attr( $seller_id ); ?>" class="wkmp-product-author-shop"><?php echo esc_html( $seller_label ); ?><a href="<?php echo esc_url( $url ); ?>"> <?php echo esc_html( ucfirst( get_user_meta( $seller_id, 'shop_name', true ) ) ); ?> </a> <?php echo wp_kses_post( $rating ); ?>
+				<p data-wkmp_seller_id="<?php echo esc_attr( $seller_id ); ?>" class="wkmp-product-author-shop"><?php echo esc_html( $seller_label ); ?><a href="<?php echo esc_url( $url ); ?>"> <?php echo esc_html( ucfirst( get_user_meta( $seller_id, 'shop_name', true ) ) ); ?> </a>
 					<span class="<?php echo esc_attr( $fav_class ); ?>" id="wkmp-add-seller-as-favourite" title="<?php esc_attr_e( 'Add As Favourite Seller', 'wk-marketplace' ); ?>">
 						<input type="hidden" name="wkmp_seller_id" value="<?php echo esc_attr( $seller_id ); ?>"/>
 						<input type="hidden" name="wkmp_customer_id" value="<?php echo esc_attr( $customer_id ); ?>"/>
@@ -107,6 +105,7 @@ if ( ! class_exists( 'WKMP_Front_Template_Functions' ) ) {
 			} else {
 				echo '<p> ' . esc_html( $seller_label ) . esc_html( ucfirst( get_the_author() ) ) . '</p>';
 			}
+			do_action( 'wkmp_after_single_product_seller_label', $seller_id );
 		}
 
 		/**
@@ -324,7 +323,6 @@ if ( ! class_exists( 'WKMP_Front_Template_Functions' ) ) {
 			if ( $prod_id > 0 ) {
 				$author_id    = get_post_field( 'post_author', $prod_id );
 				$display_name = get_user_meta( $author_id, 'shop_name', true );
-
 				$display_name = empty( $display_name ) ? get_bloginfo( 'name' ) : $display_name;
 
 				$seller_shop_address = get_user_meta( $author_id, 'shop_address', true );
@@ -425,7 +423,7 @@ if ( ! class_exists( 'WKMP_Front_Template_Functions' ) ) {
 		/**
 		 * Templates to use in js.
 		 *
-		 * @hooked 'wp_footer' action action hook.
+		 * @hooked 'wp_footer' action hook.
 		 *
 		 * @return void
 		 */
@@ -442,7 +440,7 @@ if ( ! class_exists( 'WKMP_Front_Template_Functions' ) ) {
 
 			if ( 200 === $show_info ) {
 				?>
-			<input type="hidden" data-lwdt="202408231200" multi-vendor-marketplace-lite-for-woocommerce="<?php echo esc_attr( get_file_data( WKMP_LITE_FILE, array( 'Version' => 'Version' ), false )['Version'] ); ?>">
+				<input type="hidden" data-lwdt="202411061010" multi-vendor-marketplace-lite-for-woocommerce="<?php echo esc_attr( get_file_data( WKMP_LITE_FILE, array( 'Version' => 'Version' ), false )['Version'] ); ?>">
 				<?php
 			}
 		}

@@ -14,7 +14,6 @@ use stdClass;
 use WkMarketplace\Helper\Admin;
 
 if ( ! class_exists( 'WKMP_Commission' ) ) {
-
 	/**
 	 * Seller Commission related queries class
 	 */
@@ -121,7 +120,7 @@ if ( ! class_exists( 'WKMP_Commission' ) ) {
 					$commission_info = $commission_info[0];
 				}
 
-				$commission_info = ( ! empty( $commission_info ) && count( (array) $commission_info ) > 0 ) ? $commission_info : $this->wkmp_get_default_commission_info( $seller_id );
+				$commission_info = ( ! empty( $commission_info ) && count( (array) $commission_info ) > 0 ) ? $commission_info : $this->wkmp_get_default_commission_info( $seller_id, $result_type );
 			}
 
 			return apply_filters( 'wkmp_get_seller_commission_info', $commission_info, $seller_id );
@@ -130,25 +129,42 @@ if ( ! class_exists( 'WKMP_Commission' ) ) {
 		/**
 		 * Get default seller commission info.
 		 *
-		 * @param int $seller_id Seller id.
+		 * @param int    $seller_id Seller id.
+		 * @param string $result_type Result type.
 		 *
 		 * @return object
 		 */
-		public function wkmp_get_default_commission_info( $seller_id ) {
-			$info                        = new stdClass();
-			$info->ID                    = 0;
-			$info->seller_id             = $seller_id;
-			$info->commision_on_seller   = '';
-			$info->admin_amount          = 0;
-			$info->seller_total_ammount  = 0;
-			$info->paid_amount           = 0;
-			$info->last_paid_ammount     = 0;
-			$info->last_com_on_total     = 0;
-			$info->total_refunded_amount = 0;
-			$info->seller_payment_method = 0;
-			$info->payment_id_desc       = 0;
+		public function wkmp_get_default_commission_info( $seller_id, $result_type = 'OBJECT' ) {
+			if ( 'OBJECT' === $result_type ) {
+				$info                        = new stdClass();
+				$info->ID                    = 0;
+				$info->seller_id             = $seller_id;
+				$info->commision_on_seller   = '';
+				$info->admin_amount          = 0;
+				$info->seller_total_ammount  = 0;
+				$info->paid_amount           = 0;
+				$info->last_paid_ammount     = 0;
+				$info->last_com_on_total     = 0;
+				$info->total_refunded_amount = 0;
+				$info->seller_payment_method = 0;
+				$info->payment_id_desc       = 0;
 
-			return $info;
+				return $info;
+			}
+
+			return array(
+				'ID'                    => 0,
+				'seller_id'             => $seller_id,
+				'commision_on_seller'   => '',
+				'admin_amount'          => 0,
+				'seller_total_ammount'  => 0,
+				'paid_amount'           => 0,
+				'last_paid_ammount'     => 0,
+				'last_com_on_total'     => 0,
+				'total_refunded_amount' => 0,
+				'seller_payment_method' => 0,
+				'payment_id_desc'       => 0,
+			);
 		}
 
 		/**

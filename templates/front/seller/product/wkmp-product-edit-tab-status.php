@@ -30,11 +30,14 @@ defined( 'ABSPATH' ) || exit; // Exit if access directly.
 				</div>
 			</div>
 		</div>
-	<?php } ?>
+		<?php
+	}
+	do_action( 'wkmp_after_product_status_settings', $product, $meta_arr );
 
-	<?php $show_vertual = 'simple' === $product->get_type(); ?>
+	$show_vertual = 'simple' === $product->get_type();
 
-	<?php if ( apply_filters( 'wkmp_show_vertual_downloadable', $show_vertual, $product ) ) { ?>
+	if ( apply_filters( 'wkmp_show_vertual_downloadable', $show_vertual, $product ) ) {
+		?>
 		<div class="wkmp-side-head">
 			<label class="checkbox-inline">
 				<input type="checkbox" id="_ckvirtual" class="wk-dwn-check" name="_virtual" value="yes" <?php echo ( isset( $meta_arr['_virtual'] ) && 'yes' === $meta_arr['_virtual'] ) ? 'checked' : ''; ?>/>&nbsp;&nbsp;

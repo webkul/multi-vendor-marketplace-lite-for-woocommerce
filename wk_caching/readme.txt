@@ -1,15 +1,13 @@
 === Caching Submodule ===
 Contributors: Webkul
-Requires at least: 5.0
-Tested up to: 6.5
-Stable tag: 1.0.9
+Requires at least: 6.5
+Tested up to: 6.7
 Requires PHP: 7.4
 Tested up to PHP: 8.3
-WC requires at least: 5.0
-WC tested up to: 9.0
+WC requires at least: 9.0
+WC tested up to: 9.4
 WPML Compatible: yes
 Multisite Compatible: yes
-
 Tags: woocommerce caching, object caching, transient caching, file caching, radis caching
 
 It is a submodule and will be pulled into our other modules to include the caching in each module and avoid repeated work.
@@ -30,6 +28,9 @@ No questions asked yet
 For any Query please generate a ticket at https://webkul.com/ticket/
 
 == Changelog ==
+
+= 1.1.0 (24-11-05) =
+Renamed inc to autoloader to follow the wp folder standard structure.
 
 = 1.0.9 (24-07-01) =
 Updated: Tags upto 5 as per WordPress standard.

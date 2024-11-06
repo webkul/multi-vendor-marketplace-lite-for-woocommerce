@@ -18,7 +18,6 @@ use WkMarketplace\Templates\Admin\Feedback;
 use WkMarketplace\Templates\Admin\Queries;
 use WkMarketplace\Templates\Admin\Settings;
 use WkMarketplace\Helper\Admin;
-
 use WkMarketplace\Helper as Form;
 
 if ( ! class_exists( 'WKMP_Admin_Template_Functions' ) ) {
@@ -280,22 +279,11 @@ if ( ! class_exists( 'WKMP_Admin_Template_Functions' ) ) {
 			if ( ! empty( $detached ) ) {
 				echo '<input type="hidden" name="detached" value="' . esc_attr( $detached ) . '" />';
 			}
-
-			$button_attrs = apply_filters(
-				'wkmp_seller_save_button_attributes',
-				array(
-					'disabled' => true,
-					'id'       => 'search-submit',
-				)
-			);
 			?>
 			<p class="search-box">
 				<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ); ?>"><?php echo esc_html( $text ); ?>:</label>
 				<input placeholder="<?php echo esc_attr( $placeholder ); ?>" type="search" id="<?php echo esc_attr( $input_id ); ?>" name="s" value="<?php _admin_search_query(); ?>" />
-			<?php
-			submit_button( $text, '', '', false, $button_attrs );
-			empty( $button_attrs['disabled'] ) ? '' : $this->wkmp_show_upgrade_lock_icon();
-			?>
+			<?php submit_button( $text, '', '', false ); ?>
 			</p>
 			<?php
 		}

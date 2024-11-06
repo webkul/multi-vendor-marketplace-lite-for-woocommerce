@@ -92,6 +92,7 @@ if ( ! class_exists( 'WKMP_Transaction' ) ) {
 							'quantity'     => esc_html__( 'Quantity', 'wk-marketplace' ),
 							'price'        => esc_html__( 'Total Price', 'wk-marketplace' ),
 							'commission'   => esc_html__( 'Commission', 'wk-marketplace' ),
+							'discount'     => esc_html__( 'Discount', 'wk-marketplace' ),
 							'subtotal'     => esc_html__( 'Subtotal', 'wk-marketplace' ),
 						)
 					);
@@ -105,6 +106,8 @@ if ( ! class_exists( 'WKMP_Transaction' ) ) {
 						}
 						$product_name .= $pro_nme['title'];
 					}
+
+					$total_discount = array_sum( $seller_order_info['discount'] );
 
 					require_once __DIR__ . '/wkmp-transaction-view.php';
 				} else {

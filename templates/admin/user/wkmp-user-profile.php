@@ -41,7 +41,7 @@ if ( $show_fields ) {
 				</td>
 			</tr>
 			<tr>
-				<th><label for="seller-url" class="pull-left"><?php esc_html_e( 'Shop URL', 'wk-marketplace' ); ?> <?php echo ( 'required' === $shopurl_visibility ) ? '<span class="required" style="display:inline-block;">*</span>' : ''; ?></label></th>
+				<th><label for="seller-url" class="pull-left"><?php esc_html_e( 'Shop Slug', 'wk-marketplace' ); ?> <?php echo ( 'required' === $shopurl_visibility ) ? '<span class="required" style="display:inline-block;">*</span>' : ''; ?></label></th>
 				<td>
 					<input type="text" class="input-text form-control" name="shopurl" id="seller-shop" value="<?php echo esc_attr( $address ); ?>" <?php echo ( 'required' === $shopurl_visibility ) ? 'required=required' : ''; ?> <?php echo esc_html( $disable ); ?>>
 					<p><strong id="seller-shop-alert-msg" class="pull-right"></strong></p>

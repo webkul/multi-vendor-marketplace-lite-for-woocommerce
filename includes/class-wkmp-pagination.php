@@ -113,7 +113,7 @@ if ( ! class_exists( 'WKMP_Pagination' ) ) {
 
 			$this->url = str_replace( '%7Bpage%7D', '{page}', $this->url );
 
-			$output  = '<nav class="woocommerce-pagination">';
+			$output  = '<nav class="wkmp-pagination">';
 			$output .= '<ul class="page-numbers">';
 
 			if ( $page > 1 ) {

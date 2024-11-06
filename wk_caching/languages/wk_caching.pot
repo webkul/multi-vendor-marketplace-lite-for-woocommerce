@@ -7,14 +7,14 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-07-01T07:51:39+00:00\n"
+"POT-Creation-Date: 2024-11-05T12:10:11+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
 "language-team: LANGUAGE <EMAIL@ADDRESS>\n"
 "X-Domain: wk_caching\n"
 
 #. Translators: %d: product filepath.
-#: inc/class-wk-caching-autoload.php:67
+#: autoloader/class-wk-caching-autoload.php:67
 msgid "The file attempting to be loaded at %s does not exist."
 msgstr ""
 

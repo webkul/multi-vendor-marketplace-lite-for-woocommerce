@@ -95,7 +95,8 @@ if ( ! class_exists( 'WKMP_Admin_Seller_List' ) ) {
 					'limit'   => $per_page,
 					'orderby' => $orderby,
 					'order'   => $sort_order,
-					'fields'  => 'mp.user_id, mp.seller_value, u.user_email, u.user_registered, u.display_name',
+					'search'  => \WK_Caching::wk_get_request_data( 's' ),
+					'fields'  => 'mp.user_id, mp.seller_value, u.user_email, u.user_login, u.user_registered, u.display_name',
 				)
 			);
 
@@ -137,7 +138,7 @@ if ( ! class_exists( 'WKMP_Admin_Seller_List' ) ) {
 				$data[] = array(
 					'sid'             => $seller->user_id,
 					'name'            => $display_name,
-					'user_nicename'   => $seller->display_name,
+					'user_nicename'   => $seller->user_login,
 					'shop_name'       => get_user_meta( $seller->user_id, 'shop_name', true ),
 					'user_email'      => sprintf( '<a href="mailto:%s">%s</a>', $seller->user_email, $seller->user_email ),
 					'products'        => $this->seller_db_obj->wkmp_get_seller_product_count( $seller->user_id ),

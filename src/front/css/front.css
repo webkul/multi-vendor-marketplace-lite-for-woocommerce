@@ -9,9 +9,7 @@
 /* Seller Dashboard and its endpoints css Starts */
 @font-face {
 	font-family: "Webkul Rango";
-	src: url("../../../fonts/rango.eot");
-	src: url("../../../fonts/rango.woff") format("woff"), url("../../../fonts/rango.ttf") format("truetype"),
-		url("../../../fonts/rango.svg#filename") format("svg");
+	src: url("../../../assets/fonts/rango.woff") format("woff");
 }
 .mp-dashboard-wrapper .summary-stats {
 	float: left;
@@ -780,15 +778,10 @@
 	margin-bottom: 20px;
 	margin-top: 15px;
 }
-.wkmp_avatar_logo_section .wkmp_profile_img {
+.wkmp_avatar_logo_section .wkmp-seller-profile-image-grids {
 	display: table-cell;
 	vertical-align: top;
-	width: 50%;
-}
-.wkmp_avatar_logo_section .wkmp_profile_logo {
-	display: table-cell;
-	vertical-align: top;
-	width: 50%;
+	width: 33%;
 }
 .wkmp_avatar_logo_section label {
 	font-weight: bold;
@@ -801,14 +794,14 @@
 	width: 100%;
 	height: auto;
 }
-.wkmp_shop_banner .wkmp_upload_banner {
+.wkmp-seller-profile-image-grids .wkmp-upload-button {
 	position: relative;
 	font-size: 15px;
 	border: none;
 	cursor: pointer;
 	text-align: center;
 }
-.wkmp_shop_banner .wkmp_remove_banner {
+.wkmp-seller-profile-image-grids .wkmp-remove-button {
 	font-size: 15px;
 	font-weight: bold;
 	color: #fff;
@@ -1766,4 +1759,68 @@ form#wkmp-product-list-form .wkmp-minimum-order.settings {
 }
 .wkmp-add-product-form #product-form .wkmp_attributes .wkmp_product_attribute_term_values ~ .mp_actions{
 	margin-left: 20px;
+}
+.wkmp_avatar_logo_section .wkmp-button-wrap{
+	font-size:13px;
+	margin-top:2px
+}
+.wkmp_avatar_logo_section .wkmp-button-wrap .wkmp-remove-button{
+	color:#fff;
+	background-color:#da2020
+}
+.wkmp-seller-endpoints #wkmp-order-list-form {
+    margin: 0;
+}
+.wkmp-seller-endpoints .wkmp-orders-per-page-settings {
+    font-size: 16px;
+}
+.wkmp-result-count {
+	display: inline-block;
+	font-size: 15px;
+	color: #666;
+	margin-right: 20px;
+	vertical-align: middle;
+}
+.wkmp-pagination {
+	text-align: end;
+	margin-top: -25px;
+}
+.wkmp-pagination ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: inline-flex;
+	gap: 8px;
+}
+.wkmp-pagination li {
+	display: inline;
+}
+.wkmp-pagination a {
+	color: #666;
+	text-decoration: none !important;
+	font-weight: bold;
+	padding: 8px 12px;
+	border: 1px solid #ddd;
+	background-color: #f9f9f9;
+	border-radius: 4px;
+	transition: background-color 0.3s, color 0.3s;
+}
+.wkmp-pagination a:hover {
+	background-color: #f0f0f0;
+	border-color: #f0f0f0;
+}
+.wkmp-pagination .current {
+	background-color: #f0f0f0;
+	border-color: #f0f0f0;
+	padding: 8px 12px;
+	border-radius: 4px;
+}
+.wkmp-pagination .prev,
+.wkmp-pagination .next {
+	font-size: 16px;
+	padding: 8px 12px;
+}
+.wkmp-pagination a:first-child,
+.wkmp-pagination a:last-child {
+	font-size: 16px;
 }

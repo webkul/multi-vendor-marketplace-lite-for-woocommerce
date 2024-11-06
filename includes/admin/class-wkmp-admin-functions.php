@@ -76,20 +76,31 @@ if ( ! class_exists( 'WKMP_Admin_Functions' ) ) {
 		 */
 		public function wkmp_register_marketplace_options() {
 			register_setting( 'wkmp-general-settings-group', '_wkmp_default_commission', array( $this, 'wkmp_validate_seller_commission_update' ) );
-
-			register_setting( 'wkmp-general-settings-group', '_wkmp_seller_delete' );
-			register_setting( 'wkmp-general-settings-group', 'wkmp_shop_name_visibility' );
-			register_setting( 'wkmp-general-settings-group', 'wkmp_shop_url_visibility' );
 			register_setting( 'wkmp-general-settings-group', 'wkmp_select_seller_page', array( $this, 'wkmp_update_selected_seller_page' ) );
 
-			register_setting( 'wkmp-product-settings-group', '_wkmp_wcml_allow_product_translate' );
-			register_setting( 'wkmp-product-settings-group', '_wkmp_seller_allowed_product_types' );
-			register_setting( 'wkmp-product-settings-group', '_wkmp_seller_allowed_categories' );
-			register_setting( 'wkmp-product-settings-group', '_wkmp_enable_minimum_order_amount' );
-			register_setting( 'wkmp-product-settings-group', '_wkmp_minimum_order_amount' );
-			register_setting( 'wkmp-product-settings-group', '_wkmp_seller_min_amount_admin_default' );
-			register_setting( 'wkmp-product-settings-group', '_wkmp_enable_product_qty_limit' );
-			register_setting( 'wkmp-product-settings-group', '_wkmp_max_product_qty_limit' );
+			$general_settings = array( '_wkmp_seller_delete', 'wkmp_shop_name_visibility', 'wkmp_shop_url_visibility' );
+
+			foreach ( $general_settings as $field ) {
+				register_setting( 'wkmp-general-settings-group', $field );
+			}
+
+			$product_settings = apply_filters(
+				'wkmp_admin_product_settings_fields',
+				array(
+					'_wkmp_wcml_allow_product_translate',
+					'_wkmp_seller_allowed_product_types',
+					'_wkmp_seller_allowed_categories',
+					'_wkmp_enable_minimum_order_amount',
+					'_wkmp_minimum_order_amount',
+					'_wkmp_seller_min_amount_admin_default',
+					'_wkmp_enable_product_qty_limit',
+					'_wkmp_max_product_qty_limit',
+				),
+			);
+
+			foreach ( $product_settings as $field ) {
+				register_setting( 'wkmp-product-settings-group', $field );
+			}
 
 			register_setting( 'wkmp-google-analytics-settings-group', '_wkmp_google_map_api_key' );
 
@@ -116,11 +127,11 @@ if ( ! class_exists( 'WKMP_Admin_Functions' ) ) {
 
 			if ( is_numeric( $commission ) && $commission >= 0 && $commission <= 100 ) {
 				return $commission;
-			} else {
-				add_settings_error( '_wkmp_default_commission', 'commission-error', ( /* translators: %s Commission */ sprintf( esc_html__( 'Invalid default commission value %s. Must be between 0 & 100.', 'wk-marketplace' ), esc_attr( $commission ) ) ), 'error' );
-
-				return '';
 			}
+
+			add_settings_error( '_wkmp_default_commission', 'commission-error', ( /* translators: %s Commission */ sprintf( esc_html__( 'Invalid default commission value %s. Must be between 0 & 100.', 'wk-marketplace' ), esc_attr( $commission ) ) ), 'error' );
+
+			return '';
 		}
 
 		/**
@@ -170,6 +181,8 @@ if ( ! class_exists( 'WKMP_Admin_Functions' ) ) {
 		 * @return void
 		 */
 		public function wkmp_create_dashboard_menu() {
+			global $wkmarketplace;
+
 			$capability = apply_filters( 'wkmp_dashboard_menu_capability', 'manage_marketplace' );
 
 			$allowed_roles = array( 'administrator' );
@@ -183,6 +196,12 @@ if ( ! class_exists( 'WKMP_Admin_Functions' ) ) {
 
 			if ( empty( array_intersect( $allowed_roles, $c_roles ) ) ) {
 				return;
+			}
+
+			$pro_disabled = $wkmarketplace->wkmp_is_pro_module_disabled();
+
+			if ( ! $pro_disabled ) {
+				return false;
 			}
 
 			add_menu_page(
@@ -390,13 +409,13 @@ if ( ! class_exists( 'WKMP_Admin_Functions' ) ) {
 		 * @return void
 		 */
 		public function wkmp_admin_scripts() {
-			$suffix     = ( defined( 'WKWC_DEV' ) && true === WKWC_DEV ) ? '' : '.min';
-			$asset_path = ( defined( 'WKWC_DEV' ) && true === WKWC_DEV ) ? 'build' : 'dist';
+			$suffix = ( defined( 'WKWC_DEV' ) && true === WKWC_DEV ) ? '' : '.min';
+			$path   = ( defined( 'WKWC_DEV' ) && true === WKWC_DEV ) ? 'src' : 'assets';
 
-			wp_enqueue_style( 'wkmp-admin-style', WKMP_LITE_PLUGIN_URL . 'assets/' . $asset_path . '/admin/css/admin' . $suffix . '.css', array(), WKMP_LITE_SCRIPT_VERSION );
+			wp_enqueue_style( 'wkmp-admin-style', WKMP_LITE_PLUGIN_URL . $path . '/admin/css/admin' . $suffix . '.css', array(), WKMP_LITE_SCRIPT_VERSION );
 			wp_enqueue_style( 'wkmp-admin-wc-style', plugins_url() . '/woocommerce/assets/client/admin/admin-layout/style.css', array(), WC_VERSION );
 
-			wp_enqueue_script( 'wkmp-admin-script', WKMP_LITE_PLUGIN_URL . 'assets/' . $asset_path . '/admin/js/admin' . $suffix . '.js', array( 'select2' ), WKMP_LITE_SCRIPT_VERSION, true );
+			wp_enqueue_script( 'wkmp-admin-script', WKMP_LITE_PLUGIN_URL . $path . '/admin/js/admin' . $suffix . '.js', array( 'select2' ), WKMP_LITE_SCRIPT_VERSION, true );
 
 			$ajax_obj = array(
 				'ajaxUrl'   => admin_url( 'admin-ajax.php' ),
@@ -447,14 +466,13 @@ if ( ! class_exists( 'WKMP_Admin_Functions' ) ) {
 				'load-' . $hook,
 				function () {
 					if ( is_user_logged_in() && is_admin() ) {
-						$suffix     = ( defined( 'WKWC_DEV' ) && true === WKWC_DEV ) ? '' : '.min';
-						$asset_path = ( defined( 'WKWC_DEV' ) && true === WKWC_DEV ) ? 'build' : 'dist';
-
 						$wk_page       = \WK_Caching::wk_get_request_data( 'page' );
 						$order_id_hash = \WK_Caching::wk_get_request_data( 'order_id' );
 
 						if ( 'invoice' === $wk_page && ! empty( $order_id_hash ) ) {
-							wp_enqueue_style( 'wkmp-invoice-stype', WKMP_LITE_PLUGIN_URL . 'assets/' . $asset_path . '/admin/css/invoice-style' . $suffix . '.css', array(), WKMP_LITE_SCRIPT_VERSION, 'all' );
+							$suffix = ( defined( 'WKWC_DEV' ) && true === WKWC_DEV ) ? '' : '.min';
+							$path   = ( defined( 'WKWC_DEV' ) && true === WKWC_DEV ) ? 'src' : 'assets';
+							wp_enqueue_style( 'wkmp-invoice-style', WKMP_LITE_PLUGIN_URL . $path . '/admin/css/invoice-style' . $suffix . '.css', array(), WKMP_LITE_SCRIPT_VERSION, 'all' );
 						}
 
 						$order_id = \WK_Caching::wk_get_request_data( 'order_id' );
@@ -541,7 +559,11 @@ if ( ! class_exists( 'WKMP_Admin_Functions' ) ) {
 				$show_fields = true;
 			}
 
-			require_once WKMP_LITE_PLUGIN_FILE . 'templates/admin/user/wkmp-user-profile.php';
+			if ( is_multisite() && ! $show_fields && 'add-existing-user' === $user ) {
+				$show_fields = true;
+			}
+
+			require WKMP_LITE_PLUGIN_FILE . 'templates/admin/user/wkmp-user-profile.php';
 		}
 
 		/**

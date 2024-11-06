@@ -199,7 +199,13 @@ if ( empty( $mp_page_title ) ) {
 	<!-- About shop -->
 	<div class="mp-about-shop wkmp-front-seller-textarea-info">
 		<h2><?php esc_html_e( 'About Shop', 'wk-marketplace' ); ?></h2>
-		<p><?php echo isset( $seller_info->about_shop ) ? wp_kses_post( nl2br( $seller_info->about_shop ) ) : ''; ?></p>
+		<?php
+		if ( isset( $seller_info->about_shop ) ) {
+			$content = apply_filters( 'the_content', $seller_info->about_shop );
+			$content = str_replace( ']]>', ']]&gt;', $content );
+			?>
+			<p><?php echo $content; ?></p>
+		<?php } ?>
 	</div>
 		<?php
 	}

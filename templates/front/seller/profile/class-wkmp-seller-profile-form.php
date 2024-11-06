@@ -74,7 +74,7 @@ if ( ! class_exists( 'WKMP_Seller_Profile_Form' ) ) {
 				array(
 					'wkmp-general-tab' => esc_html__( 'General', 'wk-marketplace' ),
 					'wkmp-shop-tab'    => esc_html__( 'Shop', 'wk-marketplace' ),
-					'wkmp-image-tab'   => esc_html__( 'Image', 'wk-marketplace' ),
+					'wkmp-image-tab'   => esc_html__( 'Images', 'wk-marketplace' ),
 					'wkmp-social-tab'  => esc_html__( 'Social Profile', 'wk-marketplace' ),
 				)
 			);
@@ -173,7 +173,7 @@ if ( ! class_exists( 'WKMP_Seller_Profile_Form' ) ) {
 						</div>
 
 						<div class="form-group">
-							<label for="wkmp-shop-address"><?php esc_html_e( 'Shop URL', 'wk-marketplace' ); ?></label>
+							<label for="wkmp-shop-address"><?php esc_html_e( 'Shop Slug', 'wk-marketplace' ); ?></label>
 							<input class="form-control" type="text" name="wkmp_shop_url" id="wkmp_shop_address" value="<?php echo esc_attr( $shop_url ); ?>" readonly>
 						</div>
 
@@ -281,41 +281,41 @@ if ( ! class_exists( 'WKMP_Seller_Profile_Form' ) ) {
 					</div><!-- wkmp-shop-tab end here -->
 
 					<div id="wkmp-image-tab" class="wkmp_tab_pane">
-
 						<div class="wkmp_avatar_logo_section">
 
-							<div class="wkmp_profile_img">
+							<div class="wkmp_profile_img wkmp-seller-profile-image-grids">
 								<div class="wkmp-text-danger"><?php echo isset( $errors['wkmp_avatar_file'] ) ? esc_attr( $errors['wkmp_avatar_file'] ) : ''; ?></div>
 								<label for="seller_avatar_file"><?php esc_html_e( 'User Image', 'wk-marketplace' ); ?></label>
 
-								<div id="wkmp-thumb-image" class="wkmp-img-thumbnail" style="display:table;">
+								<div class="wkmp-img-thumbnail" style="display:table;">
 									<img class="wkmp-img-thumbnail" src="<?php echo empty( $seller_info['wkmp_avatar_file'] ) ? esc_url( $seller_info['wkmp_generic_avatar'] ) : esc_url( $seller_info['wkmp_avatar_file'] ); ?>" data-placeholder-url="<?php echo esc_url( $seller_info['wkmp_generic_avatar'] ); ?>"/>
 									<input type="hidden" id="thumbnail_id_avatar" name="wkmp_avatar_id" value="<?php echo esc_attr( $seller_info['wkmp_avatar_id'] ); ?>"/>
 									<input type="file" name="wkmp_avatar_file" class="wkmp_hide" id="seller_avatar_file"/>
 								</div>
 
-
-								<div class="wkmp-button" style="font-size:13px;margin-top:2px;">
-									<button type="button" class="button" id="wkmp-upload-profile-image"><?php esc_html_e( 'Upload', 'wk-marketplace' ); ?></button>
-									<button type="button" class="button wkmp-remove-profile-image" style="color:#fff;background-color:#da2020"> <?php esc_html_e( 'Remove', 'wk-marketplace' ); ?></button>
+								<div class="wkmp-button wkmp-button-wrap">
+									<button type="button" class="button wkmp-upload-button"><?php esc_html_e( 'Upload', 'wk-marketplace' ); ?></button>
+									<button type="button" class="button wkmp-remove-button"> <?php esc_html_e( 'Remove', 'wk-marketplace' ); ?></button>
 								</div>
 							</div>
 
-							<div class="wkmp_profile_logo">
+							<div class="wkmp_profile_logo wkmp-seller-profile-image-grids">
 								<div class="wkmp-text-danger"><?php echo isset( $errors['wkmp_logo_file'] ) ? esc_html( $errors['wkmp_logo_file'] ) : ''; ?></div>
 								<label for="seller_shop_logo_file"><?php esc_html_e( 'Shop Logo', 'wk-marketplace' ); ?></label>
 
-								<div id="wkmp-thumb-image" class="wkmp-img-thumbnail" style="display:table;">
+								<div class="wkmp-img-thumbnail" style="display:table;">
 									<img class="wkmp-img-thumbnail" src="<?php echo empty( $seller_info['wkmp_logo_file'] ) ? esc_url( $seller_info['wkmp_generic_logo'] ) : esc_url( $seller_info['wkmp_logo_file'] ); ?>" data-placeholder-url="<?php echo esc_url( $seller_info['wkmp_generic_logo'] ); ?>"/>
-									<input type="hidden" id="thumbnail_id_company_logo" name="wkmp_logo_id" value="<?php echo esc_attr( $seller_info['wkmp_logo_id'] ); ?>"/>
-									<input type="file" name="wkmp_logo_file" class="wkmp_hide" id="seller_shop_logo_file"/>
+									<input type="hidden" name="wkmp_logo_id" value="<?php echo esc_attr( $seller_info['wkmp_logo_id'] ); ?>"/>
+									<input type="file" name="wkmp_logo_file" class="wkmp_hide" />
 								</div>
 
-								<div class="wkmp-button" style="font-size:13px;margin-top:2px;">
-									<button type="button" class="button" id="wkmp-upload-shop-logo"><?php esc_html_e( 'Upload', 'wk-marketplace' ); ?></button>
-									<button type="button" class="button wkmp-remove-shop-logo" style="color:#fff;background-color:#da2020"> <?php esc_html_e( 'Remove', 'wk-marketplace' ); ?></button>
+								<div class="wkmp-button wkmp-button-wrap">
+									<button type="button" class="button wkmp-upload-button"><?php esc_html_e( 'Upload', 'wk-marketplace' ); ?></button>
+									<button type="button" class="button wkmp-remove-button"> <?php esc_html_e( 'Remove', 'wk-marketplace' ); ?></button>
 								</div>
 							</div>
+
+							<?php do_action( 'wkmp_after_seller_shop_logo_image', $seller_info, $errors ); ?>
 
 						</div>
 
@@ -327,7 +327,7 @@ if ( ! class_exists( 'WKMP_Seller_Profile_Form' ) ) {
 								<input type="checkbox" id="wk-seller-banner-status" name="wkmp_display_banner" value="yes" <?php echo ( 'yes' === $seller_info['wkmp_display_banner'] ) ? 'checked' : ''; ?>><label for="wk-seller-banner-status"><?php esc_html_e( 'Show banner on seller page', 'wk-marketplace' ); ?> </label>
 							</p>
 
-							<div class="wkmp_shop_banner">
+							<div class="wkmp_shop_banner wkmp-seller-profile-image-grids">
 								<div class="wkmp-text-danger"><?php echo empty( $errors['wkmp_banner_file'] ) ? '' : esc_html( $errors['wkmp_banner_file'] ); ?></div>
 
 								<div class="wk_banner_img" id="wk_seller_banner">
@@ -337,8 +337,8 @@ if ( ! class_exists( 'WKMP_Seller_Profile_Form' ) ) {
 								</div>
 
 								<div class="wkmp-shop-banner-buttons">
-									<button type="button" class="button wkmp_upload_banner" id="wkmp-upload-seller-banner"><?php esc_html_e( 'Upload', 'wk-marketplace' ); ?></button>
-									<button type="button" class="button wkmp_remove_banner" id="wkmp-remove-seller-banner"> <?php esc_html_e( 'Remove', 'wk-marketplace' ); ?></button>
+									<button type="button" class="button wkmp-upload-button" id="wkmp-upload-seller-banner"><?php esc_html_e( 'Upload', 'wk-marketplace' ); ?></button>
+									<button type="button" class="button wkmp-remove-button" id="wkmp-remove-seller-banner"> <?php esc_html_e( 'Remove', 'wk-marketplace' ); ?></button>
 								</div>
 							</div>
 						</div>

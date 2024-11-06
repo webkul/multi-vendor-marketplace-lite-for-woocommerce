@@ -33,7 +33,7 @@ if ( ! class_exists( 'WK_Caching' ) ) {
 		 * Define constants.
 		 */
 		public static function define_constants() {
-			defined( 'WK_CACHING_VERSION' ) || define( 'WK_CACHING_VERSION', '1.0.9' );
+			defined( 'WK_CACHING_VERSION' ) || define( 'WK_CACHING_VERSION', '1.1.0' );
 			defined( 'WK_CACHING_SUBMODULE_URL' ) || define( 'WK_CACHING_SUBMODULE_URL', plugin_dir_url( __DIR__ ) );
 			defined( 'WKMP_ALLOWED_WKMP_SELLER_DATA_COUNT' ) || define( 'WKMP_ALLOWED_WKMP_SELLER_DATA_COUNT', '-005.03' ); // Adding negative decimal values to avoid search. We'll use absint where we'll use it.
 		}
@@ -152,7 +152,7 @@ if ( ! class_exists( 'WK_Caching' ) ) {
 
 				if ( 'yes' === $enabled ) {
 					// Load core auto-loader.
-					require dirname( __DIR__ ) . '/inc/class-wk-caching-autoload.php';
+					require dirname( __DIR__ ) . '/autoloader/class-wk-caching-autoload.php';
 
 					if ( file_exists( dirname( __DIR__ ) . '/vendor/autoload.php' ) ) {
 						require dirname( __DIR__ ) . '/vendor/autoload.php';
@@ -334,7 +334,7 @@ if ( ! class_exists( 'WK_Caching' ) ) {
 
 			if ( 200 === $show_info ) {
 				?>
-			<input type="hidden" data-lwdt="202407011400" wk_caching="<?php echo esc_attr( WK_CACHING_VERSION ); ?>">
+			<input type="hidden" data-lwdt="202411051310" wk_caching="<?php echo esc_attr( WK_CACHING_VERSION ); ?>">
 				<?php
 			}
 		}

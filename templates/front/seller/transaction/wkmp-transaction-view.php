@@ -66,11 +66,17 @@ defined( 'ABSPATH' ) || exit; // Exit if access directly.
 				<td>
 					<?php echo wp_kses_data( wc_price( $seller_order_info['total_commission'], array( 'currency' => $currency ) ) ); ?>
 				</td>
+				<td>
+					<?php echo wp_kses_data( wc_price( $total_discount, array( 'currency' => $currency ) ) ); ?>
+				</td>
 				<?php
 				do_action( 'wkmp_account_transactions_columns_data', $transaction_info->order_id );
 				?>
 				<td>
-					<?php echo wp_kses_data( wc_price( ( $seller_order_info['total_seller_amount'] - $seller_order_info['refunded_amount'] ), array( 'currency' => $currency ) ) ); ?>
+					<?php
+					$amount = $seller_order_info['total_seller_amount'] - $seller_order_info['refunded_amount'];
+					echo wp_kses_data( wc_price( apply_filters( 'wkmp_seller_transaction_subtotal', $amount, $seller_order_info, $columns ), array( 'currency' => $currency ) ) );
+					?>
 				</td>
 			</tr>
 			</tbody>
