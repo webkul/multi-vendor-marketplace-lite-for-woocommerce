@@ -38,6 +38,16 @@
 <file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/templates/admin/settings/wkmp-general-settings-content.php" errors="0" warnings="1" fixable="0">
     <warning line="198" column="25" source="WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude" severity="5" fixable="0">Using exclusionary parameters, like exclude, in calls to get_posts() should be done with caution, see https://wpvip.com/documentation/performance-improvements-by-removing-usage-of-post__not_in/ for more information.</warning>
 </file>
+<file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/includes/front/class-wkmp-front-functions.php" errors="0" warnings="2" fixable="0">
+    <warning line="888" column="37" source="WordPress.DB.SlowDBQuery.slow_db_query_meta_value" severity="5" fixable="0">Detected usage of meta_value, possible slow query.</warning>
+    <warning line="907" column="33" source="WordPress.DB.SlowDBQuery.slow_db_query_meta_value" severity="5" fixable="0">Detected usage of meta_value, possible slow query.</warning>
+</file>
+<file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/templates/front/seller/profile/class-wkmp-profile-edit.php" errors="0" warnings="1" fixable="0">
+    <warning line="87" column="114" source="WordPress.Security.ValidatedSanitizedInput.InputNotSanitized" severity="10" fixable="0">Detected usage of a non-sanitized input variable: $_POST['wkmp_profile_data']</warning>
+</file>
+<file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/includes/shipping/mp-flat-rate/class-wkmp-flat-rate-shipping-method.php" errors="0" warnings="1" fixable="0">
+    <warning line="457" column="26" source="WordPressVIPMinimum.Files.IncludingFile.UsingCustomFunction" severity="3" fixable="0">File inclusion using custom function ( `WC()` ). Must return local file source, as external URLs are prohibited on WordPress VIP. Probably needs manual inspection.</warning>
+</file>
 <file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/includes/admin/class-wkmp-admin-functions.php" errors="0" warnings="10" fixable="0">
     <warning line="210" column="17" source="WordPress.WP.Capabilities.Undetermined" severity="3" fixable="0">Couldn't determine the value passed to the $capability parameter in function call to add_menu_page(). Please check if it matches a valid capability. Found: $capability</warning>
     <warning line="221" column="17" source="WordPress.WP.Capabilities.Undetermined" severity="3" fixable="0">Couldn't determine the value passed to the $capability parameter in function call to add_submenu_page(). Please check if it matches a valid capability. Found: $capability</warning>
@@ -50,19 +60,6 @@
     <warning line="319" column="17" source="WordPress.WP.Capabilities.Undetermined" severity="3" fixable="0">Couldn't determine the value passed to the $capability parameter in function call to add_submenu_page(). Please check if it matches a valid capability. Found: $capability</warning>
     <warning line="748" column="27" source="WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude" severity="5" fixable="0">Using exclusionary parameters, like exclude, in calls to get_posts() should be done with caution, see https://wpvip.com/documentation/performance-improvements-by-removing-usage-of-post__not_in/ for more information.</warning>
 </file>
-<file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/includes/front/class-wkmp-front-functions.php" errors="0" warnings="2" fixable="0">
-    <warning line="888" column="37" source="WordPress.DB.SlowDBQuery.slow_db_query_meta_value" severity="5" fixable="0">Detected usage of meta_value, possible slow query.</warning>
-    <warning line="907" column="33" source="WordPress.DB.SlowDBQuery.slow_db_query_meta_value" severity="5" fixable="0">Detected usage of meta_value, possible slow query.</warning>
-</file>
-<file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/templates/front/seller/profile/class-wkmp-profile-edit.php" errors="0" warnings="1" fixable="0">
-    <warning line="87" column="114" source="WordPress.Security.ValidatedSanitizedInput.InputNotSanitized" severity="10" fixable="0">Detected usage of a non-sanitized input variable: $_POST['wkmp_profile_data']</warning>
-</file>
-<file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/includes/shipping/mp-flat-rate/class-wkmp-flat-rate-shipping-method.php" errors="0" warnings="1" fixable="0">
-    <warning line="457" column="26" source="WordPressVIPMinimum.Files.IncludingFile.UsingCustomFunction" severity="3" fixable="0">File inclusion using custom function ( `WC()` ). Must return local file source, as external URLs are prohibited on WordPress VIP. Probably needs manual inspection.</warning>
-</file>
-<file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/includes/admin/class-wkmp-admin-ajax-functions.php" errors="0" warnings="1" fixable="0">
-    <warning line="64" column="105" source="WordPress.WP.Capabilities.Undetermined" severity="3" fixable="0">Couldn't determine the value passed to the $capability parameter in function call to current_user_can(). Please check if it matches a valid capability. Found: $capability</warning>
-</file>
 <file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/includes/shipping/class-wkmp-manage-shipping.php" errors="2" warnings="5" fixable="0">
     <warning line="84" column="16" source="Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed" severity="5" fixable="0">The method parameter $postcode_locations is never used</warning>
     <warning line="320" column="16" source="Generic.CodeAnalysis.UnusedFunctionParameter.Found" severity="5" fixable="0">The method parameter $zone is never used</warning>
@@ -72,8 +69,8 @@
     <error line="385" column="36" source="WordPress.DB.PreparedSQL.NotPrepared" severity="5" fixable="0">Use placeholders and $wpdb-&gt;prepare(); found stripslashes_deep</error>
     <error line="385" column="55" source="WordPress.DB.PreparedSQL.NotPrepared" severity="5" fixable="0">Use placeholders and $wpdb-&gt;prepare(); found $query</error>
 </file>
-<file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/templates/front/seller/store/wkmp-seller-store-info.php" errors="1" warnings="0" fixable="0">
-    <error line="207" column="27" source="WordPress.Security.EscapeOutput.OutputNotEscaped" severity="5" fixable="0">All output should be run through an escaping function (see the Security sections in the WordPress Developer Handbooks), found '$content'.</error>
+<file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/includes/admin/class-wkmp-admin-ajax-functions.php" errors="0" warnings="1" fixable="0">
+    <warning line="64" column="105" source="WordPress.WP.Capabilities.Undetermined" severity="3" fixable="0">Couldn't determine the value passed to the $capability parameter in function call to current_user_can(). Please check if it matches a valid capability. Found: $capability</warning>
 </file>
 <file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/includes/class-wkmarketplace.php" errors="4" warnings="1" fixable="0">
     <warning line="31" column="9" source="Generic.Classes.DuplicateClassName.Found" severity="5" fixable="0">Duplicate class name &quot;WkMarketplace\Includes\WKMP_Pro_Global_Helper&quot; found; first defined in /home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/includes/class-wkmarketplace.php on line 25</warning>
@@ -81,6 +78,9 @@
     <error line="31" column="9" source="PSR1.Classes.ClassDeclaration.MultipleClasses" severity="5" fixable="0">Each class must be in a file by itself</error>
     <error line="38" column="11" source="Generic.Files.OneObjectStructurePerFile.MultipleFound" severity="5" fixable="0">Only one object structure is allowed in a file</error>
     <error line="38" column="11" source="PSR1.Classes.ClassDeclaration.MultipleClasses" severity="5" fixable="0">Each class must be in a file by itself</error>
+</file>
+<file name="/home/users/dinesh.yadav/www/html/webkul/wp-content/plugins/multi-vendor-marketplace-lite-for-woocommerce/templates/front/seller/store/wkmp-seller-store-info.php" errors="1" warnings="0" fixable="0">
+    <error line="207" column="27" source="WordPress.Security.EscapeOutput.OutputNotEscaped" severity="5" fixable="0">All output should be run through an escaping function (see the Security sections in the WordPress Developer Handbooks), found '$content'.</error>
 </file>
 </phpcs>
 

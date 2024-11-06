@@ -682,7 +682,7 @@ fieldset.mp-fieldset table {
     display: inline-block;
     height: 24px;
     min-width: 24px;
-    background-image: url('../../../images/wkmp-pro-check-circle.svg');
+    background-image: url('../../../assets/images/wkmp-pro-check-circle.svg');
     vertical-align: middle;
 }
 .wkmp-upgrade-pro-banner-notice .upgrade-banner-wrap .upgrade-banner-content .upgr-btn {
