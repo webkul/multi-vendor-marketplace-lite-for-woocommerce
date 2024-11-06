@@ -364,7 +364,7 @@ if ( ! class_exists( 'WKMP_Manage_Shipping' ) ) {
 				$do_not_match        = array_unique( array_diff( $zone_postcode_rules, array_keys( $matches ) ) );
 
 				if ( ! empty( $do_not_match ) ) {
-					$do_not_match_str = implode( ' ', $do_not_match );
+					$do_not_match_str = implode( ',', $do_not_match );
 					$criteria[]       = $wpdb->prepare( 'AND zones.zone_id NOT IN (%1s)', $do_not_match_str );
 				}
 			}

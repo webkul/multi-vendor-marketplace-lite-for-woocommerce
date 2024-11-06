@@ -13,7 +13,7 @@ $pro_disabled = $wkmarketplace->wkmp_is_pro_module_disabled();
 ?>
 <form method="POST" action="options.php">
 	<?php settings_fields( 'wkmp-general-settings-group' ); ?>
-	<table class="form-table">
+	<table class="form-table wkmp-general-settings-form">
 		<tbody>
 		<tr valign="top">
 			<th scope="row" class="titledesc">
@@ -38,6 +38,7 @@ $pro_disabled = $wkmarketplace->wkmp_is_pro_module_disabled();
 				<input type="text" class="regular-text wc_input_decimal" id="wkmp-default-commission" name="_wkmp_default_commission" value="<?php echo esc_attr( wc_format_localized_decimal( get_option( '_wkmp_default_commission' ) ) ); ?>"/>
 			</td>
 		</tr>
+		<?php do_action( 'wkmp_after_default_commission_settings' ); ?>
 		<tr valign="top">
 			<th scope="row" class="titledesc">
 				<label for="wkmp-auto-approve-seller"><?php esc_html_e( 'Auto Approve Seller', 'wk-marketplace' ); ?></label>
@@ -270,13 +271,13 @@ $pro_disabled = $wkmarketplace->wkmp_is_pro_module_disabled();
 		<tr>
 			<th scope="row">
 				<label for="wkmp_shop_url_visibility">
-					<?php esc_html_e( 'Shop URL on Registration', 'wk-marketplace' ); ?>
+					<?php esc_html_e( 'Shop Slug on Registration', 'wk-marketplace' ); ?>
 				</label>
 			</th>
 			<td>
 				<?php
 				echo wp_kses(
-					wc_help_tip( esc_html__( 'Select Shop URL visibility on seller registration page.', 'wk-marketplace' ), true ),
+					wc_help_tip( esc_html__( 'Select Shop Slug visibility on seller registration page.', 'wk-marketplace' ), true ),
 					array(
 						'span' => array(
 							'tabindex'   => array(),

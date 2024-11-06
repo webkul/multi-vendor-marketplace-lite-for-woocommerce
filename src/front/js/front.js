@@ -245,59 +245,25 @@ wkmp(function () { // wkmp function started.
         wkmp(this).parents('.wkmp-popup-modal').css('display', 'none');
     });
 
-    // Seller profile Page related code start here
-    wkmp('body').on('click', '#wkmp-upload-profile-image', function () {
-        wkmp('#seller_avatar_file').trigger('click');
+    // Seller Profile Page Related Code Start Here.
+    wkmp('body').on('click', '.wkmp-seller-profile-image-grids .wkmp-upload-button', function () {
+        wkmp(this).parents('.wkmp-seller-profile-image-grids').find("input[type=file]").trigger('click');
     });
 
-    wkmp('body').on('change', '#seller_avatar_file', function () {
+    wkmp('body').on('change', '.wkmp-seller-profile-image-grids input[type=file]', function () {
+        let image = wkmp(this).parents('.wkmp-seller-profile-image-grids').find('img');
+
         var reader = new FileReader();
         reader.onload = function (e) {
-            wkmp('.wkmp_profile_img #wkmp-thumb-image img').attr('src', e.target.result);
+            wkmp(image).attr('src', e.target.result);
         };
         reader.readAsDataURL(this.files[0]);
     });
 
-    wkmp('body').on('click', '.wkmp_profile_img .wkmp-remove-profile-image', function () {
-        let img = wkmp(this).parents('.wkmp_profile_img').find('#wkmp-thumb-image img').data('placeholder-url');
-        wkmp(this).parents('.wkmp_profile_img').find('#wkmp-thumb-image img').attr('src', img);
-        wkmp(this).parents('.wkmp_profile_img').find('#thumbnail_id_avatar').val('');
-    });
-
-    wkmp('body').on('click', '#wkmp-upload-shop-logo', function () {
-        wkmp('#seller_shop_logo_file').trigger('click');
-    });
-
-    wkmp('body').on('change', '#seller_shop_logo_file', function () {
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            wkmp('.wkmp_profile_logo #wkmp-thumb-image img').attr('src', e.target.result);
-        };
-        reader.readAsDataURL(this.files[0]);
-    });
-
-    wkmp('body').on('click', '.wkmp_profile_logo .wkmp-remove-shop-logo', function () {
-        let img = wkmp(this).parents('.wkmp_profile_logo').find('#wkmp-thumb-image img').data('placeholder-url');
-        wkmp(this).parents('.wkmp_profile_logo').find('#wkmp-thumb-image img').attr('src', img);
-        wkmp(this).parents('.wkmp_profile_logo').find('#thumbnail_id_company_logo').val('');
-    });
-
-    wkmp('body').on('click', '#wkmp-upload-seller-banner', function () {
-        wkmp('#wk_mp_shop_banner').trigger('click');
-    });
-
-    wkmp('body').on('change', '#wk_mp_shop_banner', function () {
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            wkmp('.wkmp_shop_banner img').attr('src', e.target.result);
-        };
-        reader.readAsDataURL(this.files[0]);
-    });
-
-    wkmp('body').on('click', '.wkmp_shop_banner #wkmp-remove-seller-banner', function () {
-        let img = wkmp(this).parents('.wkmp_shop_banner').find('#wk_seller_banner img').data('placeholder-url');
-        wkmp(this).parents('.wkmp_shop_banner').find('#wk_seller_banner img').attr('src', img);
-        wkmp(this).parents('.wkmp_shop_banner').find('#thumbnail_id_shop_banner').val('');
+    wkmp('body').on('click', '.wkmp-seller-profile-image-grids .wkmp-remove-button', function () {
+        let img = wkmp(this).parents('.wkmp-seller-profile-image-grids').find('img').data('placeholder-url');
+        wkmp(this).parents('.wkmp-seller-profile-image-grids').find('img').attr('src', img);
+        wkmp(this).parents('.wkmp-seller-profile-image-grids').find('input[type=hidden]').val('');
     });
     // Seller profile Page related code end here.
 
@@ -1164,7 +1130,7 @@ wkmp(function () { // wkmp function started.
         if ('' !== product_sku) {
 
             if (!reg_sku.test(product_sku)) {
-                wkmp('#pro_sku_error').html('Special character and spaces are not allowed');
+                wkmp('#pro_sku_error').html(wkmpObj.mkt_tr.spcl_char_error);
                 return false;
             } else if (product_sku.length < 3) {
                 wkmp('#pro_sku_error').css('color', 'red');
@@ -1366,7 +1332,7 @@ wkmp(function () { // wkmp function started.
         }
     });
 
-    // Limit search country or state result on every charater input
+    // Limit search country or state result on every character input
     wkmp(document).on('keyup', ".live-search-box", function () {
         var searchTerm = wkmp(this).val();
         var str = searchTerm.toLowerCase().replace(/\b[a-z]/g, function (letter) {
@@ -1691,7 +1657,7 @@ wkmp(function () { // wkmp function started.
         wkmp('#wkmp_products_per_page_settings_model').css('display', 'block');
     });
 
-     /** Submitting products per page form. **/
+    /** Submitting products per page form. **/
     wkmp("#wkmp-submit-product-per-page-update").on('click', function (event) {
         event.preventDefault();
 
@@ -1709,6 +1675,33 @@ wkmp(function () { // wkmp function started.
 
         if (status) {
             wkmp('#wkmp_product_per_page_error').text('');
+            wkmp('form#wkmp_seller_min_order_amount_form').submit();
+        }
+    });
+
+     //Per Page Order setting popup from seller front end.
+    wkmp('body').on('click', '#wkmp_order_per_page_settings', function () {
+        wkmp('#wkmp_orders_per_page_settings_model').css('display', 'block');
+    });
+
+    /** Submitting orders per page form. **/
+    wkmp("#wkmp-submit-order-per-page-update").on('click', function (event) {
+        event.preventDefault();
+
+        let status = true;
+        let per_page_input = wkmp('input[name=_wkmp_orders_per_page]');
+
+        if (per_page_input.length > 0) {
+            let amount = wkmp(per_page_input).val().trim();
+
+            if ((isNaN(amount) || (!isNaN(amount) && !(amount > 0)))) {
+                status = false;
+                wkmp('#wkmp_orders_per_page_error').text(wkmpObj.mkt_tr.mkt42);
+            }
+        }
+
+        if (status) {
+            wkmp('#wkmp_orders_per_page_error').text('');
             wkmp('form#wkmp_seller_min_order_amount_form').submit();
         }
     });

@@ -2,7 +2,7 @@
  * Admin facing js script.
  */
 "use strict";
-var wkJQ = jQuery.noConflict();
+let wkJQ = jQuery.noConflict();
 
 document.addEventListener(
 	"DOMContentLoaded",

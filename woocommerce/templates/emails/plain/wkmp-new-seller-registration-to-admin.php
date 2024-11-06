@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit; // Exit if access directly.
 $msg          = wp_sprintf( /* translators: %s: Blog name. */ esc_html__( 'New Seller registration on %s:', 'wk-marketplace' ), get_option( 'blogname' ) ) . "\n\n\r\n\r\n\n\n";
 $username     = esc_html__( 'Username :- ', 'wk-marketplace' ) . mb_convert_encoding( $data['user_name'], 'UTF-8' );
 $seller_email = esc_html__( 'User email :- ', 'wk-marketplace' ) . mb_convert_encoding( $data['user_email'], 'UTF-8' );
-$shop_url     = esc_html__( 'Seller Shop URL :- ', 'wk-marketplace' ) . mb_convert_encoding( $data['shop_url'], 'UTF-8' );
+$shop_url     = esc_html__( 'Seller Shop Slug :- ', 'wk-marketplace' ) . mb_convert_encoding( $data['shop_url'], 'UTF-8' );
 
 $footer_text = apply_filters( 'woocommerce_email_footer_text', get_option( 'woocommerce_email_footer_text' ) );
 

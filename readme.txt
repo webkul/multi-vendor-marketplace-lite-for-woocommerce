@@ -2,18 +2,16 @@
 Contributors: webkul
 Tags: marketplace, vendors, sellers, multi stores, b2c marketplace
 Requires at least: 6.5
-Tested up to: 6.6
-Stable tag: 1.2.0
+Tested up to: 6.7
+Stable tag: 1.2.1
 Requires PHP: 7.4
 Tested up to PHP: 8.3
-WC requires at least: 8.0
-WC tested up to: 9.2
-
-License: GPLv3
-License URI: http://www.gnu.org/licenses/gpl-3.0.html
-
+WC requires at least: 9.0
+WC tested up to: 9.4
 WPML Compatible: no
 Multisite Compatible: yes
+License: GPLv3
+License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 This plugin converts the WooCommerce store into a multi-vendor store like Amazon, eBay and Etsy. Sellers can manage their stores beautifully.
 
@@ -288,6 +286,18 @@ For any Query please generate a ticket at https://webkul.com/ticket/
 8. **Seller Dashboard:** - Seller Frontend dashboard showing different statistics.
 
 == Changelog ==
+
+= 1.2.1 - 2024-11-06 =
+Added: Search features for admin on product, sellers, and queries page in the backend dashboard.
+Added: Support for webp images on seller profile update page.
+Added: Per page items settings for seller order history page on seller frontend dashboard.
+Improved: Pagination links styling on seller dashboard.
+Fixed: Deleted sellers rows are showing in the favorite sellers list.
+Fixed: Shipping not calculating correctly if multiple sellers are configured for postcodes.
+Fixed: Notification count not showing on seller dashboard.
+Fixed: Issue with creating a new seller from admin dashboard in Multisite environment.
+Fixed: Only single variation is showing on seller order view page if multiple variations are ordered in the same order.
+Fixed: Compatibility with Flatsome theme.
 
 = 1.2.0 - 2024-08-28 =
 Added: Action and filter hooks to manage seller google analytics features.

@@ -59,7 +59,11 @@ if ( ! empty( $order_data ) ) {
 						$total_payment = apply_filters( 'wkmp_add_order_fee_to_total', round( floatval( $mp_order_data['total_seller_amount'] ), 2 ), $mp_order_data['order_id'] );
 
 						foreach ( $order_data as $product_id => $details ) {
-							if ( $details['variable_id'] < 1 ) {
+							$product_parent_id = wp_get_post_parent_id( $product_id );
+							$variation_id      = empty( $product_parent_id ) ? 0 : $product_id;
+							$product_id        = empty( $product_parent_id ) ? $product_id : $product_parent_id;
+
+							if ( empty( $product_parent_id ) ) { // Simple product.
 								?>
 								<tr class="order_item alt-table-row">
 									<td class="product-name toptable">
@@ -133,13 +137,13 @@ if ( ! empty( $order_data ) ) {
 										<?php } ?>
 									</td>
 								</tr>
-							<?php } else { ?>
-									<?php
+								<?php
+							} else {
 									$product        = new \WC_Product( $product_id );
 									$attribute      = $product->get_attributes();
-									$variation      = new \WC_Product_Variation( $details['variable_id'] );
+									$variation      = new \WC_Product_Variation( $variation_id );
 									$var_attributes = $variation->get_variation_attributes();
-									?>
+								?>
 									<tr class="order_item alt-table-row">
 										<td class="product-name toptable">
 											<a target="_blank" href="<?php echo esc_url( get_permalink( $product_id ) ); ?>"><?php echo esc_html( $details['product_name'] ); ?></a>
@@ -165,10 +169,10 @@ if ( ! empty( $order_data ) ) {
 										<td class="product-total toptable">
 											<?php
 											echo wp_kses_data( wc_price( $details['product_total_price'], array( 'currency' => $order_currency ) ) );
-											if ( ! empty( $mp_order_data['product'][ $details['variable_id'] ]['discount'] ) ) {
+											if ( ! empty( $mp_order_data['product'][ $variation_id ]['discount'] ) ) {
 												?>
 												<br>
-												<span class="wkmp-order-discount"> <?php echo wp_kses_data( wc_price( $mp_order_data['product'][ $details['variable_id'] ]['discount'], array( 'currency' => $order_currency ) ) ) . ' ' . esc_html__( 'discount', 'wk-marketplace' ); ?></span>
+												<span class="wkmp-order-discount"> <?php echo wp_kses_data( wc_price( $mp_order_data['product'][ $variation_id ]['discount'], array( 'currency' => $order_currency ) ) ) . ' ' . esc_html__( 'discount', 'wk-marketplace' ); ?></span>
 												<?php
 											}
 											if ( ! empty( $seller_order_refund_data['line_items'][ $details['item_key'] ]['refund_total'] ) ) {
@@ -190,13 +194,13 @@ if ( ! empty( $order_data ) ) {
 												<?php
 											} elseif ( ! empty( $seller_order_refund_data['line_items'][ $details['item_key'] ] ) && $seller_order_refund_data['line_items'][ $details['item_key'] ]['qty'] < $product_qty ) {
 												$refund_qty     = $product_qty - $seller_order_refund_data['line_items'][ $details['item_key'] ]['qty'];
-												$product_amount = ( $mp_order_data['product_total'] - $mp_order_data['product'][ $details['variable_id'] ]['commission'] ) / $product_qty;
+												$product_amount = ( $mp_order_data['product_total'] - $mp_order_data['product'][ $variation_id ]['commission'] ) / $product_qty;
 												?>
 												<input type="hidden" class="item_refund_amount" name="item_refund_amount[<?php echo esc_attr( $details['item_key'] ); ?>]" value="<?php echo esc_attr( $product_amount ); ?>">
 												<input type="number" name="refund_line_total[<?php echo esc_attr( $details['item_key'] ); ?>]" class="form-control refund_line_total" data-order-item-id="<?php echo esc_attr( $details['item_key'] ); ?>" value="0" min="0" max="<?php echo esc_attr( $refund_qty ); ?>">
 												<?php
 											} else {
-												$product_amount = ( $mp_order_data['product_total'] - $mp_order_data['product'][ $details['variable_id'] ]['commission'] ) / $product_qty;
+												$product_amount = ( $mp_order_data['product_total'] - $mp_order_data['product'][ $variation_id ]['commission'] ) / $product_qty;
 												?>
 												<input type="hidden" class="item_refund_amount" name="item_refund_amount[<?php echo esc_attr( $details['item_key'] ); ?>]" value="<?php echo esc_attr( $product_amount ); ?>">
 												<input type="number" name="refund_line_total[<?php echo esc_attr( $details['item_key'] ); ?>]" class="form-control refund_line_total" data-order-item-id="<?php echo esc_attr( $details['item_key'] ); ?>" value="0" min="0" max="<?php echo esc_attr( $product_qty ); ?>">
@@ -236,10 +240,25 @@ if ( ! empty( $order_data ) ) {
 						?>
 						</tbody>
 						<tfoot>
-						<?php if ( ! empty( $mp_order_data['discount'] ) && ! empty( array_sum( $mp_order_data['discount'] ) ) ) { ?>
+						<?php
+						if ( ! empty( $mp_order_data['discount'] ) && ! empty( array_sum( $mp_order_data['discount'] ) ) ) {
+							$discount_total = apply_filters( 'wkmp_seller_order_total_discount_html', wc_price( array_sum( $mp_order_data['discount'] ), array( 'currency' => $order_currency ) ), $mp_order_data );
+							?>
 							<tr>
-								<th scope="row"><b><?php esc_html_e( 'Discount', 'wk-marketplace' ); ?>:</b></th>
-								<td class="toptable"><?php echo wp_kses_data( wc_price( array_sum( $mp_order_data['discount'] ), array( 'currency' => $order_currency ) ) ); ?></td>
+								<th scope="row"><b><?php esc_html_e( 'Discount: ', 'wk-marketplace' ); ?></b></th>
+								<td class="toptable">
+								<?php
+								echo wp_kses(
+									$discount_total,
+									array(
+										'span' => array(
+											'class' => array(),
+											'title' => array(),
+										),
+									)
+								);
+								?>
+								</td>
 							</tr>
 							<?php
 						}
@@ -530,6 +549,8 @@ if ( ! empty( $order_data ) ) {
 				'failed'     => __( 'failed', 'wk-marketplace' ),
 				'trash'      => __( 'Trashed', 'wk-marketplace' ),
 			);
+
+			$order_status = ( false !== strpos( $order_status, 'wc-' ) ) ? $order_status : 'wc-' . $order_status;
 
 			if ( 'wc-completed' !== $order_status ) {
 				?>

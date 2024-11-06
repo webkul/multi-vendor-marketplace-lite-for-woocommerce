@@ -175,7 +175,13 @@ if ( ! class_exists( 'WKMP_Admin_Product' ) ) {
 
 			do_action( 'wkmp_pro_assign_product_to_seller' );
 
-			$filter_data = apply_filters( 'wkmp_pro_show_filtered_sellers_products', array( 'total' => true ) );
+			$filter_data = apply_filters(
+				'wkmp_pro_show_filtered_sellers_products',
+				array(
+					'total'  => true,
+					'search' => \WK_Caching::wk_get_request_data( 's' ),
+				)
+			);
 
 			$total_items = $this->product_db_obj->wkmp_get_products( $filter_data );
 
@@ -429,7 +435,7 @@ if ( ! class_exists( 'WKMP_Admin_Product' ) ) {
 				return;
 			}
 
-			$placeholder = esc_attr__( 'Search by Product Title', 'wk-marketplace' );
+			$placeholder = esc_attr__( 'Search by title or description.', 'wk-marketplace' );
 
 			$template_functions = AdminTemplates\WKMP_Admin_Template_Functions::get_instance();
 			$template_functions->wkmp_show_restricted_search_box( $text, $input_id, $placeholder );

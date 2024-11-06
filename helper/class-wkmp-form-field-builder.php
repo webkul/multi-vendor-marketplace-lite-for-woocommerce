@@ -84,7 +84,6 @@ if ( ! class_exists( 'WKMP_Form_Field_Builder' ) ) {
 							case 'textarea':
 								$this->textarea( $field_data, $field_key );
 								break;
-
 							default:
 								$this->input( $field_data, $field_key );
 								break;
@@ -209,9 +208,18 @@ if ( ! class_exists( 'WKMP_Form_Field_Builder' ) ) {
 		public function input( $field, $f_key ) {
 			$template_functions = AdminTemplates\WKMP_Admin_Template_Functions::get_instance();
 			$this->required_description( $field );
+			$field_type = empty( $field['type'] ) ? 'text' : $field['type'];
 			?>
-			<input type="<?php echo empty( $field['type'] ) ? 'text' : esc_attr( $field['type'] ); ?>" step="<?php echo empty( $field['step'] ) ? '' : esc_attr( $field['step'] ); ?>" min="<?php echo empty( $field['min'] ) ? 0 : esc_attr( $field['min'] ); ?>" max="<?php echo empty( $field['max'] ) ? '' : esc_attr( $field['max'] ); ?>" name="<?php echo esc_attr( $f_key ); ?>" id="<?php echo esc_attr( $f_key ); ?>" <?php echo isset( $field['readonly'] ) ? esc_attr( $field['readonly'] ) : ''; ?> value="<?php echo empty( $field['value'] ) ? '' : esc_attr( $field['value'] ); ?>" class="regular-text <?php echo empty( $field['class'] ) ? '' : esc_attr( $field['class'] ); ?>"/>
-			<?php empty( $field['show_lock'] ) ? '' : $template_functions->wkmp_show_upgrade_lock_icon(); ?>
+			<input type="<?php echo empty( $field_type ) ? 'text' : esc_attr( $field_type ); ?>" step="<?php echo empty( $field['step'] ) ? '' : esc_attr( $field['step'] ); ?>" min="<?php echo empty( $field['min'] ) ? 0 : esc_attr( $field['min'] ); ?>" max="<?php echo empty( $field['max'] ) ? '' : esc_attr( $field['max'] ); ?>" name="<?php echo esc_attr( $f_key ); ?>" id="<?php echo esc_attr( $f_key ); ?>" <?php echo isset( $field['readonly'] ) ? esc_attr( $field['readonly'] ) : ''; ?> value="<?php echo empty( $field['value'] ) ? '' : esc_attr( $field['value'] ); ?>" class="regular-text <?php echo empty( $field['class'] ) ? '' : esc_attr( $field['class'] ); ?>"/>
+			<?php
+			empty( $field['show_lock'] ) ? '' : $template_functions->wkmp_show_upgrade_lock_icon();
+
+			if ( 'file' === $field_type && ! empty( $field['value'] ) && ! empty( $field['show_thumb'] ) ) {
+				?>
+				<img src="<?php echo esc_url( wp_get_attachment_image_src( $field['value'], array( 133, 33 ) )[0] ); ?>" width="<?php echo esc_attr( $field['show_thumb']['width'] ); ?>" height="<?php echo esc_attr( $field['show_thumb']['height'] ); ?>" />
+				<?php
+			}
+			?>
 			</td>
 			</tr>
 			<?php
@@ -223,9 +231,11 @@ if ( ! class_exists( 'WKMP_Form_Field_Builder' ) ) {
 		 * @param array $field Field data.
 		 */
 		public function required_description( $field ) {
-			$required = empty( $field['required'] ) ? '' : '<span class="required"> *</span>';
+			$required  = empty( $field['required'] ) ? '' : '<span class="required"> *</span>';
+			$show_ui   = isset( $field['show_ui'] ) ? wc_string_to_bool( $field['show_ui'] ) : true;
+			$row_class = empty( $field['row_class'] ) ? '' : $field['row_class'];
 			?>
-			<tr>
+			<tr class="<?php echo esc_attr( $row_class ) . ( ( $show_ui ) ? '' : ' wkmp_hide' ); ?>">
 			<th>
 				<label for="<?php echo esc_attr( $field['label'] ); ?>"><?php echo esc_html( $field['label'] ); ?>
 					<?php

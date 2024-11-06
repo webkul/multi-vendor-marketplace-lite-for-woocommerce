@@ -3,17 +3,18 @@
  * Plugin Name: Multi-Vendor Marketplace Lite for WooCommerce
  * Plugin URI: https://store.webkul.com/woocommerce-plugins.html?limit=48
  * Description: This plugin converts the WooCommerce store into multi-vendor store. Using this plugin, the seller can manage the inventory, shipment, seller profile page, seller collection page and much more.
- * Version: 1.2.0
+ * Version: 1.2.1
  * Author: Webkul
  * Author URI: https://webkul.com
  * Text Domain: wk-marketplace
  * Domain Path: /languages
  *
  * Requires at least: 6.5
+ * Tested up to: 6.7
  * Requires PHP: 7.4
  * Tested up to PHP: 8.3
- * WC requires at least: 8.0
- * WC tested up to: 9.2
+ * WC requires at least: 9.0
+ * WC tested up to: 9.4
  *
  * Blog URI: https://webkul.com/blog/marketplace-for-woocommerce-lite/
  *
@@ -49,17 +50,17 @@ use WkMarketplace\Includes;
 defined( 'WKMP_LITE_FILE' ) || define( 'WKMP_LITE_FILE', __FILE__ );
 defined( 'WKMP_LITE_PLUGIN_FILE' ) || define( 'WKMP_LITE_PLUGIN_FILE', plugin_dir_path( __FILE__ ) );
 defined( 'WKMP_LITE_PLUGIN_URL' ) || define( 'WKMP_LITE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-defined( 'WKMP_LITE_SCRIPT_VERSION' ) || define( 'WKMP_LITE_SCRIPT_VERSION', '1.2.0' );
-defined( 'WKMP_LITE_VERSION' ) || define( 'WKMP_LITE_VERSION', '1.2.0' );
+defined( 'WKMP_LITE_SCRIPT_VERSION' ) || define( 'WKMP_LITE_SCRIPT_VERSION', '1.2.1' );
+defined( 'WKMP_LITE_VERSION' ) || define( 'WKMP_LITE_VERSION', '1.2.1' );
 defined( 'WKMP_LITE_DB_VERSION' ) || define( 'WKMP_LITE_DB_VERSION', '5.3.8' );
 defined( 'WKMP_LITE_PLUGIN_BASENAME' ) || define( 'WKMP_LITE_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
-defined( 'WKMP_LITE_WK_CACHING_VERSION' ) || define( 'WKMP_LITE_WK_CACHING_VERSION', '1.0.9' );
-defined( 'WKMP_PRO_MIN_VERSION' ) || define( 'WKMP_PRO_MIN_VERSION', '5.6.0' );
+defined( 'WKMP_LITE_WK_CACHING_VERSION' ) || define( 'WKMP_LITE_WK_CACHING_VERSION', '1.1.0' );
+defined( 'WKMP_PRO_MIN_VERSION' ) || define( 'WKMP_PRO_MIN_VERSION', '5.6.1' );
 defined( 'WKMP_DB_VERSION' ) || define( 'WKMP_DB_VERSION', '5.3.8' );
 defined( 'WKMP_PRO_MODULE_URL' ) || define( 'WKMP_PRO_MODULE_URL', 'https://store.webkul.com/woocommerce-multivendor-marketplace.html' );
 defined( 'WKMP_PRO_DEMO_URL' ) || define( 'WKMP_PRO_DEMO_URL', 'https://wpdemo.webkul.com/woocommerce-marketplace/' );
 
-require_once __DIR__ . '/inc/class-wkmp-autoload.php';
+require_once __DIR__ . '/autoloader/class-wkmp-autoload.php';
 require __DIR__ . '/vendor/autoload.php';
 
 if ( ! function_exists( 'wkmp_wc_log' ) ) {

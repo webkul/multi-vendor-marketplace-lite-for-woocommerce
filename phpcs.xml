@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ruleset name="WordPress WooCommerce Coding Standards" lwdt="202408131300">
+<ruleset name="WordPress WooCommerce Coding Standards" lwdt="202411061010">
 	<description>PHP_CodeSniffer version 3.8.0 (stable) by Squiz and PHPCSStandards</description>
 
 	<!-- Exclude paths -->
@@ -8,8 +8,8 @@
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 
 	<!-- Configs -->
-	<config name="minimum_wp_version" value="5.2"/>
-	<config name="minimum_supported_wp_version" value="5.2"/>
+	<config name="minimum_wp_version" value="6.5"/>
+	<config name="minimum_supported_wp_version" value="6.5"/>
 
 	<!-- Check code for cross-version PHP compatibility. -->
 	<config name="testVersion" value="7.4-"/>

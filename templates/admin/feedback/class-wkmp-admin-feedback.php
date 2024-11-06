@@ -99,6 +99,7 @@ if ( ! class_exists( 'WKMP_Admin_Feedback' ) ) {
 					'start'   => ( $current_page - 1 ) * $per_page,
 					'limit'   => $per_page,
 					'orderby' => $orderby,
+					'search'  => \WK_Caching::wk_get_request_data( 's' ),
 					'order'   => $sort_order,
 				)
 			);

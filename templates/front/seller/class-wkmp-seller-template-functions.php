@@ -154,10 +154,20 @@ if ( ! class_exists( 'WKMP_Seller_Template_Functions' ) ) {
 			$query_args     = empty( $query_vars[ $order_endpoint ] ) ? 0 : $query_vars[ $order_endpoint ];
 			$order_id       = is_numeric( $query_args ) ? intval( $query_args ) : 0;
 
+			$page_no = 1;
+			$filter  = '';
+
 			if ( empty( $order_id ) ) {
 				$args_array = explode( '/', $query_args );
-				$page_no    = ( is_array( $args_array ) && 2 === count( $args_array ) && 'page' === $args_array[0] ) ? $args_array[1] : 1;
-				$wkmp_orders->wkmp_order_list( $this->seller_id, $page_no );
+
+				if ( is_array( $args_array ) && count( $args_array ) >= 2 ) {
+					$filter  = ( 'filter' === $args_array[0] ) ? $args_array[1] : $filter;
+					$page_no = ( 'page' === $args_array[0] ) ? $args_array[1] : $page_no;
+				}
+
+				$page_no = ( ! empty( $filter ) && 4 === count( $args_array ) && 'page' === $args_array[2] ) ? $args_array[3] : $page_no;
+
+				$wkmp_orders->wkmp_order_list( $this->seller_id, $page_no, $filter );
 			} else {
 				$wkmp_orders->wkmp_order_views( $this->seller_id, $order_id );
 			}

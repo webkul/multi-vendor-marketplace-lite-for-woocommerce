@@ -90,6 +90,7 @@ if ( ! class_exists( 'WKMP_Seller_Transaction_View' ) ) {
 					'quantity'     => esc_html__( 'Quantity', 'wk-marketplace' ),
 					'price'        => esc_html__( 'Total Price', 'wk-marketplace' ),
 					'commission'   => esc_html__( 'Commission', 'wk-marketplace' ),
+					'discount'     => esc_html__( 'Discount', 'wk-marketplace' ),
 					'subtotal'     => esc_html__( 'Subtotal', 'wk-marketplace' ),
 				)
 			);
@@ -141,7 +142,7 @@ if ( ! class_exists( 'WKMP_Seller_Transaction_View' ) ) {
 					<div class="transaction-details">
 						<div class="table-wrapper">
 							<h3 class="table-caption">
-								<?php esc_html_e( 'Detail', 'wk-marketplace' ); ?>
+								<?php esc_html_e( 'Details', 'wk-marketplace' ); ?>
 							</h3>
 							<table class="woocommerce-orders-table woocommerce-MyAccount-orders shop_table shop_table_responsive my_account_orders account-orders-table">
 								<thead>
@@ -167,6 +168,7 @@ if ( ! class_exists( 'WKMP_Seller_Transaction_View' ) ) {
 								}
 
 								$quantity          = $sel_info['quantity'];
+								$total_discount    = array_sum( $sel_info['discount'] );
 								$line_total        = ( $sel_info['product_total'] + $sel_info['shipping'] );
 								$line_total        = $line_total - $sel_info['refunded_amount'];
 								$commission_amount = $sel_info['total_commission'];
@@ -174,7 +176,7 @@ if ( ! class_exists( 'WKMP_Seller_Transaction_View' ) ) {
 								?>
 								<tr>
 									<td>
-										<?php echo esc_html_x( '#', 'hash before order number', 'wk-marketplace' ) . $order_number; ?>
+										<?php echo esc_html_x( '#', 'hash before order number', 'wk-marketplace' ) . esc_html( $order_number ); ?>
 									</td>
 									<td>
 										<?php echo esc_html( $product_name ); ?>
@@ -187,6 +189,9 @@ if ( ! class_exists( 'WKMP_Seller_Transaction_View' ) ) {
 									</td>
 									<td>
 										<?php echo wp_kses_data( wc_price( $commission_amount, array( 'currency' => $currency ) ) ); ?>
+									</td>
+									<td>
+										<?php echo wp_kses_data( wc_price( $total_discount, array( 'currency' => $currency ) ) ); ?>
 									</td>
 									<?php
 										do_action( 'wkmp_account_transactions_columns_data', $order_id );

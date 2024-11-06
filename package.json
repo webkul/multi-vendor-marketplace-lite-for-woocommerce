@@ -1,9 +1,7 @@
 {
 	"name": "multi-vendor-marketplace-lite-for-woocommerce",
-	"version": "1.2.0",
-	"author": "webkul",
-	"description": "This plugin converts the WooCommerce store into multi-vendor store. Using this plugin, the seller can manage the inventory, shipment, seller profile page, seller collection page and much more.",
-	"main": "assets/front/build/js/front.js",
+	"version": "1.2.1",
+	"main": "src/front/js/front.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"build": "gulp & cross-env nodeEnv=production webpack",
@@ -15,29 +13,23 @@
 		"phpcs": "mkdir -p phpcs-reports && cd $VAR && $PWD/.config/composer/vendor/squizlabs/php_codesniffer/bin/phpcs --standard=$INIT_CWD/phpcs.xml --severity=1 --ignore=*/wk_caching/* --report-source --report-xml=$INIT_CWD/phpcs-reports/phpcs-report-$(date \"+%Y-%m-%dT%H:%M:%S\").xml --ignore-annotations --extensions=php,html $INIT_CWD/",
 		"make-pot": "php -d xdebug.max_nesting_level=512 $(which wp) i18n make-pot --exclude=\"node_modules/,languages/,wk_caching/,.gitignore,.gitmodules,.gulpfile.js,.git,.webpack.config.js,package.json,package-lock.json,phpcs.xml,phpmd.xml,license.txt,readme.txt,assets/,$npm_package_name/\" --headers='{\"Report-Msgid-Bugs-To\":\"https://wordpress.org/support/plugin/multi-vendor-marketplace-lite-for-woocommerce/\", \"language-team\":\"LANGUAGE <EMAIL@ADDRESS>\"}' . languages/wk-marketplace.pot",
 		"caching-composer": "cd wk_caching && composer install && cd ../",
-		"zip-plugin": "mkdir -p $npm_package_name && cp -r assets/ helper/ inc/ includes/ languages/ templates/ vendor/ wk_caching/ woocommerce/ class-wk-caching-core-loader.php readme.txt $npm_package_name.php $npm_package_name && zip -r $npm_package_name.zip $npm_package_name -x **/wk_caching/.gitignore -x **/wk_caching/.git -x **/wk_caching/composer.lock -x **/wk_caching/phpcs.xml -x **/wk_caching/composer.json && rm -r $npm_package_name",
+		"zip-plugin": "mkdir -p $npm_package_name && cp -r assets/ autoloader/ helper/ includes/ languages/ templates/ vendor/ wk_caching/ woocommerce/ class-wk-caching-core-loader.php readme.txt $npm_package_name.php $npm_package_name && zip -r $npm_package_name.zip $npm_package_name -x **/wk_caching/.gitignore -x **/wk_caching/.git -x **/wk_caching/composer.lock -x **/wk_caching/phpcs.xml -x **/wk_caching/composer.json && rm -r $npm_package_name",
 		"zip-for-wp-repo": "npm run submodules && npm run caching-composer && npm run zip-plugin"
 	},
-	"keywords": [
-		"woocommerce",
-		"multi",
-		"vendor",
-		"marketplace"
-	],
 	"dependencies": {
-		"npm": "^10.8.1"
+		"npm": "^10.9.0"
 	},
 	"devDependencies": {
-		"@wordpress/scripts": "^28.1.0",
-		"@babel/core": "^7.24.7",
-		"@babel/preset-env": "^7.24.7",
-		"babel-loader": "^9.1.3",
+		"@wordpress/scripts": "^30.4.0",
+		"@babel/core": "^7.26.0",
+		"@babel/preset-env": "^7.26.0",
+		"babel-loader": "^9.2.1",
 		"cross-env": "^7.0.3",
 		"gulp": "^5.0.0",
 		"gulp-clean-css": "^4.3.0",
 		"gulp-rename": "^2.0.0",
 		"gulp-watch": "^5.0.1",
-		"webpack": "^5.92.1",
+		"webpack": "^5.96.1",
 		"webpack-cli": "^5.1.4"
 	}
 }

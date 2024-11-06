@@ -7,9 +7,6 @@
  */
 
 defined( 'ABSPATH' ) || exit; // Exit if access directly.
-
-$suffix     = ( defined( 'WKWC_DEV' ) && true === WKWC_DEV ) ? '' : '.min';
-$asset_path = ( defined( 'WKWC_DEV' ) && true === WKWC_DEV ) ? 'build' : 'dist';
 ?>
 <!DOCTYPE html>
 	<html>

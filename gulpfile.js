@@ -9,62 +9,62 @@ const cleanCSS = require( 'gulp-clean-css' );
 gulp.task(
 	'MinfyAdminCSS',
 	function () {
-		return gulp.src( './assets/build/admin/css/admin.css' )
+		return gulp.src( './src/admin/css/admin.css' )
 		.pipe( cleanCSS() )
 		.pipe( rename( { suffix: ".min" } ) )
-		.pipe( gulp.dest( './assets/dist/admin/css/' ) );
+		.pipe( gulp.dest( './assets/admin/css/' ) );
 	}
 );
 gulp.task(
 	'MinfyInvoiceCSS',
 	function () {
-		return gulp.src( './assets/build/admin/css/invoice-style.css' )
+		return gulp.src( './src/admin/css/invoice-style.css' )
 		.pipe( cleanCSS() )
 		.pipe( rename( { suffix: ".min" } ) )
-		.pipe( gulp.dest( './assets/dist/admin/css/' ) );
+		.pipe( gulp.dest( './assets/admin/css/' ) );
 	}
 );
 
 gulp.task(
 	'MinfyFrontCSS',
 	function () {
-		return gulp.src( './assets/build/front/css/front.css' )
+		return gulp.src( './src/front/css/front.css' )
 		.pipe( cleanCSS() )
 		.pipe( rename( { suffix: ".min" } ) )
-		.pipe( gulp.dest( './assets/dist/front/css/' ) )
+		.pipe( gulp.dest( './assets/front/css/' ) )
 	}
 );
 gulp.task(
 	'MinfyStyleCSS',
 	function () {
-		return gulp.src( './assets/build/front/css/style.css' )
+		return gulp.src( './src/front/css/style.css' )
 		.pipe( cleanCSS() )
 		.pipe( rename( { suffix: ".min" } ) )
-		.pipe( gulp.dest( './assets/dist/front/css/' ) )
+		.pipe( gulp.dest( './assets/front/css/' ) )
 	}
 );
 gulp.task(
 	'MinfyThemeCSS',
 	function () {
-		return gulp.src( './assets/build/front/css/wkmp-theme-compatibility.css' )
+		return gulp.src( './src/front/css/wkmp-theme-compatibility.css' )
 		.pipe( cleanCSS() )
 		.pipe( rename( { suffix: ".min" } ) )
-		.pipe( gulp.dest( './assets/dist/front/css/' ) )
+		.pipe( gulp.dest( './assets/front/css/' ) )
 	}
 );
 gulp.task(
 	'MinfyAccountCSS',
 	function () {
-		return gulp.src( './assets/build/front/css/myaccount-style.css' )
+		return gulp.src( './src/front/css/myaccount-style.css' )
 		.pipe( cleanCSS() )
 		.pipe( rename( { suffix: ".min" } ) )
-		.pipe( gulp.dest( './assets/dist/front/css/' ) )
+		.pipe( gulp.dest( './assets/front/css/' ) )
 	}
 );
 gulp.task(
 	'watch',
 	function () {
-		return gulp.watch( ['./assets/build/admin/css/admin.css','./assets/build/front/css/front.css','./assets/build/front/css/style.css'], gulp.series( 'default' ) );
+		return gulp.watch( ['./src/admin/css/admin.css','./src/front/css/front.css','./src/front/css/style.css'], gulp.series( 'default' ) );
 	}
 );
 

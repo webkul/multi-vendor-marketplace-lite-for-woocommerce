@@ -1,0 +1,16 @@
+/* Theme compatibility CSS */
+.wkmp-seller-endpoints .woocommerce-MyAccount-navigation ul li.woocommerce-MyAccount-navigation-link a {
+	text-decoration: none;
+	padding: 0.875em 0;
+	display: block;
+}
+
+.wkmp-seller-endpoints .woocommerce-MyAccount-navigation ul li {
+	list-style: none;
+	position: relative;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.wkmp-seller-endpoints .woocommerce-MyAccount-navigation ul li.is-active a {
+	opacity: 1;
+}

@@ -9,11 +9,11 @@
 
 namespace WkMarketplace\Includes\Common;
 
+defined( 'ABSPATH' ) || exit(); // Exit if access directly.
+
 use WkMarketplace\Helper\Admin;
 use WkMarketplace\Helper\Common;
 use WkMarketplace\Includes\Shipping;
-
-defined( 'ABSPATH' ) || exit(); // Exit if access directly.
 
 if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 	/**
@@ -40,7 +40,6 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 		 * @var $instance
 		 */
 		protected static $instance = null;
-
 
 		/**
 		 * WKMP_Common_Functions constructor.
@@ -111,12 +110,11 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 		/**
 		 * Add class data as user meta.
 		 *
-		 * @param int   $term_id Term id.
-		 * @param array $data Data.
+		 * @param int $term_id Term id.
 		 *
 		 * @hooked 'woocommerce_shipping_classes_save_class' action hook.
 		 */
-		public function wkmp_after_add_admin_shipping_class( $term_id, $data ) {
+		public function wkmp_after_add_admin_shipping_class( $term_id ) {
 			global $current_user;
 			$seller_sclass = get_user_meta( $current_user->ID, 'shipping-classes', true );
 			$seller_sclass = empty( $seller_sclass ) ? array() : maybe_unserialize( $seller_sclass );
@@ -613,6 +611,8 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 		 * @hooked 'wkmp_validate_update_seller_profile' action hook.
 		 */
 		public function wkmp_process_seller_profile_data( $data, $seller_id ) {
+			global $wkmarketplace;
+
 			$errors = array();
 			$nonce  = \WK_Caching::wk_get_request_data( 'wkmp-user-nonce', array( 'method' => 'post' ) );
 
@@ -669,7 +669,7 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 				}
 
 				if ( isset( $_FILES['wkmp_avatar_file'] ) && isset( $_FILES['wkmp_avatar_file']['name'] ) && ! empty( wc_clean( $_FILES['wkmp_avatar_file']['name'] ) ) ) {
-					$message = $this->wkmp_validate_image( wc_clean( $_FILES['wkmp_avatar_file'] ) );
+					$message = $wkmarketplace->wkmp_validate_image( wc_clean( $_FILES['wkmp_avatar_file'] ) );
 					if ( $message ) {
 						$errors['wkmp_avatar_file'] = $message;
 					} else {
@@ -683,7 +683,7 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 				}
 
 				if ( isset( $_FILES['wkmp_logo_file'] ) && isset( $_FILES['wkmp_logo_file']['name'] ) && ! empty( wc_clean( $_FILES['wkmp_logo_file']['name'] ) ) ) {
-					$message = $this->wkmp_validate_image( wc_clean( $_FILES['wkmp_logo_file'] ) );
+					$message = $wkmarketplace->wkmp_validate_image( wc_clean( $_FILES['wkmp_logo_file'] ) );
 					if ( $message ) {
 						$errors['wkmp_logo_file'] = $message;
 					} else {
@@ -697,7 +697,7 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 				}
 
 				if ( isset( $_FILES['wkmp_banner_file'] ) && isset( $_FILES['wkmp_banner_file']['name'] ) && ! empty( wc_clean( $_FILES['wkmp_banner_file']['name'] ) ) ) {
-					$message = $this->wkmp_validate_image( wc_clean( $_FILES['wkmp_banner_file'] ) );
+					$message = $wkmarketplace->wkmp_validate_image( wc_clean( $_FILES['wkmp_banner_file'] ) );
 					if ( $message ) {
 						$errors['wkmp_banner_file'] = $message;
 					} else {
@@ -711,6 +711,11 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 				}
 
 				$data = apply_filters( 'wkmp_seller_profile_update_data', $data, $errors );
+
+				if ( ! empty( $data['_wkmp_pro_product_errors'] ) ) {
+					$errors = array_merge( $errors, $data['_wkmp_pro_product_errors'] );
+					unset( $data['_wkmp_pro_product_errors'] );
+				}
 
 				if ( empty( $errors ) ) {
 					$data['billing_phone'] = $data['wkmp_shop_phone'];
@@ -794,83 +799,6 @@ if ( ! class_exists( 'WKMP_Common_Functions' ) ) {
 
 			do_action( 'mp_save_seller_profile_details', $final_data, $seller_id );
 			do_action( 'marketplace_save_seller_payment_details' ); // Deprecated, we'll be removed in future. Use above one.
-		}
-
-		/**
-		 * Validate image.
-		 *
-		 * @param array $file File.
-		 *
-		 * @return string
-		 */
-		private function wkmp_validate_image( $file ) {
-			$img_error = '';
-
-			if ( isset( $file['size'] ) && $file['size'] > wp_max_upload_size() ) {
-				$img_error = esc_html__( 'File size too large ', 'wk-marketplace' ) . '[ <= ' . number_format( wp_max_upload_size() / 1048576 ) . ' MB ]';
-			}
-
-			$file_type = $this->wkmp_get_mime_type( $file );
-
-			$allowed_types = array(
-				'image/png',
-				'image/jpeg',
-				'image/jpg',
-				'image/webp',
-			);
-
-			if ( ! $img_error && ! in_array( $file_type, $allowed_types, true ) ) {
-				$img_error = esc_html__( 'Upload valid image only', 'wk-marketplace' ) . '[ png, jpeg, jpg, webp ]';
-			}
-
-			return $img_error;
-		}
-
-		/**
-		 * Custom Mime type content function if extension not installed on server.
-		 * Or php version not supporting this function.
-		 * Or issue due to incorrect php.ini file on client site.
-		 *
-		 * @param array $filename File name.
-		 *
-		 * @return string
-		 */
-		public function wkmp_get_mime_type( $filename ) {
-			$mime_types = array(
-				// Images.
-				'png'  => 'image/png',
-				'jpe'  => 'image/jpeg',
-				'jpeg' => 'image/jpeg',
-				'jpg'  => 'image/jpeg',
-				'gif'  => 'image/gif',
-				'bmp'  => 'image/bmp',
-				'ico'  => 'image/vnd.microsoft.icon',
-				'tiff' => 'image/tiff',
-				'tif'  => 'image/tiff',
-				'svg'  => 'image/svg+xml',
-				'svgz' => 'image/svg+xml',
-			);
-
-			$file_name = empty( $filename['tmp_name'] ) ? '' : $filename['tmp_name'];
-			$value     = empty( $file_name ) ? array() : explode( '.', $file_name );
-
-			if ( is_iterable( $value ) && count( $value ) < 2 ) {
-				$file_name = empty( $filename['name'] ) ? '' : $filename['name'];
-				$value     = empty( $file_name ) ? array() : explode( '.', $file_name );
-			}
-
-			$ext = strtolower( array_pop( $value ) );
-
-			if ( array_key_exists( $ext, $mime_types ) ) {
-				return $mime_types[ $ext ];
-			} elseif ( function_exists( 'finfo_open' ) ) {
-				$finfo    = finfo_open( FILEINFO_MIME );
-				$mimetype = finfo_file( $finfo, $file_name );
-				finfo_close( $finfo );
-				return $mimetype;
-			}
-
-			return 'application/octet-stream';
 		}
 
 		/**

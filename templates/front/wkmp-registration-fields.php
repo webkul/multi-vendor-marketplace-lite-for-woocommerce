@@ -62,10 +62,10 @@ if ( ! is_account_page() ) {
 		if ( 'remove' !== $shopurl_visibility ) {
 			?>
 			<p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-				<label for="wkmp-shopurl" class="pull-left"><?php esc_html_e( 'Shop URL', 'wk-marketplace' ); ?> <?php echo ( 'required' === $shopurl_visibility ) ? '<span class="required">*</span>' : ''; ?>
+				<label for="wkmp-shopurl" class="pull-left"><?php esc_html_e( 'Shop Slug', 'wk-marketplace' ); ?> <?php echo ( 'required' === $shopurl_visibility ) ? '<span class="required">*</span>' : ''; ?>
 				<?php if ( 'required' !== $shopurl_visibility ) { ?>
 					<span class="wkmp-front-wc-help-tooltip help">
-						<span class="wkmp-help-tip-sol"><?php esc_html_e( 'If empty, your username will be the Shop URL.', 'wk-marketplace' ); ?></span>
+						<span class="wkmp-help-tip-sol"><?php esc_html_e( 'If empty, your username will be the Shop Slug.', 'wk-marketplace' ); ?></span>
 						<span class="help-tip"></span>
 					</span>
 				<?php } ?>
@@ -101,7 +101,7 @@ if ( ! is_account_page() ) {
 					<input type="radio" name="role" value="seller"<?php checked( $user_role, 'seller' ); ?> >
 					<label class="radio wkmp-fw-600"><?php esc_html_e( 'I am a Seller', 'wk-marketplace' ); ?></label>
 				</li>
-				<!-- Ambassador Stripe customization compatibility -->
+				<!-- After user registration options. -->
 				<?php do_action( 'wkmp_user_registration_option', $user_role ); ?>
 			</ul>
 		</div>

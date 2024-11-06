@@ -132,6 +132,7 @@ if ( ! empty( $shipping_method ) ) :
 endif;
 
 $total_payment += $com_data['shipping'];
+$total_payment  = apply_filters( 'wkmp_seller_total_in_order_mail', $total_payment, $com_data );
 
 if ( ! empty( $payment_method ) ) :
 	$result .= '<tr>
@@ -140,13 +141,15 @@ if ( ! empty( $payment_method ) ) :
 				</tr>';
 endif;
 
-$result .= '<tr>
-                <th class="td" scope="row" colspan="2" style="text-align:' . esc_attr( $text_align ) . ';">' . esc_html__( 'Total', 'wk-marketplace' ) . ' : </th>';
+$result = apply_filters( 'wkmp_seller_order_email_tr_before_total', $result, $seller_order->get_id() );
 
+$result         .= '<tr>
+                <th class="td" scope="row" colspan="2" style="text-align:' . esc_attr( $text_align ) . ';">' . esc_html__( 'Total', 'wk-marketplace' ) . ' : </th>';
+$currency_symbol = get_woocommerce_currency_symbol( $seller_order->get_currency() );
 if ( ! empty( $seller_order_refund_data['refunded_amount'] ) ) {
-	$result .= '<td class="td"><strong><del>' . wc_price( $total_payment, array( 'currency' => $seller_order->get_currency() ) ) . '</del></strong> ' . wc_price( $total_payment - $seller_order_refund_data['refunded_amount'], array( 'currency' => $seller_order->get_currency() ) ) . '</td>';
+	$result .= '<td class="td"><strong><del>' . wc_price( apply_filters( 'wkmp_add_order_fee_to_total', $total_payment, $seller_order->get_id() ), array( 'currency' => $seller_order->get_currency() ) ) . '</del></strong> ' . wc_price( apply_filters( 'wkmp_add_order_fee_to_total', $total_payment, $seller_order->get_id() ) - $seller_order_refund_data['refunded_amount'], array( 'currency' => $seller_order->get_currency() ) ) . '</td>';
 } else {
-	$result .= '<td class="td">' . wc_price( $total_payment, array( 'currency' => $seller_order->get_currency() ) ) . '</td>';
+	$result .= '<td class="td">' . esc_html( $currency_symbol . number_format( apply_filters( 'wkmp_add_order_fee_to_total', $total_payment, $seller_order->get_id() ), 2 ) ) . '</td>';
 }
 
 $result .= '</tr>';

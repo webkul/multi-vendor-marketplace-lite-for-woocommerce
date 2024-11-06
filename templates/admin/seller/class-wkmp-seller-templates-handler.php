@@ -12,6 +12,7 @@ namespace WkMarketplace\Templates\Admin\Seller;
 defined( 'ABSPATH' ) || exit; // Exit if access directly.
 
 use WkMarketplace\Helper\Admin;
+use WkMarketplace\Templates\Admin as AdminTemplates;
 
 if ( ! class_exists( 'WKMP_Seller_Templates_Handler' ) ) {
 	/**
